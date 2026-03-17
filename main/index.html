@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/js/all.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRISM</title>
@@ -777,7 +778,7 @@
   <p class="hero-sub">Navigate beyond the veil &nbsp;·&nbsp; <a href="#">discord.gg/prism</a></p>
 
   <div id="search-wrap">
-    <input id="search-bar" type="text" placeholder="Search or enter address…" autocomplete="off"/>
+    <input id="search" type="text" placeholder="Search or enter address…" autocomplete="off"/>
     <button id="search-btn" onclick="doSearch(); return false;">
       <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
         <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
@@ -868,62 +869,7 @@ for (let i = 0; i < 25; i++) {
     animation-iteration-count: infinite;
   `;
   dustEl.appendChild(d);
-}
-
-// ===== UV PROXY SEARCH (matches Utopia / go.js behaviour) =====
-// Requires uv/uv.bundle.js and uv/uv.config.js to be present in your deployment.
-
-function isUrl(val) {
-  // Has a dot and no spaces → treat as URL
-  return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/.test(val) || /^https?:\/\//i.test(val);
-}
-
-function buildProxyUrl(raw) {
-  let url = raw.trim();
-  if (!url) return null;
-
-  if (isUrl(url)) {
-    // Ensure it has a protocol
-    if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
-  } else {
-    // Treat as a search query → Google
-    url = 'https://www.google.com/search?q=' + encodeURIComponent(url);
-  }
-
-  // Use Ultraviolet if available, otherwise fall back to bare navigation
-  if (typeof __uv$config !== 'undefined' && typeof __uv$config.prefix !== 'undefined') {
-    return __uv$config.prefix + __uv$config.encodeUrl(url);
-  }
-
-  // Fallback: direct (no proxy)
-  return url;
-}
-
-function doSearch() {
-  const val = document.getElementById('search-bar').value.trim();
-  if (!val) return;
-  const dest = buildProxyUrl(val);
-  if (dest) window.location.href = dest;
-}
-
-document.getElementById('search-bar').addEventListener('keydown', e => {
-  if (e.key === 'Enter') doSearch();
-});
-
-// Quick links — route through UV proxy same as search
-const quickMap = {
-  YouTube:   'https://youtube.com',
-  Reddit:    'https://reddit.com',
-  GitHub:    'https://github.com',
-  Twitch:    'https://twitch.tv',
-  Wikipedia: 'https://wikipedia.org'
 };
-document.querySelectorAll('.quick-link').forEach(el => {
-  el.addEventListener('click', () => {
-    const dest = buildProxyUrl(quickMap[el.textContent.trim()]);
-    if (dest) window.location.href = dest;
-  });
-});
 </script>
 </body>
 </html>
