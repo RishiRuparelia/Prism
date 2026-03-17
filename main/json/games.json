@@ -31,12 +31,12 @@
   "games": [
     {
       "id": "Slope",
-      "title": "Slioe",
-      "description": "Replace this entry with a real game.",
+      "title": "Slope",
+      "description": "Slopes",
       "category": "Arcade",
       "tags": ["Example"],
       "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQANCNt8LJxMsPJDX5gl0Cq2fBVOhirNMH6dg&s",
-      "url": "https://example.com/game",
+      "url": "/games/gfiles/slope/index.html",
       "featured": false,
       "new": false,
       "hot": false,
