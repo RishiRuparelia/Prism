@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>PRISM — Games</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:       #c9a84c;
+    --gold-light: #f0d080;
+    --sand:       #e8c97a;
+    --dark:       #0a0805;
+    --dark2:      #110e08;
+    --dark3:      #1c1710;
+    --card-bg:    #141008;
+    --card-border:rgba(201,168,76,0.12);
+    --text:       #e8dcc8;
+    --muted:      rgba(232,220,200,0.45);
+    --red:        #ff4455;
+    --teal:       #4fc3a0;
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    font-family: 'Rajdhani', sans-serif;
+    background: var(--dark);
+    color: var(--text);
+    min-height: 100vh;
+    overflow-x: hidden;
+  }
+
+  /* ── Subtle background texture ── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 40% at 50% 0%, rgba(201,168,76,0.04) 0%, transparent 70%),
+      radial-gradient(ellipse 60% 60% at 0% 100%, rgba(79,195,160,0.03) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 60% at 100% 100%, rgba(255,68,85,0.03) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+  body::after {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background: repeating-linear-gradient(
+      to bottom,
+      rgba(0,0,0,0) 0px, rgba(0,0,0,0) 3px,
+      rgba(0,0,0,0.025) 3px, rgba(0,0,0,0.025) 4px
+    );
+    pointer-events: none;
+    z-index: 1;
+  }
+
+  /* ── NAVBAR ── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 200;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 40px;
+    height: 58px;
+    background: rgba(10,8,5,0.85);
+    backdrop-filter: blur(16px);
+    border-bottom: 1px solid rgba(201,168,76,0.14);
+  }
+  .nav-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 20px;
+    font-weight: 900;
+    letter-spacing: 6px;
+    background: linear-gradient(135deg, #fffbe0, var(--gold), var(--sand));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+  .nav-logo svg { flex-shrink: 0; }
+  .nav-links { display: flex; gap: 4px; list-style: none; }
+  .nav-links a {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 14px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: #c8b890;
+    text-decoration: none;
+    border-radius: 4px;
+    border: 1px solid transparent;
+    transition: all 0.2s;
+  }
+  .nav-links a:hover,
+  .nav-links a.active {
+    color: var(--gold-light);
+    border-color: rgba(201,168,76,0.3);
+    background: rgba(201,168,76,0.07);
+  }
+  .nav-links a.active { color: var(--gold); }
+
+  /* ── PAGE LAYOUT ── */
+  .page {
+    position: relative;
+    z-index: 2;
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 40px 32px 80px;
+  }
+
+  /* ── PAGE HEADER ── */
+  .page-header {
+    display: flex;
+    align-items: flex-end;
+    justify-content: space-between;
+    margin-bottom: 32px;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+  .page-title-group { line-height: 1; }
+  .page-eyebrow {
+    font-size: 10px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.65;
+    margin-bottom: 6px;
+  }
+  .page-title {
+    font-family: 'Cinzel', serif;
+    font-size: 36px;
+    font-weight: 900;
+    letter-spacing: 5px;
+    background: linear-gradient(135deg, #fffbe0, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+  .game-count {
+    font-size: 12px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    margin-top: 4px;
+  }
+
+  /* ── SEARCH + FILTER BAR ── */
+  .toolbar {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+  }
+  .search-wrap {
+    position: relative;
+    flex: 1;
+    min-width: 220px;
+    max-width: 420px;
+  }
+  .search-wrap svg {
+    position: absolute;
+    left: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--muted);
+    pointer-events: none;
+  }
+  #search-input {
+    width: 100%;
+    padding: 10px 14px 10px 40px;
+    background: rgba(20,16,8,0.8);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 14px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #search-input::placeholder { color: var(--muted); }
+  #search-input:focus {
+    border-color: rgba(201,168,76,0.5);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.06);
+  }
+
+  #sort-select {
+    padding: 10px 14px;
+    background: rgba(20,16,8,0.8);
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 5px;
+    color: var(--text);
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    letter-spacing: 1px;
+    outline: none;
+    cursor: pointer;
+    transition: border-color 0.2s;
+    appearance: none;
+    -webkit-appearance: none;
+    padding-right: 32px;
+    background-image: url("data:image/svg+xml,%3Csvg width='10' height='6' viewBox='0 0 10 6' fill='none' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath d='M1 1L5 5L9 1' stroke='%23c9a84c' stroke-width='1.5' stroke-linecap='round'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: calc(100% - 10px) center;
+  }
+  #sort-select:focus { border-color: rgba(201,168,76,0.5); }
+  #sort-select option { background: #110e08; }
+
+  /* ── CATEGORY PILLS ── */
+  .categories {
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+    margin-bottom: 36px;
+  }
+  .cat-pill {
+    padding: 5px 16px;
+    font-size: 11px;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    border: 1px solid rgba(201,168,76,0.18);
+    border-radius: 30px;
+    background: rgba(201,168,76,0.04);
+    color: rgba(232,220,200,0.55);
+    cursor: pointer;
+    transition: all 0.18s;
+    white-space: nowrap;
+    user-select: none;
+  }
+  .cat-pill:hover {
+    color: var(--gold-light);
+    border-color: rgba(201,168,76,0.4);
+    background: rgba(201,168,76,0.09);
+  }
+  .cat-pill.active {
+    color: var(--dark);
+    background: var(--gold);
+    border-color: var(--gold);
+    font-weight: 700;
+  }
+
+  /* ── SECTION LABEL ── */
+  .section-label {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.7;
+    margin-bottom: 18px;
+    margin-top: 8px;
+  }
+  .section-label::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: linear-gradient(to right, rgba(201,168,76,0.25), transparent);
+  }
+
+  /* ── GAMES GRID ── */
+  .games-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(170px, 1fr));
+    gap: 16px;
+    margin-bottom: 48px;
+  }
+
+  /* ── GAME CARD ── */
+  .game-card {
+    position: relative;
+    background: var(--card-bg);
+    border: 1px solid var(--card-border);
+    border-radius: 8px;
+    overflow: hidden;
+    cursor: pointer;
+    transition: transform 0.2s, border-color 0.2s, box-shadow 0.2s;
+    animation: cardIn 0.4s ease both;
+    text-decoration: none;
+    color: inherit;
+    display: flex;
+    flex-direction: column;
+  }
+  .game-card:hover {
+    transform: translateY(-4px) scale(1.02);
+    border-color: rgba(201,168,76,0.45);
+    box-shadow: 0 12px 40px rgba(0,0,0,0.5), 0 0 0 1px rgba(201,168,76,0.15), var(--card-glow, 0 0 30px rgba(201,168,76,0.08));
+    z-index: 10;
+  }
+  @keyframes cardIn {
+    from { opacity: 0; transform: translateY(14px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0) scale(1); }
+  }
+
+  /* Thumbnail */
+  .card-thumb {
+    width: 100%;
+    aspect-ratio: 1;
+    background: var(--thumb-color, #1c1710);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    overflow: hidden;
+  }
+  .card-thumb img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+    transition: transform 0.3s;
+  }
+  .game-card:hover .card-thumb img { transform: scale(1.06); }
+
+  /* Placeholder when no thumbnail */
+  .thumb-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-family: 'Cinzel', serif;
+    font-size: 32px;
+    font-weight: 900;
+    letter-spacing: 2px;
+    background: linear-gradient(135deg, #1c1508, #2a1e0a);
+    color: var(--gold);
+    opacity: 0.5;
+    text-transform: uppercase;
+  }
+
+  /* Hover overlay */
+  .card-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to bottom, transparent 30%, rgba(0,0,0,0.82) 100%);
+    opacity: 0;
+    transition: opacity 0.2s;
+    display: flex;
+    align-items: flex-end;
+    padding: 10px;
+  }
+  .game-card:hover .card-overlay { opacity: 1; }
+  .overlay-desc {
+    font-size: 11px;
+    letter-spacing: 0.5px;
+    color: rgba(255,255,255,0.8);
+    line-height: 1.4;
+  }
+
+  /* Play button */
+  .play-btn {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%) scale(0.7);
+    width: 46px;
+    height: 46px;
+    background: rgba(201,168,76,0.9);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    opacity: 0;
+    transition: opacity 0.2s, transform 0.2s;
+    backdrop-filter: blur(4px);
+  }
+  .game-card:hover .play-btn {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+  .play-btn svg { margin-left: 3px; }
+
+  /* Badges */
+  .badges {
+    position: absolute;
+    top: 7px;
+    right: 7px;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    align-items: flex-end;
+  }
+  .badge {
+    padding: 2px 7px;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    border-radius: 3px;
+    line-height: 1.4;
+  }
+  .badge-new  { background: #4fc3a0; color: #0a0805; }
+  .badge-hot  { background: #ff4455; color: white; }
+  .badge-feat { background: var(--gold); color: #0a0805; }
+
+  /* Card info */
+  .card-info {
+    padding: 10px 12px 12px;
+    flex: 1;
+  }
+  .card-title {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    line-height: 1.3;
+    color: var(--text);
+    margin-bottom: 4px;
+  }
+  .card-category {
+    font-size: 10px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    color: var(--muted);
+  }
+
+  /* ── EMPTY STATE ── */
+  #empty-state {
+    display: none;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 80px 20px;
+    text-align: center;
+    gap: 16px;
+  }
+  #empty-state svg { opacity: 0.2; }
+  .empty-title {
+    font-family: 'Cinzel', serif;
+    font-size: 22px;
+    letter-spacing: 4px;
+    color: var(--gold);
+    opacity: 0.5;
+  }
+  .empty-sub {
+    font-size: 13px;
+    letter-spacing: 1px;
+    color: var(--muted);
+    max-width: 360px;
+    line-height: 1.7;
+  }
+  .empty-sub code {
+    font-family: 'Courier New', monospace;
+    background: rgba(201,168,76,0.1);
+    padding: 1px 6px;
+    border-radius: 3px;
+    color: var(--gold);
+  }
+
+  /* ── MODAL ── */
+  #modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgba(0,0,0,0.85);
+    backdrop-filter: blur(8px);
+    z-index: 500;
+    display: none;
+    align-items: center;
+    justify-content: center;
+  }
+  #modal-backdrop.open { display: flex; }
+  #modal {
+    background: var(--dark2);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 10px;
+    width: min(900px, 94vw);
+    height: min(600px, 90vh);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    box-shadow: 0 30px 80px rgba(0,0,0,0.7);
+    animation: modalIn 0.25s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: scale(0.95) translateY(20px); }
+    to   { opacity: 1; transform: scale(1) translateY(0); }
+  }
+  .modal-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 20px;
+    border-bottom: 1px solid rgba(201,168,76,0.12);
+    flex-shrink: 0;
+  }
+  .modal-title {
+    font-family: 'Cinzel', serif;
+    font-size: 16px;
+    letter-spacing: 3px;
+    color: var(--gold);
+  }
+  .modal-close {
+    background: none;
+    border: 1px solid rgba(201,168,76,0.2);
+    border-radius: 4px;
+    color: var(--muted);
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 12px;
+    letter-spacing: 1px;
+    font-family: 'Rajdhani', sans-serif;
+    transition: all 0.15s;
+  }
+  .modal-close:hover { border-color: var(--gold); color: var(--gold); }
+  #game-frame {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background: #000;
+  }
+
+  /* ── LOADING BAR ── */
+  #load-bar {
+    position: fixed;
+    top: 0; left: 0;
+    height: 2px;
+    background: linear-gradient(to right, var(--gold), var(--gold-light));
+    width: 0%;
+    z-index: 999;
+    transition: width 0.3s;
+    box-shadow: 0 0 8px var(--gold);
+  }
+
+  /* ── UTIL ── */
+  .hidden { display: none !important; }
+</style>
+</head>
+<body>
+
+<div id="load-bar"></div>
+
+<!-- NAVBAR -->
+<nav>
+  <a class="nav-logo" href="index.html">
+    <svg width="26" height="26" viewBox="0 0 28 28" fill="none">
+      <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+      <circle cx="14" cy="10" r="2.5" fill="#fffbe0" opacity="0.8"/>
+      <line x1="14" y1="10" x2="4"  y2="22" stroke="#ff7700" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="10" y2="22" stroke="#ffff00" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="16" y2="22" stroke="#00ff88" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="22" y2="22" stroke="#4fc3f7" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="26" y2="22" stroke="#cc88ff" stroke-width="0.7" opacity="0.5"/>
+    </svg>
+    PRISM
+  </a>
+  <ul class="nav-links">
+    <li><a href="index.html#games" class="active">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 2h3v3H2zm5 0h3v3H7zm-5 5h3v3H2zm5 0h3v3H7z"/></svg>
+      GAMES
+    </a></li>
+    <li><a href="index.html#apps">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="1" width="8" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="4" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="1"/><line x1="4" y1="6" x2="8" y2="6" stroke="currentColor" stroke-width="1"/></svg>
+      APPS
+    </a></li>
+    <li><a href="index.html#tabs">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="2" width="10" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="3" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="0.8"/></svg>
+      TABS
+    </a></li>
+    <li><a href="index.html#settings">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11" stroke="currentColor" stroke-width="1"/></svg>
+      SETTINGS
+    </a></li>
+  </ul>
+</nav>
+
+<!-- MAIN PAGE -->
+<main class="page">
+
+  <!-- Header -->
+  <div class="page-header">
+    <div class="page-title-group">
+      <p class="page-eyebrow">✦ PRISM ARCADE</p>
+      <h1 class="page-title">GAMES</h1>
+      <p class="game-count" id="game-count">Loading…</p>
+    </div>
+    <div class="toolbar">
+      <div class="search-wrap">
+        <svg width="14" height="14" viewBox="0 0 14 14" fill="none">
+          <circle cx="6" cy="6" r="4.5" stroke="currentColor" stroke-width="1.3"/>
+          <path d="M10 10L13 13" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+        </svg>
+        <input id="search-input" type="text" placeholder="Search games…" autocomplete="off"/>
+      </div>
+      <select id="sort-select">
+        <option value="default">Default Order</option>
+        <option value="az">A → Z</option>
+        <option value="za">Z → A</option>
+        <option value="category">By Category</option>
+      </select>
+    </div>
+  </div>
+
+  <!-- Category pills -->
+  <div class="categories" id="category-pills"></div>
+
+  <!-- Featured section -->
+  <div id="featured-section" class="hidden">
+    <p class="section-label">⭐ Featured</p>
+    <div class="games-grid" id="featured-grid"></div>
+  </div>
+
+  <!-- All games section -->
+  <p class="section-label" id="all-label">All Games</p>
+  <div class="games-grid" id="main-grid"></div>
+
+  <!-- Empty state -->
+  <div id="empty-state">
+    <svg width="64" height="64" viewBox="0 0 64 64" fill="none">
+      <rect x="8" y="20" width="48" height="32" rx="4" stroke="#c9a84c" stroke-width="2"/>
+      <path d="M20 36h6m-3-3v6M38 35h8M38 39h8" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+      <path d="M24 12l-4 8M40 12l4 8" stroke="#c9a84c" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <p class="empty-title">NO GAMES FOUND</p>
+    <p class="empty-sub" id="empty-msg">
+      No results match your search.<br>Try a different filter or search term.
+    </p>
+  </div>
+
+</main>
+
+<!-- GAME MODAL -->
+<div id="modal-backdrop">
+  <div id="modal">
+    <div class="modal-header">
+      <span class="modal-title" id="modal-title">GAME</span>
+      <button class="modal-close" id="modal-close-btn">✕ CLOSE</button>
+    </div>
+    <iframe id="game-frame" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock"></iframe>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+//  PRISM — Games Page Controller
+//  Data source: games.json (same directory)
+// ═══════════════════════════════════════════════
+
+const GAMES_JSON = 'games.json'; // ← path to your JSON file
+
+let allGames     = [];
+let activeCategory = 'All';
+let searchQuery    = '';
+let sortMode       = 'default';
+
+// ── Load JSON ──
+async function init() {
+  animateLoadBar(0, 40);
+  try {
+    const res  = await fetch(GAMES_JSON);
+    const data = await res.json();
+
+    allGames = data.games || [];
+
+    buildCategoryPills(data.categories || ['All']);
+    animateLoadBar(60, 100);
+    render();
+    setTimeout(() => { document.getElementById('load-bar').style.opacity = '0'; }, 400);
+  } catch (err) {
+    console.error('Could not load games.json:', err);
+    showEmptyState(true);
+    document.getElementById('empty-msg').innerHTML =
+      `Could not load <code>games.json</code>.<br>
+       Make sure the file is in the same directory as this HTML file and you're serving from a local/web server.`;
+    animateLoadBar(100, 100);
+  }
+}
+
+// ── Category pills ──
+function buildCategoryPills(cats) {
+  const container = document.getElementById('category-pills');
+  container.innerHTML = '';
+  cats.forEach(cat => {
+    const pill = document.createElement('button');
+    pill.className = 'cat-pill' + (cat === 'All' ? ' active' : '');
+    pill.textContent = cat;
+    pill.addEventListener('click', () => {
+      activeCategory = cat;
+      container.querySelectorAll('.cat-pill').forEach(p => p.classList.remove('active'));
+      pill.classList.add('active');
+      render();
+    });
+    container.appendChild(pill);
+  });
+}
+
+// ── Filter + Sort ──
+function getFiltered() {
+  let list = [...allGames];
+  if (activeCategory !== 'All') {
+    list = list.filter(g => g.category === activeCategory);
+  }
+  if (searchQuery) {
+    const q = searchQuery.toLowerCase();
+    list = list.filter(g =>
+      g.title.toLowerCase().includes(q) ||
+      (g.description || '').toLowerCase().includes(q) ||
+      (g.tags || []).some(t => t.toLowerCase().includes(q))
+    );
+  }
+  if (sortMode === 'az')       list.sort((a,b) => a.title.localeCompare(b.title));
+  if (sortMode === 'za')       list.sort((a,b) => b.title.localeCompare(a.title));
+  if (sortMode === 'category') list.sort((a,b) => a.category.localeCompare(b.category));
+  return list;
+}
+
+// ── Render ──
+function render() {
+  const filtered = getFiltered();
+  const featured = filtered.filter(g => g.featured);
+  const regular  = filtered.filter(g => !g.featured);
+
+  // Featured
+  const featSection = document.getElementById('featured-section');
+  const featGrid    = document.getElementById('featured-grid');
+  if (featured.length > 0 && activeCategory === 'All' && !searchQuery) {
+    featSection.classList.remove('hidden');
+    featGrid.innerHTML = '';
+    featured.forEach((g, i) => featGrid.appendChild(buildCard(g, i)));
+  } else {
+    featSection.classList.add('hidden');
+    featGrid.innerHTML = '';
+  }
+
+  // Main grid
+  const mainGrid  = document.getElementById('main-grid');
+  const allLabel  = document.getElementById('all-label');
+  mainGrid.innerHTML = '';
+  regular.forEach((g, i) => mainGrid.appendChild(buildCard(g, i)));
+
+  allLabel.textContent = searchQuery
+    ? `Results for "${searchQuery}"`
+    : activeCategory !== 'All' ? activeCategory : 'All Games';
+
+  // Count
+  document.getElementById('game-count').textContent =
+    allGames.length === 0
+      ? 'No games yet — add some to games.json!'
+      : `${filtered.length} of ${allGames.length} game${allGames.length !== 1 ? 's' : ''}`;
+
+  // Empty state
+  showEmptyState(filtered.length === 0 && allGames.length > 0);
+
+  // Stagger card animations
+  document.querySelectorAll('.game-card').forEach((c, i) => {
+    c.style.animationDelay = `${i * 0.04}s`;
+  });
+}
+
+// ── Build a card element ──
+function buildCard(game, idx) {
+  const a = document.createElement('a');
+  a.className = 'game-card';
+  a.href = '#';
+  a.setAttribute('data-id', game.id);
+  if (game.color) {
+    a.style.setProperty('--card-glow', `0 0 28px ${game.color}22`);
+  }
+  a.addEventListener('click', e => { e.preventDefault(); openGame(game); });
+
+  // Thumb
+  const thumbDiv = document.createElement('div');
+  thumbDiv.className = 'card-thumb';
+  if (game.color) thumbDiv.style.background = game.color + '18';
+
+  if (game.thumbnail) {
+    const img = document.createElement('img');
+    img.src = game.thumbnail;
+    img.alt = game.title;
+    img.loading = 'lazy';
+    img.onerror = () => { img.replaceWith(makePlaceholder(game.title)); };
+    thumbDiv.appendChild(img);
+  } else {
+    thumbDiv.appendChild(makePlaceholder(game.title));
+  }
+
+  // Hover overlay
+  if (game.description) {
+    const overlay = document.createElement('div');
+    overlay.className = 'card-overlay';
+    overlay.innerHTML = `<span class="overlay-desc">${game.description}</span>`;
+    thumbDiv.appendChild(overlay);
+  }
+
+  // Play button
+  const playBtn = document.createElement('div');
+  playBtn.className = 'play-btn';
+  playBtn.innerHTML = `<svg width="16" height="16" viewBox="0 0 16 16" fill="#0a0805"><path d="M4 2l10 6-10 6V2z"/></svg>`;
+  thumbDiv.appendChild(playBtn);
+
+  // Badges
+  const badges = document.createElement('div');
+  badges.className = 'badges';
+  if (game.new)      badges.innerHTML += `<span class="badge badge-new">NEW</span>`;
+  if (game.hot)      badges.innerHTML += `<span class="badge badge-hot">HOT</span>`;
+  if (game.featured) badges.innerHTML += `<span class="badge badge-feat">★</span>`;
+  if (badges.children.length) thumbDiv.appendChild(badges);
+
+  // Info
+  const info = document.createElement('div');
+  info.className = 'card-info';
+  info.innerHTML = `
+    <div class="card-title">${game.title}</div>
+    <div class="card-category">${game.category}</div>
+  `;
+
+  a.appendChild(thumbDiv);
+  a.appendChild(info);
+  return a;
+}
+
+function makePlaceholder(title) {
+  const d = document.createElement('div');
+  d.className = 'thumb-placeholder';
+  d.textContent = (title || '?').substring(0, 2).toUpperCase();
+  return d;
+}
+
+// ── Open game modal ──
+function openGame(game) {
+  document.getElementById('modal-title').textContent = game.title.toUpperCase();
+  document.getElementById('game-frame').src = game.url || 'about:blank';
+  document.getElementById('modal-backdrop').classList.add('open');
+  document.body.style.overflow = 'hidden';
+}
+
+function closeModal() {
+  document.getElementById('modal-backdrop').classList.remove('open');
+  document.getElementById('game-frame').src = 'about:blank';
+  document.body.style.overflow = '';
+}
+
+document.getElementById('modal-close-btn').addEventListener('click', closeModal);
+document.getElementById('modal-backdrop').addEventListener('click', e => {
+  if (e.target === document.getElementById('modal-backdrop')) closeModal();
+});
+document.addEventListener('keydown', e => { if (e.key === 'Escape') closeModal(); });
+
+// ── Empty state ──
+function showEmptyState(show) {
+  const el = document.getElementById('empty-state');
+  el.style.display = show ? 'flex' : 'none';
+}
+
+// ── Load bar ──
+function animateLoadBar(from, to) {
+  const bar = document.getElementById('load-bar');
+  bar.style.width = from + '%';
+  requestAnimationFrame(() => {
+    bar.style.transition = 'width 0.5s ease, opacity 0.4s';
+    bar.style.width = to + '%';
+  });
+}
+
+// ── Search ──
+document.getElementById('search-input').addEventListener('input', e => {
+  searchQuery = e.target.value.trim();
+  render();
+});
+
+// ── Sort ──
+document.getElementById('sort-select').addEventListener('change', e => {
+  sortMode = e.target.value;
+  render();
+});
+
+// ── Boot ──
+init();
+</script>
+</body>
+</html>

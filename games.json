@@ -1,0 +1,46 @@
+{
+  "_comment": "PRISM Games Library — Add games to the 'games' array below.",
+  "_schema": {
+    "id":          "Unique string ID (slug-style, e.g. 'slope-game')",
+    "title":       "Display name shown on the card",
+    "description": "Short one-line description shown on hover",
+    "category":    "One of: Action | Adventure | Puzzle | Racing | Sports | Shooter | Arcade | Strategy | Horror | Multiplayer",
+    "tags":        "Array of extra filter tags, e.g. ['2D', 'Fast-paced']",
+    "thumbnail":   "URL or relative path to a 200x200 image. Use '' for auto-generated placeholder.",
+    "url":         "The proxied iframe URL the game loads from",
+    "featured":    "true = shown in the Featured row at the top",
+    "new":         "true = shows a NEW badge on the card",
+    "hot":         "true = shows a HOT badge on the card",
+    "color":       "Accent hex color used for the card glow (optional, falls back to gold)"
+  },
+
+  "categories": [
+    "All",
+    "Action",
+    "Adventure",
+    "Puzzle",
+    "Racing",
+    "Sports",
+    "Shooter",
+    "Arcade",
+    "Strategy",
+    "Horror",
+    "Multiplayer"
+  ],
+
+  "games": [
+    {
+      "id": "Slope",
+      "title": "Slioe",
+      "description": "Replace this entry with a real game.",
+      "category": "Arcade",
+      "tags": ["Example"],
+      "thumbnail": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQANCNt8LJxMsPJDX5gl0Cq2fBVOhirNMH6dg&s",
+      "url": "https://example.com/game",
+      "featured": false,
+      "new": false,
+      "hot": false,
+      "color": "#c9a84c"
+    }
+  ]
+}
