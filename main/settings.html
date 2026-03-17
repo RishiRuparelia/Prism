@@ -1,0 +1,887 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="description" content="An educational website full of school topics and academic resources. The perfect place for students to learn.">
+  <meta name="keywords" content="math, science, ela, social studies, school, study">
+  <meta name="language" content="English">
+  <meta name="author" content="Utopia">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta property="og:type" content="website">
+  <meta property="og:title" content="PRISM">
+  <meta property="og:description" content="Navigate beyond the veil.">
+  <meta property="og:image" content="/favicon.ico">
+  <title>PRISM — Settings</title>
+
+  <script async src="https://arc.io/widget.min.js#r3Hj6Ygj"></script>
+  <script src="https://kit.fontawesome.com/983251336b.js" crossorigin="anonymous"></script>
+  <link rel="icon" type="image/png" href="favicon.ico">
+
+  <!-- Keep Utopia's JS hooks intact -->
+  <script src="/js/all.js"></script>
+  <script async src="https://www.googletagmanager.com/gtag/js?id=G-RD0VC48YMW"></script>
+  <script>
+    window.dataLayer = window.dataLayer || [];
+    function gtag(){dataLayer.push(arguments);}
+    gtag('js', new Date());
+    gtag('config', 'G-RD0VC48YMW');
+  </script>
+
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:        #c9a84c;
+      --gold-light:  #f0d080;
+      --sand:        #e8c97a;
+      --dark:        #0a0805;
+      --dark2:       #110e08;
+      --dark3:       #1a1510;
+      --card-bg:     #120f08;
+      --card-border: rgba(201,168,76,0.14);
+      --text:        #e8dcc8;
+      --muted:       rgba(232,220,200,0.45);
+      --green:       #4fc3a0;
+      --red:         #ff4455;
+    }
+
+    *, *::before, *::after { margin: 0; padding: 0; box-sizing: border-box; }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: 'Rajdhani', sans-serif;
+      background: var(--dark);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* Ambient glow */
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background:
+        radial-gradient(ellipse 70% 40% at 50% 0%,   rgba(201,168,76,0.05) 0%, transparent 70%),
+        radial-gradient(ellipse 50% 50% at 0% 100%,   rgba(79,195,160,0.03) 0%, transparent 60%),
+        radial-gradient(ellipse 50% 50% at 100% 100%, rgba(255,68,85,0.03)  0%, transparent 60%);
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* Scanlines */
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 3px,
+        rgba(0,0,0,0.03) 3px, rgba(0,0,0,0.03) 4px
+      );
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    /* ── NAVBAR — same as index.html ── */
+    nav {
+      position: sticky;
+      top: 0;
+      z-index: 200;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 40px;
+      height: 58px;
+      background: rgba(10,8,5,0.85);
+      backdrop-filter: blur(16px);
+      border-bottom: 1px solid rgba(201,168,76,0.14);
+    }
+    .nav-logo {
+      font-family: 'Cinzel', serif;
+      font-size: 20px;
+      font-weight: 900;
+      letter-spacing: 6px;
+      background: linear-gradient(135deg, #fffbe0, var(--gold), var(--sand));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      text-decoration: none;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .logo-icon { width: 28px; height: 28px; flex-shrink: 0; }
+    .nav-links { display: flex; gap: 6px; list-style: none; }
+    .nav-links a {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      padding: 6px 14px;
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 12px;
+      font-weight: 600;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: #c8b890;
+      text-decoration: none;
+      border-radius: 4px;
+      transition: all 0.2s;
+      border: 1px solid transparent;
+    }
+    .nav-links a:hover,
+    .nav-links a.active {
+      color: var(--gold-light);
+      border-color: rgba(201,168,76,0.3);
+      background: rgba(201,168,76,0.06);
+    }
+    .nav-links a.active { color: var(--gold); }
+
+    /* ── PAGE ── */
+    .horizon-center {
+      position: relative;
+      z-index: 2;
+      display: flex;
+      justify-content: center;
+      padding: 48px 24px 80px;
+    }
+
+    #mainContent {
+      width: 100%;
+      max-width: 780px;
+    }
+
+    /* Page title */
+    .page-header {
+      margin-bottom: 36px;
+    }
+    .page-eyebrow {
+      font-size: 10px;
+      letter-spacing: 4px;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.6;
+      margin-bottom: 6px;
+    }
+    .page-title-text {
+      font-family: 'Cinzel', serif;
+      font-size: 32px;
+      font-weight: 900;
+      letter-spacing: 5px;
+      background: linear-gradient(135deg, #fffbe0, var(--gold));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    /* ── SETTINGS GRID ── */
+    .settings {
+      display: flex;
+      flex-direction: column;
+      gap: 14px;
+    }
+
+    /* ── SETTING CARD ── */
+    .setting {
+      position: relative;
+      background: var(--card-bg);
+      border: 1px solid var(--card-border);
+      border-radius: 8px;
+      padding: 20px 24px 20px 24px;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      overflow: visible;
+    }
+    .setting:hover {
+      border-color: rgba(201,168,76,0.3);
+      box-shadow: 0 4px 24px rgba(0,0,0,0.35), 0 0 0 1px rgba(201,168,76,0.07);
+    }
+
+    /* Setting name */
+    .setting > p#name {
+      font-family: 'Cinzel', serif;
+      font-size: 15px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+      margin-bottom: 6px;
+    }
+
+    /* Setting description */
+    .setting > p:not(#name):not(#saved):not(#openBlank) {
+      font-size: 13px;
+      letter-spacing: 0.5px;
+      color: var(--muted);
+      line-height: 1.6;
+      max-width: 520px;
+    }
+
+    /* Open in blank link */
+    p#openBlank {
+      display: inline-flex;
+      align-items: center;
+      gap: 5px;
+      margin-top: 10px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--gold);
+      opacity: 0.7;
+      cursor: pointer;
+      text-decoration: none;
+      transition: opacity 0.2s;
+    }
+    p#openBlank:hover { opacity: 1; }
+
+    /* Saved indicator */
+    p#saved {
+      position: absolute;
+      top: 20px;
+      right: 70px;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s;
+      pointer-events: none;
+    }
+
+    /* ── TOGGLE SWITCH ── */
+    input[type="checkbox"] {
+      display: none;
+    }
+    input[type="checkbox"] + label {
+      position: absolute;
+      top: 22px;
+      right: 24px;
+      width: 44px;
+      height: 24px;
+      background: rgba(201,168,76,0.1);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 12px;
+      cursor: pointer;
+      transition: background 0.25s, border-color 0.25s;
+      flex-shrink: 0;
+    }
+    input[type="checkbox"] + label::after {
+      content: '';
+      position: absolute;
+      top: 3px;
+      left: 3px;
+      width: 16px;
+      height: 16px;
+      background: rgba(201,168,76,0.4);
+      border-radius: 50%;
+      transition: transform 0.25s, background 0.25s;
+    }
+    input[type="checkbox"]:checked + label {
+      background: rgba(201,168,76,0.2);
+      border-color: var(--gold);
+    }
+    input[type="checkbox"]:checked + label::after {
+      transform: translateX(20px);
+      background: var(--gold);
+      box-shadow: 0 0 8px rgba(201,168,76,0.5);
+    }
+
+    /* ── TAB CLOAK SECTION ── */
+    span#details {
+      display: block;
+      margin-top: 12px;
+    }
+    span#details p {
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--muted);
+      margin-bottom: 8px;
+    }
+    span#details p[style*="font-weight: bold"] {
+      color: var(--gold);
+      opacity: 0.8;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+    }
+
+    /* Tab preset icons */
+    img.tab {
+      width: 28px;
+      height: 28px;
+      margin-right: 8px;
+      border-radius: 6px;
+      cursor: pointer;
+      border: 1px solid transparent;
+      transition: border-color 0.15s, transform 0.15s, box-shadow 0.15s;
+      object-fit: contain;
+      background: rgba(255,255,255,0.05);
+      padding: 2px;
+    }
+    img.tab:hover {
+      border-color: var(--gold);
+      transform: scale(1.12);
+      box-shadow: 0 0 10px rgba(201,168,76,0.3);
+    }
+
+    /* Action buttons inside settings */
+    span#detailBtn,
+    span#removeBtn {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+      padding: 4px 12px;
+      font-size: 11px;
+      letter-spacing: 1.5px;
+      text-transform: uppercase;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: all 0.18s;
+      font-family: 'Rajdhani', sans-serif;
+      font-weight: 600;
+    }
+    span#detailBtn {
+      border: 1px solid rgba(201,168,76,0.3);
+      color: var(--gold);
+      background: rgba(201,168,76,0.06);
+    }
+    span#detailBtn:hover {
+      background: rgba(201,168,76,0.14);
+      border-color: var(--gold);
+    }
+    span#removeBtn {
+      border: 1px solid rgba(255,68,85,0.25);
+      color: var(--red);
+      background: rgba(255,68,85,0.05);
+      margin-left: 8px;
+    }
+    span#removeBtn:hover {
+      background: rgba(255,68,85,0.12);
+      border-color: var(--red);
+    }
+
+    /* Current cloak display */
+    span#cloakIcon,
+    span#cloakTitle {
+      color: var(--gold-light);
+      opacity: 0.8;
+    }
+
+    /* Quick link add/remove buttons */
+    p.quickies span#detailBtn.add {
+      color: var(--green);
+      border-color: rgba(79,195,160,0.3);
+      background: rgba(79,195,160,0.06);
+    }
+    p.quickies span#detailBtn.add:hover {
+      background: rgba(79,195,160,0.14);
+      border-color: var(--green);
+    }
+    p.quickies span#detailBtn.rm {
+      color: var(--red);
+      border-color: rgba(255,68,85,0.25);
+      background: rgba(255,68,85,0.05);
+    }
+    p.quickies span#detailBtn.rm:hover {
+      background: rgba(255,68,85,0.12);
+      border-color: var(--red);
+    }
+
+    /* ── PANIC KEY SECTION ── */
+    .panic-controls {
+      margin-top: 14px;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    .panic-row {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+    }
+    .panic-label {
+      width: 110px;
+      flex-shrink: 0;
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.65;
+    }
+
+    /* Keybind recorder box */
+    .keybind-wrap {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+    .keybind-display {
+      min-width: 140px;
+      padding: 8px 16px;
+      background: rgba(10,8,5,0.7);
+      border: 1px solid rgba(201,168,76,0.25);
+      border-radius: 5px;
+      font-family: 'Cinzel', serif;
+      font-size: 13px;
+      letter-spacing: 2px;
+      color: var(--gold-light);
+      cursor: pointer;
+      text-align: center;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+      user-select: none;
+    }
+    .keybind-display:focus,
+    .keybind-display.recording {
+      border-color: var(--gold);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.1), 0 0 12px rgba(201,168,76,0.15);
+      color: var(--gold-light);
+    }
+    .keybind-display.recording #keybind-text::after {
+      content: '▌';
+      animation: blink-cursor 0.6s step-end infinite;
+    }
+    @keyframes blink-cursor {
+      50% { opacity: 0; }
+    }
+
+    .panic-clear-btn {
+      background: none;
+      border: 1px solid rgba(255,68,85,0.2);
+      border-radius: 4px;
+      color: var(--red);
+      font-size: 11px;
+      padding: 6px 10px;
+      cursor: pointer;
+      transition: all 0.15s;
+      font-family: 'Rajdhani', sans-serif;
+    }
+    .panic-clear-btn:hover {
+      background: rgba(255,68,85,0.1);
+      border-color: var(--red);
+    }
+
+    /* URL input */
+    .panic-input {
+      flex: 1;
+      max-width: 340px;
+      padding: 8px 14px;
+      background: rgba(10,8,5,0.7);
+      border: 1px solid rgba(201,168,76,0.2);
+      border-radius: 5px;
+      color: var(--text);
+      font-family: 'Rajdhani', sans-serif;
+      font-size: 14px;
+      letter-spacing: 0.5px;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    .panic-input::placeholder { color: var(--muted); }
+    .panic-input:focus {
+      border-color: rgba(201,168,76,0.5);
+      box-shadow: 0 0 0 3px rgba(201,168,76,0.06);
+    }
+
+    /* Save button */
+    .panic-save-btn {
+      padding: 8px 20px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      font-weight: 700;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      border: 1px solid var(--gold);
+      border-radius: 5px;
+      background: rgba(201,168,76,0.1);
+      color: var(--gold);
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .panic-save-btn:hover {
+      background: rgba(201,168,76,0.22);
+      box-shadow: 0 0 12px rgba(201,168,76,0.2);
+    }
+
+    /* Status text */
+    .panic-status {
+      font-size: 11px;
+      letter-spacing: 2px;
+      text-transform: uppercase;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.3s;
+    }
+
+    /* Active indicator */
+    .panic-active {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 4px;
+      font-size: 12px;
+      letter-spacing: 1px;
+      color: var(--green);
+      opacity: 0.8;
+    }
+    .panic-dot {
+      width: 7px;
+      height: 7px;
+      background: var(--green);
+      border-radius: 50%;
+      box-shadow: 0 0 6px var(--green);
+      animation: pulseDot 1.6s ease-in-out infinite alternate;
+    }
+    @keyframes pulseDot {
+      from { opacity: 0.5; transform: scale(0.9); }
+      to   { opacity: 1;   transform: scale(1.2); }
+    }
+    kbd {
+      display: inline-block;
+      padding: 1px 7px;
+      font-family: 'Cinzel', serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      background: rgba(201,168,76,0.12);
+      border: 1px solid rgba(201,168,76,0.35);
+      border-radius: 3px;
+      color: var(--gold-light);
+    }
+
+    /* ── FACTS (hidden SEO div — keep invisible) ── */
+    .facts { display: none; }
+
+    /* Divider line accent on left of each card */
+    .setting::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 16px;
+      bottom: 16px;
+      width: 2px;
+      background: linear-gradient(to bottom, transparent, var(--gold), transparent);
+      border-radius: 2px;
+      opacity: 0.3;
+    }
+    .setting:hover::before { opacity: 0.7; }
+  </style>
+</head>
+<body>
+  <script src="uv/uv.bundle.js"></script>
+  <script src="uv/uv.config.js"></script>
+
+  <!-- NAVBAR — identical to index.html -->
+  <nav>
+    <a class="nav-logo" href="index.html">
+      <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+        <line x1="14" y1="2" x2="14" y2="24" stroke="rgba(201,168,76,0.3)" stroke-width="0.8"/>
+        <circle cx="14" cy="10" r="2.5" fill="#fffbe0" opacity="0.8"/>
+        <line x1="14" y1="10" x2="4"  y2="22" stroke="#ff7700" stroke-width="0.7" opacity="0.5"/>
+        <line x1="14" y1="10" x2="10" y2="22" stroke="#ffff00" stroke-width="0.7" opacity="0.5"/>
+        <line x1="14" y1="10" x2="16" y2="22" stroke="#00ff88" stroke-width="0.7" opacity="0.5"/>
+        <line x1="14" y1="10" x2="22" y2="22" stroke="#4fc3f7" stroke-width="0.7" opacity="0.5"/>
+        <line x1="14" y1="10" x2="26" y2="22" stroke="#cc88ff" stroke-width="0.7" opacity="0.5"/>
+      </svg>
+      PRISM
+    </a>
+    <ul class="nav-links">
+      <li><a href="games.html">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 2h3v3H2zm5 0h3v3H7zm-5 5h3v3H2zm5 0h3v3H7z"/></svg>
+        GAMES
+      </a></li>
+      <li><a href="#">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="1" width="8" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="4" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="1"/><line x1="4" y1="6" x2="8" y2="6" stroke="currentColor" stroke-width="1"/><line x1="4" y1="8" x2="6" y2="8" stroke="currentColor" stroke-width="1"/></svg>
+        APPS
+      </a></li>
+      <li><a href="#">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="2" width="10" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="3" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="0.8"/><line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" stroke-width="0.8"/></svg>
+        TABS
+      </a></li>
+      <li><a href="#">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 3v3l2 2" stroke="currentColor" stroke-width="1" fill="none"/></svg>
+        TOOLS
+      </a></li>
+      <li><a href="settings.html" class="active">
+        <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11M2.5 2.5l1 1M8.5 8.5l1 1M9.5 2.5l-1 1M3.5 8.5l-1 1" stroke="currentColor" stroke-width="1"/></svg>
+        SETTINGS
+      </a></li>
+    </ul>
+  </nav>
+
+  <!-- MAIN CONTENT -->
+  <div class="horizon-center">
+    <div id="mainContent">
+
+      <div class="page-header">
+        <p class="page-eyebrow">✦ CONFIGURATION</p>
+        <h1 class="page-title-text">SETTINGS</h1>
+      </div>
+
+      <div class="settings">
+
+        <!-- Hidden Mode -->
+        <div class="setting">
+          <p id="name">Hidden Mode</p>
+          <p>Prevents extensions from seeing what you do. Hides everything from your history when searching.</p>
+          <p id="openBlank">
+            <span class="material-symbols-outlined" style="font-size:14px;">open_in_new</span>&nbsp;Open in about:blank
+          </p>
+          <input type="checkbox" id="ab_cloak" checked/>
+          <label for="ab_cloak"></label>
+          <p id="saved">Saved!</p>
+        </div>
+
+        <!-- Tab Cloak -->
+        <div class="setting">
+          <p id="name">Tab Cloak</p>
+          <p>Disguises the tab as something else when you click off of it.</p>
+          <span id="details">
+            <p style="margin-top: 10px;">
+              <span id="detailBtn">Custom Tab Cloak</span>
+              <span id="removeBtn">
+                <img id="cancel" src="/img/cancel.png" width="10" style="margin-top:-2px;" draggable="false">
+                Remove Cloak
+              </span>
+            </p>
+            <p style="font-size:12px; margin-top:6px;">
+              <span style="font-weight:bold;">Current Cloak:</span>
+              &nbsp;<span style="text-decoration:underline">Icon:</span>&nbsp;<span id="cloakIcon">none</span>,
+              &nbsp;<span style="text-decoration:underline">Title:</span>&nbsp;<span id="cloakTitle">none</span>
+            </p>
+          </span>
+        </div>
+
+        <!-- Panic Key -->
+        <div class="setting" id="panic-setting">
+          <p id="name">Panic Key</p>
+          <p>Press a keybind at any time to instantly redirect to a different website. Useful for quickly hiding the page.</p>
+
+          <div class="panic-controls">
+            <!-- Keybind recorder -->
+            <div class="panic-row">
+              <span class="panic-label">Keybind</span>
+              <div class="keybind-wrap">
+                <div id="keybind-display" class="keybind-display" tabindex="0" title="Click then press your key">
+                  <span id="keybind-text">Click to set…</span>
+                </div>
+                <button class="panic-clear-btn" id="keybind-clear">✕</button>
+              </div>
+            </div>
+
+            <!-- Redirect URL -->
+            <div class="panic-row">
+              <span class="panic-label">Redirect URL</span>
+              <input
+                type="text"
+                id="panic-url"
+                class="panic-input"
+                placeholder="https://classroom.google.com"
+                autocomplete="off"
+                spellcheck="false"
+              />
+            </div>
+
+            <!-- Save button + status -->
+            <div class="panic-row" style="margin-top:4px;">
+              <span class="panic-label"></span>
+              <div style="display:flex;align-items:center;gap:12px;">
+                <button class="panic-save-btn" id="panic-save">Save Panic Key</button>
+                <span class="panic-status" id="panic-status"></span>
+              </div>
+            </div>
+
+            <!-- Active indicator -->
+            <div class="panic-active" id="panic-active" style="display:none;">
+              <span class="panic-dot"></span>
+              Active — press <kbd id="panic-active-key"></kbd> to trigger
+            </div>
+          </div>
+        </div>
+
+        <!-- Quick Links -->
+        <div class="setting">
+          <p id="name">Quick Links</p>
+          <p>Add links that can be accessed quickly via "Quick Links" in the navbar.</p>
+          <p class="quickies" style="margin-top: 12px; display: none;">
+            <span id="detailBtn" class="add">Add Quick Links</span>
+            <span id="detailBtn" class="rm">Remove Quick Links</span>
+          </p>
+          <input type="checkbox" id="quick_links" checked/>
+          <label for="quick_links"></label>
+          <p id="saved">Saved!</p>
+        </div>
+
+        <!-- Automatic Hidden Mode -->
+        <div class="setting">
+          <p id="name">Automatic Hidden Mode</p>
+          <p>Activates Hidden Mode immediately and opens in about:blank. Works best if popups aren't blocked.</p>
+          <input type="checkbox" id="auto_cloak"/>
+          <label for="auto_cloak"></label>
+          <p id="saved">Saved!</p>
+        </div>
+
+        <!-- Anti-Closing -->
+        <div class="setting">
+          <p id="name">Anti-Closing</p>
+          <p>Prevents extensions (such as GoGuardian) from closing the tab by showing the "Leave Site?" popup.</p>
+          <input type="checkbox" id="anti_close"/>
+          <label for="anti_close"></label>
+          <p id="saved">Saved!</p>
+        </div>
+
+      </div>
+    </div>
+  </div>
+
+  <script src="/js/settings.js"></script>
+
+  <script>
+  // ── PANIC KEY ──────────────────────────────────────────────
+  const STORAGE_KEY = 'prism_panic';
+
+  const display    = document.getElementById('keybind-display');
+  const keyText    = document.getElementById('keybind-text');
+  const clearBtn   = document.getElementById('keybind-clear');
+  const urlInput   = document.getElementById('panic-url');
+  const saveBtn    = document.getElementById('panic-save');
+  const statusEl   = document.getElementById('panic-status');
+  const activeBar  = document.getElementById('panic-active');
+  const activeKey  = document.getElementById('panic-active-key');
+
+  let recording = false;
+  let savedKey  = null;
+
+  // Load from localStorage
+  function loadPanic() {
+    try {
+      const data = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null');
+      if (data && data.key && data.url) {
+        savedKey = data;
+        keyText.textContent = data.key;
+        urlInput.value = data.url;
+        showActive(data.key);
+      }
+    } catch(e) {}
+  }
+
+  function showActive(key) {
+    activeBar.style.display = 'flex';
+    activeKey.textContent = key;
+  }
+  function hideActive() {
+    activeBar.style.display = 'none';
+  }
+
+  // Click to start recording
+  display.addEventListener('click', () => {
+    recording = true;
+    display.classList.add('recording');
+    keyText.textContent = 'Press any key…';
+    display.focus();
+  });
+
+  display.addEventListener('keydown', e => {
+    if (!recording) return;
+    e.preventDefault();
+    e.stopPropagation();
+
+    // Build readable label
+    let parts = [];
+    if (e.ctrlKey  && e.key !== 'Control')  parts.push('Ctrl');
+    if (e.altKey   && e.key !== 'Alt')      parts.push('Alt');
+    if (e.shiftKey && e.key !== 'Shift')    parts.push('Shift');
+    if (e.metaKey  && e.key !== 'Meta')     parts.push('Meta');
+
+    const key = e.key === ' ' ? 'Space' : e.key;
+    if (!['Control','Alt','Shift','Meta'].includes(key)) parts.push(key.toUpperCase());
+
+    if (parts.length === 0) return;
+
+    const label = parts.join(' + ');
+    keyText.textContent = label;
+    display.classList.remove('recording');
+    recording = false;
+
+    // Store the event signature for matching
+    display.dataset.combo = JSON.stringify({
+      key:   key.toUpperCase(),
+      ctrl:  e.ctrlKey,
+      alt:   e.altKey,
+      shift: e.shiftKey,
+      meta:  e.metaKey,
+      label
+    });
+  });
+
+  display.addEventListener('blur', () => {
+    if (recording) {
+      recording = false;
+      display.classList.remove('recording');
+      keyText.textContent = savedKey ? savedKey.key : 'Click to set…';
+    }
+  });
+
+  // Clear
+  clearBtn.addEventListener('click', () => {
+    display.dataset.combo = '';
+    keyText.textContent = 'Click to set…';
+    savedKey = null;
+    localStorage.removeItem(STORAGE_KEY);
+    hideActive();
+  });
+
+  // Save
+  saveBtn.addEventListener('click', () => {
+    const combo = display.dataset.combo;
+    const url   = urlInput.value.trim();
+
+    if (!combo) { flash('Set a keybind first', true); return; }
+    if (!url)   { flash('Enter a URL first', true);   return; }
+
+    const parsed = JSON.parse(combo);
+    const finalUrl = /^https?:\/\//i.test(url) ? url : 'https://' + url;
+
+    const data = { key: parsed.label, url: finalUrl, combo: parsed };
+    localStorage.setItem(STORAGE_KEY, JSON.stringify(data));
+    savedKey = data;
+    showActive(parsed.label);
+    flash('Saved!', false);
+  });
+
+  function flash(msg, isErr) {
+    statusEl.textContent = msg;
+    statusEl.style.color = isErr ? 'var(--red)' : 'var(--green)';
+    statusEl.style.opacity = '1';
+    setTimeout(() => { statusEl.style.opacity = '0'; }, 1800);
+  }
+
+  // Global listener — fires the panic redirect
+  document.addEventListener('keydown', e => {
+    if (!savedKey || !savedKey.combo) return;
+    if (recording) return;
+
+    const c = savedKey.combo;
+    const key = e.key === ' ' ? 'Space' : e.key.toUpperCase();
+
+    if (
+      key       === c.key   &&
+      e.ctrlKey === c.ctrl  &&
+      e.altKey  === c.alt   &&
+      e.shiftKey=== c.shift &&
+      e.metaKey === c.meta
+    ) {
+      e.preventDefault();
+      window.location.href = savedKey.url;
+    }
+  });
+
+  loadPanic();
+  </script>
+
+  <!-- SEO facts — hidden -->
+  <div class="facts">
+    <h1>Schoolwork: ELA, Science, History, Math, Literature, Social Studies, and Writing</h1>
+    <h1>School has many educational resources where you can learn, study, and gain knowledge.</h1>
+    <h1>Research historical events. Analyze scientific experiments. Explain the historical importance. Solve with the quadratic formula. Find the theme of the literature. Learn about George Washington in social studies. Write an essay about educational degrees.</h1>
+  </div>
+
+</body>
+</html>
