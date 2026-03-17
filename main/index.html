@@ -4,9 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRISM</title>
-<!-- Ultraviolet proxy — must match your uv/ folder structure -->
-<script src="uv/uv.bundle.js"></script>
-<script src="uv/uv.config.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;600&display=swap" rel="stylesheet">
 <style>
   :root {
@@ -545,6 +542,10 @@
 </head>
 <body>
 
+<!-- UV Proxy — must be first scripts in body, exactly like Utopia -->
+<script src="uv/uv.bundle.js"></script>
+<script src="uv/uv.config.js"></script>
+
 <div id="grain"></div>
 
 <!-- BACKGROUND SCENE -->
@@ -746,7 +747,7 @@
     PRISM
   </a>
   <ul class="nav-links">
-    <li><a href="#">
+    <li><a href="games.html">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 2h3v3H2zm5 0h3v3H7zm-5 5h3v3H2zm5 0h3v3H7z"/></svg>
       GAMES
     </a></li>
@@ -909,17 +910,18 @@ document.getElementById('search-bar').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
 
-// Quick links
+// Quick links — route through UV proxy same as search
+const quickMap = {
+  YouTube:   'https://youtube.com',
+  Reddit:    'https://reddit.com',
+  GitHub:    'https://github.com',
+  Twitch:    'https://twitch.tv',
+  Wikipedia: 'https://wikipedia.org'
+};
 document.querySelectorAll('.quick-link').forEach(el => {
   el.addEventListener('click', () => {
-    const map = {
-      YouTube: 'https://youtube.com',
-      Reddit: 'https://reddit.com',
-      GitHub: 'https://github.com',
-      Twitch: 'https://twitch.tv',
-      Wikipedia: 'https://wikipedia.org'
-    };
-    window.open(map[el.textContent], '_blank');
+    const dest = buildProxyUrl(quickMap[el.textContent.trim()]);
+    if (dest) window.location.href = dest;
   });
 });
 </script>
