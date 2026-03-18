@@ -902,10 +902,10 @@ function openTab(rawUrl) {
   // Store the destination so tab.html can pick it up
   sessionStorage.setItem('prism_dest', rawUrl);
   // Open tab.html in a new about:blank-cloaked window
-  const w = window.open('tab.html', '_blank');
+  const w = window.open('tabs.html', '_blank');
   if (!w) {
     // Popup blocked fallback — just navigate directly
-    window.location.href = 'tab.html';
+    window.location.href = 'tabs.html';
   }
 }
 
