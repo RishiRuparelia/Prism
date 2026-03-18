@@ -732,7 +732,7 @@
 
 <!-- NAVBAR -->
 <nav>
-  <a class="nav-logo" href="#">
+  <a class="nav-logo" href="/">
     <!-- Mini prism SVG logo -->
     <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
       <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
@@ -769,7 +769,6 @@
     </a></li>
   </ul>
 </nav>
-
 <!-- HERO -->
 <div id="hero">
   <p class="hero-eyebrow">✦ The Light Bends Here ✦</p>
@@ -886,7 +885,7 @@ function buildProxyUrl(raw) {
     // Ensure it has a protocol
     if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
   } else {
-    // Treat as a search query → Google
+    // DuckDuckGo avoids the CAPTCHA blocks Google triggers on proxy IPs
     url = 'https://duckduckgo.com/?q=' + encodeURIComponent(url);
   }
 
@@ -899,18 +898,28 @@ function buildProxyUrl(raw) {
   return url;
 }
 
+function openTab(rawUrl) {
+  // Store the destination so tab.html can pick it up
+  sessionStorage.setItem('prism_dest', rawUrl);
+  // Open tab.html in a new about:blank-cloaked window
+  const w = window.open('tab.html', '_blank');
+  if (!w) {
+    // Popup blocked fallback — just navigate directly
+    window.location.href = 'tab.html';
+  }
+}
+
 function doSearch() {
   const val = document.getElementById('search-bar').value.trim();
   if (!val) return;
-  const dest = buildProxyUrl(val);
-  if (dest) window.location.href = dest;
+  openTab(val);
 }
 
 document.getElementById('search-bar').addEventListener('keydown', e => {
   if (e.key === 'Enter') doSearch();
 });
 
-// Quick links — route through UV proxy same as search
+// Quick links
 const quickMap = {
   YouTube:   'https://youtube.com',
   Reddit:    'https://reddit.com',
@@ -920,8 +929,7 @@ const quickMap = {
 };
 document.querySelectorAll('.quick-link').forEach(el => {
   el.addEventListener('click', () => {
-    const dest = buildProxyUrl(quickMap[el.textContent.trim()]);
-    if (dest) window.location.href = dest;
+    openTab(quickMap[el.textContent.trim()]);
   });
 });
 </script>
