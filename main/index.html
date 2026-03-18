@@ -950,7 +950,7 @@ function toAbsolute(val) {
   val = val.trim();
   if (!val) return null;
   if (isUrl(val)) return /^https?:\/\//i.test(val) ? val : 'https://' + val;
-  return 'https://www.google.com/search?q=' + encodeURIComponent(val);
+  return 'https://duckduckgo.com/?q=' + encodeURIComponent(val);
 }
 function toProxyUrl(url) {
   if (typeof __uv$config !== 'undefined' && __uv$config.prefix)
