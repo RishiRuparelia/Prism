@@ -672,6 +672,14 @@ document.addEventListener('keydown', e => {
   if (e.altKey && e.key === 'h') { cloaked ? hideCloak() : showCloak(); }
   if (e.key === 'Escape' && cloaked) hideCloak();
 });
+
+// ── Auto-load URL passed from index.html ──
+const _dest = sessionStorage.getItem('prism_dest');
+if (_dest) {
+  sessionStorage.removeItem('prism_dest');
+  const _abs = toAbsolute(_dest);
+  if (_abs) loadUrl(_abs);
+}
 </script>
 </body>
 </html>
