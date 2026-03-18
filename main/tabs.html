@@ -1,0 +1,677 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>New Tab</title>
+<link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700;900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --gold:    #c9a84c;
+    --gold-l:  #f0d080;
+    --dark:    #0a0805;
+    --dark2:   #110e08;
+    --bar-h:   44px;
+    --teal:    #4fc3a0;
+    --red:     #ff4455;
+    --muted:   rgba(232,220,200,0.45);
+  }
+
+  *, *::before, *::after { margin:0; padding:0; box-sizing:border-box; }
+
+  html, body {
+    width: 100%; height: 100%;
+    overflow: hidden;
+    background: #000;
+    font-family: 'Rajdhani', sans-serif;
+  }
+
+  /* ── FAKE BROWSER BAR ── */
+  #fake-bar {
+    position: fixed;
+    top: 0; left: 0; right: 0;
+    height: var(--bar-h);
+    background: #1e1e1e;
+    border-bottom: 1px solid #333;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 12px;
+    z-index: 1000;
+    user-select: none;
+  }
+
+  /* Prism logo in bar */
+  .bar-logo {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Cinzel', serif;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 3px;
+    background: linear-gradient(135deg, #fffbe0, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    white-space: nowrap;
+    flex-shrink: 0;
+    cursor: pointer;
+    text-decoration: none;
+  }
+
+  /* Divider */
+  .bar-sep {
+    width: 1px;
+    height: 22px;
+    background: #444;
+    flex-shrink: 0;
+  }
+
+  /* Nav arrows */
+  .bar-nav {
+    display: flex;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  .bar-nav button {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+  }
+  .bar-nav button:hover { background: #333; color: #fff; }
+  .bar-nav button:disabled { opacity: 0.3; cursor: default; }
+
+  /* Reload button */
+  #bar-reload {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  #bar-reload:hover { background: #333; color: #fff; }
+  #bar-reload.spinning svg { animation: spin 0.6s linear infinite; }
+  @keyframes spin { to { transform: rotate(360deg); } }
+
+  /* Address bar */
+  #bar-url {
+    flex: 1;
+    height: 28px;
+    background: #111;
+    border: 1px solid #3a3a3a;
+    border-radius: 14px;
+    color: #ddd;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 13px;
+    letter-spacing: 0.3px;
+    padding: 0 14px;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+    min-width: 0;
+  }
+  #bar-url:focus {
+    border-color: var(--gold);
+    background: #1a1a1a;
+  }
+  #bar-url::selection { background: rgba(201,168,76,0.3); }
+
+  /* Home button */
+  #bar-home {
+    background: none;
+    border: none;
+    color: #aaa;
+    cursor: pointer;
+    padding: 4px 6px;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    display: flex;
+    align-items: center;
+    flex-shrink: 0;
+  }
+  #bar-home:hover { background: #333; color: var(--gold); }
+
+  /* Cloak toggle */
+  #bar-cloak {
+    background: none;
+    border: 1px solid #3a3a3a;
+    border-radius: 4px;
+    color: #aaa;
+    cursor: pointer;
+    padding: 4px 10px;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 11px;
+    letter-spacing: 1.5px;
+    text-transform: uppercase;
+    transition: all 0.15s;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  #bar-cloak:hover { border-color: var(--teal); color: var(--teal); }
+  #bar-cloak.cloaked { border-color: var(--teal); color: var(--teal); }
+
+  /* ── IFRAME ── */
+  #proxy-frame {
+    position: fixed;
+    top: var(--bar-h);
+    left: 0; right: 0; bottom: 0;
+    width: 100%;
+    height: calc(100% - var(--bar-h));
+    border: none;
+    background: #fff;
+  }
+
+  /* ── LOADING OVERLAY ── */
+  #loading-overlay {
+    position: fixed;
+    top: var(--bar-h);
+    left: 0; right: 0; bottom: 0;
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 24px;
+    z-index: 900;
+    transition: opacity 0.3s;
+  }
+  #loading-overlay.hidden {
+    opacity: 0;
+    pointer-events: none;
+  }
+  .load-logo {
+    font-family: 'Cinzel', serif;
+    font-size: 28px;
+    font-weight: 900;
+    letter-spacing: 8px;
+    background: linear-gradient(135deg, #fffbe0, var(--gold));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+  .load-spinner {
+    width: 40px; height: 40px;
+    animation: spinLoad 1.4s linear infinite;
+  }
+  @keyframes spinLoad { to { transform: rotate(360deg); } }
+  .load-text {
+    font-size: 11px;
+    letter-spacing: 4px;
+    text-transform: uppercase;
+    color: var(--gold);
+    opacity: 0.55;
+    animation: loadPulse 1.2s ease-in-out infinite alternate;
+  }
+  @keyframes loadPulse {
+    from { opacity: 0.3; }
+    to   { opacity: 0.7; }
+  }
+  .load-bar-track {
+    width: 200px; height: 2px;
+    background: rgba(201,168,76,0.15);
+    border-radius: 2px;
+    overflow: hidden;
+  }
+  .load-bar-fill {
+    height: 100%;
+    background: linear-gradient(to right, var(--gold), var(--gold-l));
+    border-radius: 2px;
+    box-shadow: 0 0 6px var(--gold);
+    animation: loadBar 1.8s ease-out forwards;
+  }
+  @keyframes loadBar {
+    0%   { width: 0%; }
+    70%  { width: 80%; }
+    100% { width: 100%; }
+  }
+
+  /* ── HOME SCREEN (shown when no URL loaded) ── */
+  #home-screen {
+    position: fixed;
+    top: var(--bar-h);
+    left: 0; right: 0; bottom: 0;
+    background: var(--dark);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    z-index: 800;
+  }
+  #home-screen.hidden { display: none; }
+
+  /* Bg glow */
+  #home-screen::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.05) 0%, transparent 70%);
+    pointer-events: none;
+  }
+
+  .home-title {
+    font-family: 'Cinzel', serif;
+    font-size: 48px;
+    font-weight: 900;
+    letter-spacing: 10px;
+    background: linear-gradient(135deg, #fffbe0, var(--gold), #e8c97a);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+    z-index: 1;
+  }
+  .home-sub {
+    font-size: 12px;
+    letter-spacing: 3px;
+    text-transform: uppercase;
+    color: var(--muted);
+    z-index: 1;
+  }
+
+  /* Home search */
+  .home-search-wrap {
+    position: relative;
+    width: min(560px, 85vw);
+    z-index: 1;
+  }
+  #home-search {
+    width: 100%;
+    padding: 14px 50px 14px 20px;
+    background: rgba(20,16,8,0.8);
+    border: 1px solid rgba(201,168,76,0.25);
+    border-radius: 6px;
+    color: #e8dcc8;
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 15px;
+    letter-spacing: 1px;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+  }
+  #home-search::placeholder { color: rgba(200,180,140,0.35); }
+  #home-search:focus {
+    border-color: rgba(201,168,76,0.6);
+    box-shadow: 0 0 0 3px rgba(201,168,76,0.08);
+  }
+  .home-search-btn {
+    position: absolute;
+    right: 10px; top: 50%;
+    transform: translateY(-50%);
+    background: none;
+    border: none;
+    color: var(--gold);
+    opacity: 0.65;
+    cursor: pointer;
+    padding: 6px;
+    transition: opacity 0.2s;
+  }
+  .home-search-btn:hover { opacity: 1; }
+
+  .home-links {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    z-index: 1;
+  }
+  .home-link {
+    padding: 5px 14px;
+    font-size: 11px;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    color: rgba(201,168,76,0.55);
+    border: 1px solid rgba(201,168,76,0.18);
+    border-radius: 20px;
+    cursor: pointer;
+    transition: all 0.2s;
+    background: rgba(201,168,76,0.03);
+  }
+  .home-link:hover {
+    color: var(--gold-l);
+    border-color: rgba(201,168,76,0.5);
+    background: rgba(201,168,76,0.08);
+  }
+
+  /* Cloak overlay — hides everything with a white Google-like page */
+  #cloak-overlay {
+    position: fixed;
+    inset: 0;
+    background: #fff;
+    z-index: 9999;
+    display: none;
+    flex-direction: column;
+  }
+  #cloak-overlay.show { display: flex; }
+  .cloak-bar {
+    height: 60px;
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    gap: 12px;
+  }
+  .cloak-search {
+    flex: 1;
+    max-width: 600px;
+    height: 36px;
+    border: 1px solid #ddd;
+    border-radius: 20px;
+    padding: 0 16px;
+    font-size: 14px;
+    color: #333;
+    outline: none;
+    font-family: Arial, sans-serif;
+  }
+  .cloak-search:focus { border-color: #4285f4; box-shadow: 0 0 0 3px rgba(66,133,244,0.15); }
+  .cloak-body {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-direction: column;
+    gap: 20px;
+    font-family: Arial, sans-serif;
+  }
+  .cloak-google {
+    font-size: 72px;
+    font-weight: 700;
+    letter-spacing: -2px;
+  }
+  .cloak-g1 { color: #4285f4; }
+  .cloak-g2 { color: #ea4335; }
+  .cloak-g3 { color: #fbbc05; }
+  .cloak-g4 { color: #4285f4; }
+  .cloak-g5 { color: #34a853; }
+  .cloak-g6 { color: #ea4335; }
+  .cloak-search-big {
+    width: 480px;
+    height: 44px;
+    border: 1px solid #ddd;
+    border-radius: 22px;
+    padding: 0 20px;
+    font-size: 15px;
+    color: #333;
+    outline: none;
+    box-shadow: 0 1px 6px rgba(0,0,0,0.1);
+    font-family: Arial, sans-serif;
+  }
+  .cloak-hint {
+    font-size: 11px;
+    color: #aaa;
+    letter-spacing: 1px;
+    font-family: Arial, sans-serif;
+  }
+</style>
+</head>
+<body>
+
+<!-- CLOAK OVERLAY (panic button shows this) -->
+<div id="cloak-overlay">
+  <div class="cloak-bar">
+    <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><circle cx="12" cy="12" r="10" stroke="#4285f4" stroke-width="2"/><path d="M12 8v4l3 3" stroke="#4285f4" stroke-width="2" stroke-linecap="round"/></svg>
+    <input class="cloak-search" type="text" placeholder="Search Google or type a URL"/>
+  </div>
+  <div class="cloak-body">
+    <div class="cloak-google">
+      <span class="cloak-g1">G</span><span class="cloak-g2">o</span><span class="cloak-g3">o</span><span class="cloak-g4">g</span><span class="cloak-g5">l</span><span class="cloak-g6">e</span>
+    </div>
+    <input class="cloak-search-big" type="text" placeholder="Search Google or type a URL" autofocus/>
+    <p class="cloak-hint">Press ESC to return · Double-click to uncloak</p>
+  </div>
+</div>
+
+<!-- FAKE BROWSER BAR -->
+<div id="fake-bar">
+  <!-- Logo -->
+  <a class="bar-logo" id="bar-home-logo" href="/">
+    <svg width="18" height="18" viewBox="0 0 28 28" fill="none">
+      <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+      <circle cx="14" cy="10" r="2.5" fill="#fffbe0" opacity="0.85"/>
+      <line x1="14" y1="10" x2="6"  y2="22" stroke="#ff7700" stroke-width="0.8" opacity="0.6"/>
+      <line x1="14" y1="10" x2="11" y2="22" stroke="#ffee00" stroke-width="0.8" opacity="0.6"/>
+      <line x1="14" y1="10" x2="17" y2="22" stroke="#00ff88" stroke-width="0.8" opacity="0.6"/>
+      <line x1="14" y1="10" x2="22" y2="22" stroke="#4fc3f7" stroke-width="0.8" opacity="0.6"/>
+    </svg>
+    PRISM
+  </a>
+
+  <div class="bar-sep"></div>
+
+  <!-- Nav -->
+  <div class="bar-nav">
+    <button id="bar-back" title="Back" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M9 2L4 7l5 5"/></svg>
+    </button>
+    <button id="bar-fwd" title="Forward" disabled>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"><path d="M5 2l5 5-5 5"/></svg>
+    </button>
+  </div>
+
+  <!-- Reload -->
+  <button id="bar-reload" title="Reload">
+    <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M12 7A5 5 0 1 1 9 2.5"/>
+      <path d="M9 1v3h3"/>
+    </svg>
+  </button>
+
+  <!-- Address bar -->
+  <input id="bar-url" type="text" placeholder="Search or enter address…" autocomplete="off" spellcheck="false"/>
+
+  <!-- Home -->
+  <button id="bar-home" title="Home">
+    <svg width="15" height="15" viewBox="0 0 15 15" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">
+      <path d="M1 7L7.5 1 14 7"/>
+      <path d="M3 6v7h3v-4h3v4h3V6"/>
+    </svg>
+  </button>
+
+  <!-- Cloak toggle -->
+  <button id="bar-cloak" title="Panic / Cloak (or press Alt+H)">
+    <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round">
+      <path d="M1 6.5C1 6.5 3 2 6.5 2s5.5 4.5 5.5 4.5S10 11 6.5 11 1 6.5 1 6.5z"/>
+      <circle cx="6.5" cy="6.5" r="2"/>
+    </svg>
+    CLOAK
+  </button>
+</div>
+
+<!-- LOADING OVERLAY -->
+<div id="loading-overlay" class="hidden">
+  <div class="load-logo">
+    <svg width="28" height="28" viewBox="0 0 28 28" fill="none" class="load-spinner">
+      <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+      <circle cx="14" cy="10" r="2.5" fill="#fffbe0" opacity="0.9"/>
+    </svg>
+    PRISM
+  </div>
+  <p class="load-text">Bending Light…</p>
+  <div class="load-bar-track"><div class="load-bar-fill"></div></div>
+</div>
+
+<!-- HOME SCREEN -->
+<div id="home-screen">
+  <h1 class="home-title">PRISM</h1>
+  <p class="home-sub">✦ The Light Bends Here ✦</p>
+  <div class="home-search-wrap">
+    <input id="home-search" type="text" placeholder="Search or enter address…" autocomplete="off"/>
+    <button class="home-search-btn" onclick="navigate()">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <circle cx="7.5" cy="7.5" r="5.5" stroke="currentColor" stroke-width="1.5"/>
+        <path d="M12 12L16 16" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+      </svg>
+    </button>
+  </div>
+  <div class="home-links">
+    <span class="home-link" onclick="loadSite('https://youtube.com')">YouTube</span>
+    <span class="home-link" onclick="loadSite('https://reddit.com')">Reddit</span>
+    <span class="home-link" onclick="loadSite('https://github.com')">GitHub</span>
+    <span class="home-link" onclick="loadSite('https://twitch.tv')">Twitch</span>
+    <span class="home-link" onclick="loadSite('https://wikipedia.org')">Wikipedia</span>
+  </div>
+</div>
+
+<!-- PROXY IFRAME -->
+<iframe id="proxy-frame"
+  allow="fullscreen; autoplay; clipboard-write"
+  sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock allow-popups"
+></iframe>
+
+<script src="uv/uv.bundle.js"></script>
+<script src="uv/uv.config.js"></script>
+<script>
+// ═══════════════════════════════════════
+//  PRISM TAB — in-page proxy browser
+// ═══════════════════════════════════════
+
+const frame       = document.getElementById('proxy-frame');
+const barUrl      = document.getElementById('bar-url');
+const homeScreen  = document.getElementById('home-screen');
+const loadOverlay = document.getElementById('loading-overlay');
+const barBack     = document.getElementById('bar-back');
+const barFwd      = document.getElementById('bar-fwd');
+const barReload   = document.getElementById('bar-reload');
+const barCloak    = document.getElementById('bar-cloak');
+const cloakOverlay= document.getElementById('cloak-overlay');
+
+let currentUrl = '';
+let cloaked = false;
+
+// ── URL helpers ──
+function isUrl(val) {
+  return /^([a-zA-Z0-9-]+\.)+[a-zA-Z]{2,}(\/.*)?$/.test(val) || /^https?:\/\//i.test(val);
+}
+
+function toAbsolute(val) {
+  if (!val) return null;
+  if (isUrl(val)) {
+    return /^https?:\/\//i.test(val) ? val : 'https://' + val;
+  }
+  return 'https://duckduckgo.com/?q=' + encodeURIComponent(val);
+}
+
+function toProxyUrl(url) {
+  if (typeof __uv$config !== 'undefined') {
+    return __uv$config.prefix + __uv$config.encodeUrl(url);
+  }
+  return url; // fallback if UV not loaded
+}
+
+// ── Navigate ──
+function navigate(urlOverride) {
+  const raw = urlOverride || document.getElementById('home-search').value || barUrl.value;
+  const abs = toAbsolute(raw.trim());
+  if (!abs) return;
+  loadUrl(abs);
+}
+
+function loadSite(url) { loadUrl(url); }
+
+function loadUrl(url) {
+  currentUrl = url;
+  barUrl.value = url;
+
+  // Show loading, hide home
+  homeScreen.classList.add('hidden');
+  loadOverlay.classList.remove('hidden');
+
+  // Reset the fill animation by re-inserting element
+  const track = loadOverlay.querySelector('.load-bar-track');
+  track.innerHTML = '<div class="load-bar-fill"></div>';
+
+  frame.src = toProxyUrl(url);
+}
+
+// ── Frame events ──
+frame.addEventListener('load', () => {
+  // Hide loading overlay once frame loads
+  setTimeout(() => { loadOverlay.classList.add('hidden'); }, 300);
+
+  // Try to read the frame URL (may be blocked by same-origin policy)
+  try {
+    const loc = frame.contentWindow.location.href;
+    if (loc && loc !== 'about:blank') barUrl.value = loc;
+  } catch(e) {
+    // cross-origin, keep existing bar URL
+  }
+
+  barBack.disabled = false;
+});
+
+// ── Address bar ──
+barUrl.addEventListener('keydown', e => {
+  if (e.key === 'Enter') {
+    const abs = toAbsolute(barUrl.value.trim());
+    if (abs) loadUrl(abs);
+  }
+});
+
+// ── Back / Forward / Reload ──
+barBack.addEventListener('click', () => { try { frame.contentWindow.history.back(); } catch(e) {} });
+barFwd.addEventListener('click',  () => { try { frame.contentWindow.history.forward(); } catch(e) {} });
+barReload.addEventListener('click', () => {
+  barReload.classList.add('spinning');
+  try { frame.contentWindow.location.reload(); } catch(e) { frame.src = frame.src; }
+  setTimeout(() => barReload.classList.remove('spinning'), 600);
+});
+
+// ── Home button ──
+document.getElementById('bar-home').addEventListener('click', () => {
+  frame.src = 'about:blank';
+  barUrl.value = '';
+  currentUrl = '';
+  homeScreen.classList.remove('hidden');
+  loadOverlay.classList.add('hidden');
+});
+document.getElementById('bar-home-logo').addEventListener('click', e => {
+  e.preventDefault();
+  document.getElementById('bar-home').click();
+});
+
+// ── Home search Enter ──
+document.getElementById('home-search').addEventListener('keydown', e => {
+  if (e.key === 'Enter') navigate();
+});
+
+// ── CLOAK (panic button) ──
+function showCloak() {
+  cloaked = true;
+  cloakOverlay.classList.add('show');
+  barCloak.classList.add('cloaked');
+  barCloak.querySelector('span') && (barCloak.lastChild.textContent = ' ON');
+}
+function hideCloak() {
+  cloaked = false;
+  cloakOverlay.classList.remove('show');
+  barCloak.classList.remove('cloaked');
+}
+
+barCloak.addEventListener('click', () => { cloaked ? hideCloak() : showCloak(); });
+
+// Double-click cloak overlay to uncloak
+cloakOverlay.addEventListener('dblclick', hideCloak);
+
+// Alt+H = panic hotkey
+document.addEventListener('keydown', e => {
+  if (e.altKey && e.key === 'h') { cloaked ? hideCloak() : showCloak(); }
+  if (e.key === 'Escape' && cloaked) hideCloak();
+});
+</script>
+</body>
+</html>
