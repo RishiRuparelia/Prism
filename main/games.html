@@ -679,21 +679,26 @@ let sortMode       = 'default';
 async function init() {
   animateLoadBar(0, 40);
   try {
-    const res  = await fetch(GAMES_JSON);
-    const data = await res.json();
+    const res = await fetch(GAMES_JSON, {
+      method: 'GET',
+      headers: { 'Accept': 'application/json' },
+      cache: 'no-cache'
+    });
+    
+    if (!res.ok) throw new Error(`HTTP error: ${res.status}`);
+    
+    const text = await res.text();
+    const data = JSON.parse(text);
 
     allGames = data.games || [];
-
     buildCategoryPills(data.categories || ['All']);
     animateLoadBar(60, 100);
     render();
     setTimeout(() => { document.getElementById('load-bar').style.opacity = '0'; }, 400);
   } catch (err) {
-    console.error('Could not load games.json:', err);
     showEmptyState(true);
     document.getElementById('empty-msg').innerHTML =
-      `Could not load <code>games.json</code>.<br>
-       Make sure the file is in the same directory as this HTML file and you're serving from a local/web server.`;
+      `Error: <code>${err.message}</code><br>Check that <code>games.json</code> is valid JSON and accessible.`;
     animateLoadBar(100, 100);
   }
 }
