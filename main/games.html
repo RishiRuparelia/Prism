@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PRISM — Games</title>
@@ -657,8 +659,7 @@
         </button>
       </div>
     </div>
-    <iframe id="game-frame" allow="fullscreen" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock"></iframe>
-  </div>
+<iframe id="game-frame" allow="fullscreen; autoplay" sandbox="allow-scripts allow-same-origin allow-forms allow-pointer-lock allow-orientation-lock allow-popups allow-popups-to-escape-sandbox"></iframe>  </div>
 </div>
 
 <script>
@@ -850,7 +851,19 @@ function makePlaceholder(title) {
 // ── Open game modal ──
 function openGame(game) {
   document.getElementById('modal-title').textContent = game.title.toUpperCase();
-  document.getElementById('game-frame').src = game.url || 'about:blank';
+  
+  let url = game.url || 'about:blank';
+  
+  // If it's an external URL, route through UV proxy
+  if (url.startsWith('http://') || url.startsWith('https://')) {
+    try {
+      url = '/service/' + __uv$config.encodeUrl(url);
+    } catch(e) {
+      console.warn('UV encode failed, loading direct:', e);
+    }
+  }
+  
+  document.getElementById('game-frame').src = url;
   document.getElementById('modal-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
