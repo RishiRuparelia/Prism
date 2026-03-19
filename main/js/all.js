@@ -12,8 +12,7 @@ function usingFirefox(){
 
 var redirectSite = "https://www.google.com";
 
-if(inFrame() != true && usingFirefox() != true && localStorage.getItem("auto_cloak") == "true" && window.location.pathname != "/") {
-  var tab = window.open('about:blank', '_blank');
+if(inFrame() != true && usingFirefox() != true && localStorage.getItem("auto_cloak") == "true" && window.location.pathname != "/" && window.location.pathname != "/settings.html") {  var tab = window.open('about:blank', '_blank');
   // Popup blocked
   if(!tab || tab.closed || typeof tab.closed=='undefined'){
     console.log("Popup blocked");
