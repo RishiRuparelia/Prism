@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>PRISM — URL Encoder</title>
+<script src="/uv/uv.bundle.js"></script>
+<script src="/uv/uv.config.js"></script>
+<style>
+  body { font-family: monospace; background: #0a0805; color: #c9a84c; padding: 40px; }
+  h2 { margin-bottom: 20px; }
+  input { width: 500px; padding: 10px; background: #1c1710; border: 1px solid #c9a84c; color: #fff; font-size: 14px; }
+  button { padding: 10px 20px; background: #c9a84c; color: #000; border: none; cursor: pointer; font-weight: bold; margin-left: 8px; }
+  #result { margin-top: 20px; background: #1c1710; padding: 16px; border: 1px solid #333; word-break: break-all; font-size: 13px; }
+  #copy-btn { margin-top: 10px; padding: 6px 14px; background: #333; color: #c9a84c; border: 1px solid #c9a84c; cursor: pointer; }
+</style>
+</head>
+<body>
+<h2>🔐 PRISM URL ENCODER</h2>
+<p style="margin-bottom:16px;color:#888;">Enter an external URL to get its proxied path for games.json</p>
+
+<input type="text" id="url-input" placeholder="https://example.com" />
+<button onclick="encode()">ENCODE</button>
+
+<div id="result" style="display:none">
+  <p style="color:#888;margin-bottom:8px;">Use this as the <code>url</code> field in games.json:</p>
+  <div id="encoded-url"></div>
+  <button id="copy-btn" onclick="copyResult()">COPY</button>
+</div>
+
+<script>
+function encode() {
+  const raw = document.getElementById('url-input').value.trim();
+  if (!raw) return alert('Enter a URL first.');
+  try {
+    const encoded = __uv$config.encodeUrl(raw);
+    const full = '/service/' + encoded;
+    document.getElementById('encoded-url').textContent = full;
+    document.getElementById('result').style.display = 'block';
+  } catch(e) {
+    alert('Error encoding URL. Make sure uv.config.js loaded correctly.\n\n' + e);
+  }
+}
+
+function copyResult() {
+  const text = document.getElementById('encoded-url').textContent;
+  navigator.clipboard.writeText(text).then(() => {
+    document.getElementById('copy-btn').textContent = 'COPIED!';
+    setTimeout(() => document.getElementById('copy-btn').textContent = 'COPY', 2000);
+  });
+}
+
+document.getElementById('url-input').addEventListener('keydown', e => {
+  if (e.key === 'Enter') encode();
+});
+</script>
+</body>
+</html>
