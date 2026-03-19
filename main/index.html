@@ -851,19 +851,23 @@
     PRISM
   </a>
   <ul class="nav-links">
-    <li><a href="games.html">
+    <li><a href="#">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 2h3v3H2zm5 0h3v3H7zm-5 5h3v3H2zm5 0h3v3H7z"/></svg>
       GAMES
     </a></li>
-    <li><a href="apps.html">
+    <li><a href="#">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="1" width="8" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="4" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="1"/><line x1="4" y1="6" x2="8" y2="6" stroke="currentColor" stroke-width="1"/><line x1="4" y1="8" x2="6" y2="8" stroke="currentColor" stroke-width="1"/></svg>
       APPS
     </a></li>
-    <li><a href="tools.html">
+    <li><a href="#">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="1" y="2" width="10" height="7" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="3" y1="4" x2="9" y2="4" stroke="currentColor" stroke-width="0.8"/><line x1="3" y1="6" x2="9" y2="6" stroke="currentColor" stroke-width="0.8"/></svg>
+      TABS
+    </a></li>
+    <li><a href="#">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 3v3l2 2" stroke="currentColor" stroke-width="1" fill="none"/></svg>
       TOOLS
     </a></li>
-    <li><a href="settings.html">
+    <li><a href="#">
       <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11M2.5 2.5l1 1M8.5 8.5l1 1M9.5 2.5l-1 1M3.5 8.5l-1 1" stroke="currentColor" stroke-width="1"/></svg>
       SETTINGS
     </a></li>
@@ -874,7 +878,7 @@
 <div id="hero">
   <p class="hero-eyebrow">✦ The Light Bends Here ✦</p>
   <h1 class="hero-title">PRISM</h1>
-  <p class="hero-sub">Navigate beyond the veil &nbsp;·&nbsp; <a href="#">Coming soon !</a></p>
+  <p class="hero-sub">Navigate beyond the veil &nbsp;·&nbsp; <a href="#">discord.gg/prism</a></p>
 
   <div id="search-wrap">
     <input id="search-bar" type="text" placeholder="Search or enter address…" autocomplete="off"/>
@@ -893,13 +897,7 @@
     <span class="quick-link">Twitch</span>
     <span class="quick-link">Wikipedia</span>
   </div>
-<!-- DMCA Badge -->
-<div style="position:fixed;bottom:16px;left:16px;z-index:998;opacity:0.75;transition:opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.75'">
-  <a href="//www.dmca.com/Protection/Status.aspx?ID=5951dc05-8c2e-4500-8b2f-c93a79868fd4" title="DMCA.com Protection Status" class="dmca-badge" target="_blank">
-    <img src="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=5951dc05-8c2e-4500-8b2f-c93a79868fd4" alt="DMCA.com Protection Status"/>
-  </a>
 </div>
-<script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"></script></div>
 
 <script>
 // ===== STARS =====
@@ -968,7 +966,9 @@ function openOverlay(raw) {
   const abs = toAbsolute(raw);
   if (!abs) return;
   document.getElementById('overlay-url').value = abs;
-  document.getElementById('proxy-iframe').src = toProxyUrl(abs);
+  // Store destination so go.html can redirect after SW registers
+  sessionStorage.setItem('prism_dest', abs);
+  document.getElementById('proxy-iframe').src = 'go.html';
   document.getElementById('proxy-overlay').classList.add('open');
 }
 
@@ -992,7 +992,11 @@ document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('overlay-url').addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const abs = toAbsolute(document.getElementById('overlay-url').value);
-  if (abs) { document.getElementById('proxy-iframe').src = toProxyUrl(abs); document.getElementById('overlay-url').value = abs; }
+  if (abs) {
+    sessionStorage.setItem('prism_dest', abs);
+    document.getElementById('proxy-iframe').src = 'go.html';
+    document.getElementById('overlay-url').value = abs;
+  }
 });
 
 // Overlay nav buttons
@@ -1052,5 +1056,12 @@ document.querySelectorAll('.quick-link').forEach(el => {
   ></iframe>
 </div>
 
+<!-- DMCA Badge -->
+<div style="position:fixed;bottom:16px;left:16px;z-index:998;opacity:0.75;transition:opacity 0.2s;" onmouseenter="this.style.opacity='1'" onmouseleave="this.style.opacity='0.75'">
+  <a href="//www.dmca.com/Protection/Status.aspx?ID=5951dc05-8c2e-4500-8b2f-c93a79868fd4" title="DMCA.com Protection Status" class="dmca-badge" target="_blank">
+    <img src="https://images.dmca.com/Badges/dmca_protected_sml_120n.png?ID=5951dc05-8c2e-4500-8b2f-c93a79868fd4" alt="DMCA.com Protection Status"/>
+  </a>
+</div>
+<script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"></script>
 </body>
 </html>
