@@ -1,375 +1,419 @@
+<!DOCTYPE html>
 <html>
+  <head>
+    <title>Astray - StrongDog XP</title>
+    <style>
+      body {
+        font-family: "Poppins", sans-serif;
+        margin: 0;
+        padding: 0;
+        background-color: #2e2e2e;
+        color: #e0e0e0;
+      }
 
-    <head>
-    
-        <script src='Box2dWeb.min.js'></script>
-        <script src="Three.js"></script>
-        <script src="keyboard.js"></script>
-        <script src="jquery.js"></script>
-        <script src="maze.js"></script>
+      .header {
+        background-color: #3c3c3c;
+        padding: 20px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        border-bottom: 3px solid #ff8c00;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      }
 
-        <script src="/js/all.js"></script>
+      .header-logo {
+        text-decoration: none;
+        font-size: 36px;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
 
+      .header-logo span:nth-child(1) {
+        color: #ffffff;
+      }
+
+      .header-logo span:nth-child(2) {
+        color: #ff8c00;
+      }
+
+      .header-logo:hover span:nth-child(1) {
+        color: #e0e0e0;
+      }
+
+      .nav-links {
+        display: flex;
+        gap: 30px;
+      }
+
+      .nav-links a {
+        color: #e0e0e0;
+        text-decoration: none;
+        font-size: 18px;
+        font-weight: bold;
+        transition: color 0.3s;
+      }
+
+      .nav-links a:hover {
+        color: #ff8c00;
+      }
+
+      .content {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        margin: 40px;
+      }
+
+      .ad {
+        width: 120px;
+        height: 300px;
+        background-color: #4a4a4a;
+        margin: 0 20px;
+        border-radius: 10px;
+        box-shadow: 0 4px 10px rgba(0, 0, 0, 0.5);
+      }
+
+      .game-container {
+        flex-shrink: 0;
+        width: 85%;
+        height: 700px;
+        margin: 20px auto;
+        background-color: #3a3a3a;
+        position: relative;
+        overflow: hidden;
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+      }
+
+      .game-container iframe {
+        width: 100%;
+        height: 100%;
+        border: none;
+        display: block;
+        border-radius: 20px;
+      }
+
+      .game-bar {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        background-color: #3a3a3a;
+        border-radius: 10px;
+        padding: 20px;
+        margin: 30px auto;
+        width: 85%;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.7);
+      }
+
+      .fullscreen-button {
+        padding: 10px 20px;
+        background-color: #ff8c00;
+        color: #fff;
+        border: none;
+        cursor: pointer;
+        border-radius: 5px;
+        transition: background-color 0.3s;
+        font-weight: bold;
+      }
+
+      .fullscreen-button:hover {
+        background-color: #ff6a00;
+      }
+
+      .cards-section {
+        background-color: #3a3a3a;
+        padding: 50px;
+        text-align: center;
+        border-radius: 20px;
+        box-shadow: 0 8px 16px rgba(0, 0, 0, 0.7);
+        margin: 40px;
+      }
+
+      .card-container {
+        display: flex;
+        justify-content: center;
+        flex-wrap: wrap;
+        gap: 30px;
+      }
+
+      .card {
+        display: block;
+        width: 200px;
+        text-align: center;
+        background-color: #4a4a4a;
+        border-radius: 15px;
+        box-shadow: 0 10px 20px rgba(0, 0, 0, 0.8);
+        overflow: hidden;
+        text-decoration: none;
+        color: #e0e0e0;
+        transition: transform 0.3s, box-shadow 0.3s;
+      }
+
+      .card:hover {
+        transform: translateY(-10px);
+        box-shadow: 0 15px 30px rgba(0, 0, 0, 1);
+      }
+
+      .card img {
+        width: 100%;
+        height: 150px;
+        object-fit: cover;
+        border-top-left-radius: 15px;
+        border-top-right-radius: 15px;
+      }
+
+      .card figcaption {
+        padding: 15px;
+        font-size: 16px;
+        color: #ff8c00;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="header">
+      <a href="../../index.html" class="header-logo">
+        <span>StrongDog</span>
+        <span>XP</span>
+      </a>
+    </div>
+
+    <div class="content">
+      <div class="ad ad-left">
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609993827735056"
+          crossorigin="anonymous"
+        ></script>
+        <!-- in game ads -->
+        <ins
+          class="adsbygoogle"
+          style="display: inline-block; width: 120px; height: 300px"
+          data-ad-client="ca-pub-1609993827735056"
+          data-ad-slot="3552085788"
+        ></ins>
         <script>
-
-            var camera         = undefined, 
-                scene          = undefined, 
-                renderer       = undefined, 
-                light          = undefined,
-                mouseX         = undefined, 
-                mouseY         = undefined,
-                maze           = undefined, 
-                mazeMesh       = undefined,
-                mazeDimension  = 11,
-                planeMesh      = undefined,
-                ballMesh       = undefined,
-                ballRadius     = 0.25,
-                keyAxis        = [0, 0],
-                ironTexture    = THREE.ImageUtils.loadTexture('ball.png'),
-                planeTexture   = THREE.ImageUtils.loadTexture('concrete.png'),
-                brickTexture   = THREE.ImageUtils.loadTexture('brick.png'),
-                gameState      = undefined,
-
-            // Box2D shortcuts
-                b2World        = Box2D.Dynamics.b2World,
-                b2FixtureDef   = Box2D.Dynamics.b2FixtureDef,
-                b2BodyDef      = Box2D.Dynamics.b2BodyDef,
-                b2Body		   = Box2D.Dynamics.b2Body,
-                b2CircleShape  = Box2D.Collision.Shapes.b2CircleShape,
-                b2PolygonShape = Box2D.Collision.Shapes.b2PolygonShape,
-                b2Settings     = Box2D.Common.b2Settings,
-                b2Vec2         = Box2D.Common.Math.b2Vec2,
-
-            // Box2D world variables 
-                wWorld         = undefined,
-                wBall          = undefined;
-
-            
-            function createPhysicsWorld() {
-                // Create the world object.
-                wWorld = new b2World(new b2Vec2(0, 0), true);
-
-                // Create the ball.
-                var bodyDef = new b2BodyDef();
-                bodyDef.type = b2Body.b2_dynamicBody;
-                bodyDef.position.Set(1, 1);
-                wBall = wWorld.CreateBody(bodyDef);
-                var fixDef = new b2FixtureDef();
-                fixDef.density = 1.0;
-                fixDef.friction = 0.0;
-                fixDef.restitution = 0.25;
-                fixDef.shape = new b2CircleShape(ballRadius);
-                wBall.CreateFixture(fixDef);
-
-                // Create the maze.
-                bodyDef.type = b2Body.b2_staticBody;
-                fixDef.shape = new b2PolygonShape();
-                fixDef.shape.SetAsBox(0.5, 0.5);
-                for (var i = 0; i < maze.dimension; i++) {
-                    for (var j = 0; j < maze.dimension; j++) {
-                        if (maze[i][j]) {
-                            bodyDef.position.x = i;
-                            bodyDef.position.y = j;
-                            wWorld.CreateBody(bodyDef).CreateFixture(fixDef);
-                        }
-                    }
-                }
-            }
-            
-            
-            function generate_maze_mesh(field) {
-                var dummy = new THREE.Geometry();
-                for (var i = 0; i < field.dimension; i++) {
-                    for (var j = 0; j < field.dimension; j++) {
-                        if (field[i][j]) {
-                            var geometry = new THREE.CubeGeometry(1,1,1,1,1,1);
-                            var mesh_ij = new THREE.Mesh(geometry);
-                            mesh_ij.position.x = i;
-                            mesh_ij.position.y = j;
-                            mesh_ij.position.z = 0.5;
-                            THREE.GeometryUtils.merge(dummy, mesh_ij);
-                        }
-                    }
-                }
-                var material = new THREE.MeshPhongMaterial({map: brickTexture});
-                var mesh = new THREE.Mesh(dummy, material)
-                return mesh;
-            }
-
-
-            function createRenderWorld() {
-
-                // Create the scene object.
-                scene = new THREE.Scene();
-
-                // Add the light.
-                light= new THREE.PointLight(0xffffff, 1);
-                light.position.set(1, 1, 1.3);
-                scene.add(light);
-                
-                // Add the ball.
-                g = new THREE.SphereGeometry(ballRadius, 32, 16);
-                m = new THREE.MeshPhongMaterial({map:ironTexture});
-                ballMesh = new THREE.Mesh(g, m);
-                ballMesh.position.set(1, 1, ballRadius);
-                scene.add(ballMesh);
-
-                // Add the camera.
-                var aspect = window.innerWidth/window.innerHeight;
-                camera = new THREE.PerspectiveCamera(60, aspect, 1, 1000);
-                camera.position.set(1, 1, 5);
-                scene.add(camera);
-
-                // Add the maze.
-                mazeMesh = generate_maze_mesh(maze);
-                scene.add(mazeMesh);
-
-                // Add the ground.
-                g = new THREE.PlaneGeometry(mazeDimension*10, mazeDimension*10, mazeDimension, mazeDimension);
-                planeTexture.wrapS = planeTexture.wrapT = THREE.RepeatWrapping;
-                planeTexture.repeat.set(mazeDimension*5, mazeDimension*5);
-                m = new THREE.MeshPhongMaterial({map:planeTexture});
-                planeMesh = new THREE.Mesh(g, m);
-                planeMesh.position.set((mazeDimension-1)/2, (mazeDimension-1)/2, 0);
-                planeMesh.rotation.set(Math.PI/2, 0, 0);
-                scene.add(planeMesh);                
-
-            }
-
-
-            function updatePhysicsWorld() {
-
-                // Apply "friction". 
-                var lv = wBall.GetLinearVelocity();
-                lv.Multiply(0.95);
-                wBall.SetLinearVelocity(lv);
-                
-                // Apply user-directed force.
-                var f = new b2Vec2(keyAxis[0]*wBall.GetMass()*0.25, keyAxis[1]*wBall.GetMass()*0.25);
-                wBall.ApplyImpulse(f, wBall.GetPosition());          
-                keyAxis = [0,0];
-
-                // Take a time step.
-                wWorld.Step(1/60, 8, 3);
-            }
-            
-
-            function updateRenderWorld() {
-
-                // Update ball position.
-                var stepX = wBall.GetPosition().x - ballMesh.position.x;
-                var stepY = wBall.GetPosition().y - ballMesh.position.y;
-                ballMesh.position.x += stepX;
-                ballMesh.position.y += stepY;
-
-                // Update ball rotation.
-                var tempMat = new THREE.Matrix4();
-                tempMat.makeRotationAxis(new THREE.Vector3(0,1,0), stepX/ballRadius);
-                tempMat.multiplySelf(ballMesh.matrix);
-                ballMesh.matrix = tempMat;
-                tempMat = new THREE.Matrix4();
-                tempMat.makeRotationAxis(new THREE.Vector3(1,0,0), -stepY/ballRadius);
-                tempMat.multiplySelf(ballMesh.matrix);
-                ballMesh.matrix = tempMat;
-                ballMesh.rotation.getRotationFromMatrix(ballMesh.matrix);
-                
-                // Update camera and light positions.
-                camera.position.x += (ballMesh.position.x - camera.position.x) * 0.1;
-                camera.position.y += (ballMesh.position.y - camera.position.y) * 0.1;
-                camera.position.z += (5 - camera.position.z) * 0.1;
-                light.position.x = camera.position.x;
-                light.position.y = camera.position.y;
-                light.position.z = camera.position.z - 3.7;
-            }
-
-
-            function gameLoop() {
-            
-                switch(gameState) {
-                
-                    case 'initialize':
-                        maze = generateSquareMaze(mazeDimension);
-                        maze[mazeDimension-1][mazeDimension-2] = false;
-                        createPhysicsWorld();
-                        createRenderWorld();
-                        camera.position.set(1, 1, 5);
-                        light.position.set(1, 1, 1.3);
-                        light.intensity = 0;
-                        var level = Math.floor((mazeDimension-1)/2 - 4);
-                        $('#level').html('Level ' + level);
-                        gameState = 'fade in';
-                        break;
-                        
-                    case 'fade in':
-                        light.intensity += 0.1 * (1.0 - light.intensity);
-                        renderer.render(scene, camera);
-                        if (Math.abs(light.intensity - 1.0) < 0.05) {
-                            light.intensity = 1.0;
-                            gameState = 'play'
-                        }
-                        break;
-
-                    case 'play':
-                        updatePhysicsWorld();
-                        updateRenderWorld();
-                        renderer.render(scene, camera);
-
-                        // Check for victory.
-                        var mazeX = Math.floor(ballMesh.position.x + 0.5);
-                        var mazeY = Math.floor(ballMesh.position.y + 0.5);
-                        if (mazeX == mazeDimension && mazeY == mazeDimension - 2) { 
-                            mazeDimension += 2;
-                            gameState = 'fade out';
-                        }
-                        break;
-                
-                    case 'fade out':
-                        updatePhysicsWorld();
-                        updateRenderWorld();
-                        light.intensity += 0.1 * (0.0 - light.intensity);
-                        renderer.render(scene, camera);
-                        if (Math.abs(light.intensity - 0.0) < 0.1) {
-                            light.intensity = 0.0;
-                            renderer.render(scene, camera);
-                            gameState = 'initialize'
-                        }
-                        break;
-                        
-                }
-            
-                requestAnimationFrame(gameLoop);
-
-            }
-
-
-            function onResize() {
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                camera.aspect = window.innerWidth/window.innerHeight;
-                camera.updateProjectionMatrix();
-            }
-            
-
-            function onMoveKey(axis) {
-                keyAxis = axis.slice(0);
-            }
-
-            
-            jQuery.fn.centerv = function () {
-                wh = window.innerHeight;
-                h = this.outerHeight();
-                this.css("position", "absolute");
-                this.css("top", Math.max(0, (wh - h)/2) + "px");
-                return this;
-            }            
-
-            
-            jQuery.fn.centerh = function () {
-                ww = window.innerWidth;
-                w = this.outerWidth();
-                this.css("position", "absolute");
-                this.css("left", Math.max(0, (ww - w)/2) + "px");
-                return this;
-            }            
-
-            
-            jQuery.fn.center = function () {
-                this.centerv();
-                this.centerh();
-                return this;
-            }            
-
-            
-            $(document).ready(function() {
-
-                // Prepare the instructions.
-                $('#instructions').center();
-                $('#instructions').hide();
-                KeyboardJS.bind.key('i', function(){$('#instructions').show()}, 
-                                         function(){$('#instructions').hide()});
-    
-                // Create the renderer.
-                renderer = new THREE.WebGLRenderer();
-                renderer.setSize(window.innerWidth, window.innerHeight);
-                document.body.appendChild(renderer.domElement);
-
-                // Bind keyboard and resize events.
-                KeyboardJS.bind.axis('left', 'right', 'down', 'up', onMoveKey);
-                KeyboardJS.bind.axis('h', 'l', 'j', 'k', onMoveKey);
-                $(window).resize(onResize);
-                
-
-                // Set the initial game state.
-                gameState = 'initialize';
-                
-                // Start the game loop.
-                requestAnimationFrame(gameLoop);
-
-            })
-            
-            
-
+          (adsbygoogle = window.adsbygoogle || []).push({});
         </script>
-    
-        <style>
-        
-            body {
-                background: black;
-                margin: 0;
-                padding: 0;
-                font-family: 'Helvetica';
-                overflow: hidden;
-            }
-            
-            #instructions {
-                background-color: rgba(0,0,0,0.75);
-                color: white;
-                text-align: center;
-                padding: 32px;
-                margin: 0px;
-                display: inline;
-                border: 2px solid white;
-            }
-
-            #help {
-                position: absolute;
-                left: 0px;
-                bottom: 0px;
-                padding: 4px;
-                color: white;   
-            }
-
-            #level {
-                position: absolute;
-                left: 0px;
-                top: 0px;
-                padding: 4px;
-                color: yellow;   
-                font-weight: bold;
-            }
-
-        </style>
-        
-    </head>
-    
-    <body>
-    
-    <div id='instructions'>
-        How to play Astray:
-        <br><br>
-        Use the arrow keys to move the ball and find the exit to the maze.
-        <br><br>
-        Vim trainees: h, j, k, l
-    </div>
-    
-    <div id='help'>
-        Hold down the 'I' key for instructions.
+      </div>
+      <div class="game-container" id="gameContainer">
+        <!-- Game Embed Will Go Here -->
+      </div>
+      <div class="ad ad-right">
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1609993827735056"
+          crossorigin="anonymous"
+        ></script>
+        <!-- in game ads -->
+        <ins
+          class="adsbygoogle"
+          style="display: inline-block; width: 120px; height: 300px"
+          data-ad-client="ca-pub-1609993827735056"
+          data-ad-slot="3552085788"
+        ></ins>
+        <script>
+          (adsbygoogle = window.adsbygoogle || []).push({});
+        </script>
+      </div>
     </div>
 
-    <div id='level'>
-        Level 1
-    </div> 
-    
-    </body>
+    <div class="game-bar">
+      <span id="gameTitle">Game Title</span>
+      <span
+        id="favoriteIcon"
+        class="favorite-icon"
+        style="cursor: pointer; font-size: 24px"
+        >&#9734;</span
+      >
+      <button id="fullscreenButton" class="fullscreen-button">
+        Fullscreen
+      </button>
+    </div>
 
+    <div class="cards-section">
+      <h2>Recommended Games</h2>
+      <div class="card-container" id="cardContainer">
+        <!-- Cards will be loaded here -->
+      </div>
+    </div>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        var fullscreenButton = document.getElementById("fullscreenButton");
+        var gameContainer = document.getElementById("gameContainer");
+        var gameTitle = document.getElementById("gameTitle");
+
+        function embedGame(gamePath, title) {
+          var iframe = document.createElement("iframe");
+          iframe.src = gamePath;
+          gameContainer.innerHTML = "";
+          gameContainer.appendChild(iframe);
+          gameTitle.textContent = title;
+        }
+
+        embedGame("./game/index.html", "Astray");
+
+        fullscreenButton.addEventListener("click", function () {
+          if (gameContainer.requestFullscreen) {
+            gameContainer.requestFullscreen();
+          } else if (gameContainer.webkitRequestFullscreen) {
+            gameContainer.webkitRequestFullscreen();
+          } else if (gameContainer.msRequestFullscreen) {
+            gameContainer.msRequestFullscreen();
+          }
+        });
+      });
+    </script>
+
+    <script>
+      document.addEventListener("DOMContentLoaded", function () {
+        const favoriteIcon = document.getElementById("favoriteIcon");
+        const gameTitle = document.getElementById("gameTitle").textContent;
+
+        function toggleFavorite() {
+          let favorites = JSON.parse(localStorage.getItem("favorites") || "{}");
+          const imagePath = "./img/" + gameTitle + ".jpg";
+
+          if (favorites[gameTitle]) {
+            delete favorites[gameTitle];
+          } else {
+            favorites[gameTitle] = {
+              path: `./html/${gameTitle}/index.html`,
+              image: imagePath,
+            };
+          }
+
+          localStorage.setItem("favorites", JSON.stringify(favorites));
+          updateFavoriteIcon(favorites, gameTitle);
+        }
+
+        function updateFavoriteIcon(favorites, title) {
+          if (favorites[title]) {
+            favoriteIcon.innerHTML = "&#9733;";
+          } else {
+            favoriteIcon.innerHTML = "&#9734;";
+          }
+        }
+
+        const favorites = JSON.parse(localStorage.getItem("favorites") || "{}");
+        updateFavoriteIcon(favorites, gameTitle);
+
+        favoriteIcon.addEventListener("click", function () {
+          toggleFavorite();
+        });
+      });
+    </script>
+
+    <script>
+      window.onload = function () {
+        var titleElement = document.getElementById("gameTitle");
+        var title = titleElement.textContent;
+
+        fetch(
+          "https://script.google.com/macros/s/AKfycbx1xYwL2QqkOQHyeCWIVSMVLP_XXts5zpb0M-vbvlRl1MpRYYcv4NI-i8OaGc0YP0wpsg/exec?title=" +
+            encodeURIComponent(title),
+          {
+            method: "GET",
+          }
+        )
+          .then((response) => response.text())
+          .then((result) => console.log(result))
+          .catch((error) => console.error("Error:", error));
+      };
+    </script>
+    <script type="module">
+      import games from "../../cards-data.js";
+      import { siteMapping } from "../../site-mapping.js";
+
+      document.addEventListener("DOMContentLoaded", function () {
+        const cardContainer = document.getElementById("cardContainer");
+
+        function adjustHrefPath(path, page) {
+          // Remove leading './' or '/' from the path
+          path = path.replace(/^\.\//, "").replace(/^\//, "");
+
+          if (page == 2) {
+            // For page 2 games
+            const currentHost = window.location.hostname;
+            const secondPageLink = siteMapping[currentHost];
+            if (secondPageLink) {
+              // Ensure proper concatenation
+              const adjustedSecondPageLink = secondPageLink.replace(/\/$/, "");
+              const adjustedPath = "/" + path;
+              return adjustedSecondPageLink + adjustedPath;
+            } else {
+              // If currentHost not found in siteMapping, log an error
+              console.error(
+                `Current host "${currentHost}" not found in siteMapping. Unable to adjust href for page 2 game.`
+              );
+              return "#"; // Fallback href
+            }
+          } else {
+            // For page 1 games, adjust the path to go back two directories
+            return "../../" + path;
+          }
+        }
+
+        function adjustImgPath(path, page) {
+          // Remove leading './', '/', or 'img/' from the path
+          path = path
+            .replace(/^\.\//, "")
+            .replace(/^\//, "")
+            .replace(/^img\//, "");
+
+          if (page == 2) {
+            // For page 2 games, get image from the second page link
+            const currentHost = window.location.hostname;
+            const secondPageLink = siteMapping[currentHost];
+            if (secondPageLink) {
+              // Ensure proper concatenation
+              const adjustedSecondPageLink = secondPageLink.replace(/\/$/, "");
+              const adjustedPath = "/img/" + path;
+              return adjustedSecondPageLink + adjustedPath;
+            } else {
+              // If currentHost not found in siteMapping, log an error
+              console.error(
+                `Current host "${currentHost}" not found in siteMapping. Unable to adjust image path for page 2 game.`
+              );
+              return "../../img/" + path; // Fallback to local image
+            }
+          } else {
+            // For page 1 games, adjust the path to go back two directories
+            return "../../img/" + path;
+          }
+        }
+
+        function getCardHTML(gameObject) {
+          const { href, imgSrc, name, page } = gameObject;
+
+          // Adjust the href and imgSrc paths
+          const adjustedHref = adjustHrefPath(href, page);
+          const adjustedImgSrc = adjustImgPath(imgSrc, page);
+
+          // Create the card element
+          const card = document.createElement("a");
+          card.className = "card";
+          card.href = adjustedHref;
+
+          const img = document.createElement("img");
+          img.src = adjustedImgSrc;
+          img.alt = name;
+          card.appendChild(img);
+
+          const figcaption = document.createElement("figcaption");
+          figcaption.textContent = name;
+          card.appendChild(figcaption);
+
+          return card;
+        }
+
+        // Generate and display random recommended games
+        const randomGames = games.sort(() => 0.5 - Math.random()).slice(0, 10);
+        randomGames.forEach((game) => {
+          const card = getCardHTML(game);
+          cardContainer.appendChild(card);
+        });
+      });
+    </script>
+  </body>
 </html>
-
