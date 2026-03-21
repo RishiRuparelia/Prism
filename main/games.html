@@ -859,16 +859,13 @@ function openGame(game) {
   
   let url = game.url || 'about:blank';
   
-  // If it's an external URL, route through UV proxy
   if (url.startsWith('http://') || url.startsWith('https://')) {
-    try {
-      url = '/service/' + __uv$config.encodeUrl(url);
-    } catch(e) {
-      console.warn('UV encode failed, loading direct:', e);
-    }
+    sessionStorage.setItem('prism_dest', url);
+    document.getElementById('game-frame').src = '/go.html';
+  } else {
+    document.getElementById('game-frame').src = url;
   }
   
-  document.getElementById('game-frame').src = url;
   document.getElementById('modal-backdrop').classList.add('open');
   document.body.style.overflow = 'hidden';
 }
