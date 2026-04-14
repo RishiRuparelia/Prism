@@ -2,9 +2,12 @@ import createServer from '@tomphttp/bare-server-node';
 import http from 'http';
 import nodeStatic from 'node-static';
 const port = process.env.PORT || 8080;
+import { fileURLToPath } from "url";
+import { createRequire } from "module";
 
 const bare =  createServer('/bare/');
 const serve = new nodeStatic.Server('main/');
+const require = createRequire(import.meta.url);
 
 const server = http.createServer();
 
@@ -23,6 +26,19 @@ server.on('upgrade', (req, socket, head) => {
     socket.end();
   }
 });
+
+app.use(
+  "/scramjet/",
+  express.static(
+    fileURLToPath(
+      new URL(
+        "./node_modules/@mercuryworkshop/scramjet/dist",
+        import.meta.url
+      )
+    )
+  )
+);
+
 
 server.listen({
   port: port,
