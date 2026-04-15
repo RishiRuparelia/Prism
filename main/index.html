@@ -1032,10 +1032,14 @@ document.getElementById('search-btn').addEventListener('click', doSearch);
 document.getElementById('overlay-url').addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const abs = toAbsolute(document.getElementById('overlay-url').value);
-  if (abs) {
+  if (!abs) return;
+  document.getElementById('overlay-url').value = abs;
+  try {
+    const proxyUrl = __uv$config.prefix + __uv$config.encodeUrl(abs);
+    document.getElementById('proxy-iframe').src = proxyUrl;
+  } catch {
     sessionStorage.setItem('prism_dest', abs);
     document.getElementById('proxy-iframe').src = getLoader();
-    document.getElementById('overlay-url').value = abs;
   }
 });
 
