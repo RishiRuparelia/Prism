@@ -197,7 +197,19 @@
     </div>
   </div>
 
-  <script src="/scram/scramjet.controller.js"></script>
+  <script src="/scram/scramjet.codecs.js"></script>
+  <script>
+    window.__scramjet$config = {
+      prefix: '/scram/service/',
+      codec: window.__scramjet$codecs.plain,
+      config: '/scram/scramjet.config.js',
+      bundle: '/scram/scramjet.bundle.js',
+      worker: '/scram/scramjet.worker.js',
+      client: '/scram/scramjet.client.js',
+      codecs: '/scram/scramjet.codecs.js',
+    };
+  </script>
+  <script src="/scram/scramjet.bundle.js"></script>
   <script>
     (async () => {
       const dest = sessionStorage.getItem('prism_dest');
@@ -205,23 +217,12 @@
       sessionStorage.removeItem('prism_dest');
 
       try {
-        const controller = new ScramjetController({
-          prefix: '/scram/service/',
-          config: {
-            prefix: '/scram/service/',
-            files: {
-              wasm: '/scram/scramjet.wasm.wasm',
-              worker: '/scram/scramjet.all.js',
-              sync: '/scram/scramjet.sync.js',
-            },
-            bare: '/bare/',
-          }
-        });
-
-        await controller.init();
-        controller.go(dest);
+        await navigator.serviceWorker.register('/scram.sw.js', { scope: '/scram/service/' });
+        await navigator.serviceWorker.ready;
+        const encoded = window.__scramjet$codecs.plain.encode(dest);
+        window.location.href = '/scram/service/' + encoded;
       } catch (err) {
-        console.warn('[PRISM] Scramjet init failed:', err);
+        console.warn('[PRISM] Scramjet failed:', err);
         window.location.href = dest;
       }
     })();
