@@ -1043,10 +1043,12 @@ document.getElementById('overlay-url').addEventListener('keydown', e => {
   }
 });
 
-// Overlay nav buttons
-document.getElementById('ov-back').addEventListener('click',   () => { try { document.getElementById('proxy-iframe').contentWindow.history.back(); }    catch(e){} });
-document.getElementById('ov-fwd').addEventListener('click',    () => { try { document.getElementById('proxy-iframe').contentWindow.history.forward(); } catch(e){} });
-document.getElementById('ov-reload').addEventListener('click', () => { try { document.getElementById('proxy-iframe').contentWindow.location.reload(); } catch(e) { const f = document.getElementById('proxy-iframe'); f.src = f.src; } });
+// Overlay nav buttons — attached after DOM ready
+window.addEventListener('DOMContentLoaded', () => {
+  document.getElementById('ov-back').addEventListener('click',   () => { try { document.getElementById('proxy-iframe').contentWindow.history.back(); }    catch(e){} });
+  document.getElementById('ov-fwd').addEventListener('click',    () => { try { document.getElementById('proxy-iframe').contentWindow.history.forward(); } catch(e){} });
+  document.getElementById('ov-reload').addEventListener('click', () => { try { document.getElementById('proxy-iframe').contentWindow.location.reload(); } catch(e) { const f = document.getElementById('proxy-iframe'); f.src = f.src; } });
+});
 
 // Quick links
 const quickMap = { YouTube:'https://youtube.com', Reddit:'https://reddit.com', GitHub:'https://github.com', Twitch:'https://twitch.tv', Wikipedia:'https://wikipedia.org' };
