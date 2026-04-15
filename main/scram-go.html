@@ -207,10 +207,14 @@
       try {
         const controller = new ScramjetController({
           prefix: '/scram/service/',
-          files: {
-            wasm: '/scram/scramjet.wasm.wasm',
-            worker: '/scram/scramjet.all.js',
-            sync: '/scram/scramjet.sync.js',
+          config: {
+            prefix: '/scram/service/',
+            files: {
+              wasm: '/scram/scramjet.wasm.wasm',
+              worker: '/scram/scramjet.all.js',
+              sync: '/scram/scramjet.sync.js',
+            },
+            bare: '/bare/',
           }
         });
 
