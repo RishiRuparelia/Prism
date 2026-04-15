@@ -1,0 +1,11 @@
+{
+  "permissions": {
+    "allow": [
+      "WebFetch(domain:nowgg.fun)",
+      "WebFetch(domain:98.ip.nowgg.fun)",
+      "WebFetch(domain:now.gg)",
+      "WebFetch(domain:github.com)",
+      "WebFetch(domain:raw.githubusercontent.com)"
+    ]
+  }
+}

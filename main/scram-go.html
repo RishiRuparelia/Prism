@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PRISM — Loading</title>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@900&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+
+  <style>
+    :root {
+      --gold:       #c9a84c;
+      --gold-light: #f0d080;
+      --dark:       #0a0805;
+      --dark2:      #110e08;
+    }
+
+    * { margin: 0; padding: 0; box-sizing: border-box; }
+
+    body {
+      background: var(--dark);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 100vh;
+      font-family: 'Rajdhani', sans-serif;
+      overflow: hidden;
+    }
+
+    body::before {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: radial-gradient(ellipse 60% 50% at 50% 50%, rgba(201,168,76,0.06) 0%, transparent 70%);
+      pointer-events: none;
+    }
+
+    body::after {
+      content: '';
+      position: fixed;
+      inset: 0;
+      background: repeating-linear-gradient(
+        to bottom,
+        rgba(0,0,0,0) 0px, rgba(0,0,0,0) 3px,
+        rgba(0,0,0,0.04) 3px, rgba(0,0,0,0.04) 4px
+      );
+      pointer-events: none;
+    }
+
+    .container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 32px;
+      z-index: 1;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-family: 'Cinzel', serif;
+      font-size: 28px;
+      font-weight: 900;
+      letter-spacing: 8px;
+      background: linear-gradient(135deg, #fffbe0, var(--gold), #e8c97a);
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+      animation: fadeIn 0.6s ease both;
+    }
+
+    .spinner-wrap {
+      position: relative;
+      width: 64px;
+      height: 64px;
+      animation: fadeIn 0.6s 0.2s ease both;
+    }
+
+    .spinner-wrap svg {
+      width: 100%;
+      height: 100%;
+      animation: spinPrism 1.6s linear infinite;
+      transform-origin: center;
+    }
+
+    @keyframes spinPrism {
+      from { transform: rotate(0deg); }
+      to   { transform: rotate(360deg); }
+    }
+
+    .spinner-wrap svg circle {
+      animation: pulseDot 1.6s ease-in-out infinite alternate;
+    }
+    @keyframes pulseDot {
+      from { opacity: 0.4; r: 3; }
+      to   { opacity: 1;   r: 5; }
+    }
+
+    .spinner-wrap svg .beam {
+      transform-origin: 32px 38px;
+      animation: beamFade 1.6s ease-in-out infinite alternate;
+    }
+    @keyframes beamFade {
+      from { opacity: 0.2; }
+      to   { opacity: 0.7; }
+    }
+
+    .loading-text {
+      font-size: 11px;
+      letter-spacing: 5px;
+      text-transform: uppercase;
+      color: var(--gold);
+      opacity: 0.6;
+      animation: fadeIn 0.6s 0.4s ease both, blink 1.4s ease-in-out infinite alternate;
+    }
+    @keyframes blink {
+      from { opacity: 0.35; }
+      to   { opacity: 0.75; }
+    }
+
+    .progress-track {
+      width: 220px;
+      height: 2px;
+      background: rgba(201,168,76,0.12);
+      border-radius: 2px;
+      overflow: hidden;
+      animation: fadeIn 0.6s 0.5s ease both;
+    }
+    .progress-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(to right, var(--gold), var(--gold-light));
+      border-radius: 2px;
+      box-shadow: 0 0 8px var(--gold);
+      animation: progressRun 1.8s ease-out forwards;
+    }
+    @keyframes progressRun {
+      0%   { width: 0%; }
+      60%  { width: 75%; }
+      90%  { width: 92%; }
+      100% { width: 100%; }
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <div class="logo">
+      <svg width="28" height="28" viewBox="0 0 28 28" fill="none">
+        <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+        <circle cx="14" cy="10" r="2.5" fill="#fffbe0" opacity="0.85"/>
+        <line x1="14" y1="10" x2="4"  y2="22" stroke="#ff7700" stroke-width="0.8" opacity="0.55"/>
+        <line x1="14" y1="10" x2="10" y2="22" stroke="#ffff00" stroke-width="0.8" opacity="0.55"/>
+        <line x1="14" y1="10" x2="16" y2="22" stroke="#00ff88" stroke-width="0.8" opacity="0.55"/>
+        <line x1="14" y1="10" x2="22" y2="22" stroke="#4fc3f7" stroke-width="0.8" opacity="0.55"/>
+        <line x1="14" y1="10" x2="26" y2="22" stroke="#cc88ff" stroke-width="0.8" opacity="0.55"/>
+      </svg>
+      PRISM
+    </div>
+
+    <div class="spinner-wrap">
+      <svg viewBox="0 0 64 64" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <polygon points="32,4 4,58 60,58"
+          fill="none"
+          stroke="url(#spinGrad)"
+          stroke-width="2"
+          stroke-linejoin="round"
+          stroke-dasharray="160"
+          stroke-dashoffset="0"
+        />
+        <line class="beam" x1="32" y1="20" x2="12" y2="56" stroke="#ff4444" stroke-width="1" opacity="0.4" style="animation-delay:0s"/>
+        <line class="beam" x1="32" y1="20" x2="20" y2="56" stroke="#ff9900" stroke-width="1" opacity="0.4" style="animation-delay:0.1s"/>
+        <line class="beam" x1="32" y1="20" x2="28" y2="56" stroke="#ffee00" stroke-width="1" opacity="0.4" style="animation-delay:0.2s"/>
+        <line class="beam" x1="32" y1="20" x2="36" y2="56" stroke="#44ff88" stroke-width="1" opacity="0.4" style="animation-delay:0.3s"/>
+        <line class="beam" x1="32" y1="20" x2="44" y2="56" stroke="#4fc3f7" stroke-width="1" opacity="0.4" style="animation-delay:0.4s"/>
+        <line class="beam" x1="32" y1="20" x2="52" y2="56" stroke="#cc88ff" stroke-width="1" opacity="0.4" style="animation-delay:0.5s"/>
+        <circle cx="32" cy="22" r="4" fill="#fffbe0" opacity="0.9"/>
+        <defs>
+          <linearGradient id="spinGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%"   stop-color="#c9a84c"/>
+            <stop offset="50%"  stop-color="#f0d080"/>
+            <stop offset="100%" stop-color="#c9a84c"/>
+          </linearGradient>
+        </defs>
+      </svg>
+    </div>
+
+    <p class="loading-text">Bending Light…</p>
+
+    <div class="progress-track">
+      <div class="progress-fill"></div>
+    </div>
+  </div>
+
+  <script src="/scram/scramjet.controller.js"></script>
+  <script>
+    (async () => {
+      const dest = sessionStorage.getItem('prism_dest');
+      if (!dest) { window.location.href = '/'; return; }
+      sessionStorage.removeItem('prism_dest');
+
+      try {
+        const controller = new ScramjetController({
+          prefix: '/scram/service/',
+          files: {
+            wasm: '/scram/scramjet.wasm.wasm',
+            worker: '/scram/scramjet.all.js',
+            sync: '/scram/scramjet.sync.js',
+          }
+        });
+
+        await controller.init();
+        controller.go(dest);
+      } catch (err) {
+        console.warn('[PRISM] Scramjet init failed:', err);
+        window.location.href = dest;
+      }
+    })();
+  </script>
+
+</body>
+</html>

@@ -627,6 +627,35 @@
   #overlay-bar button:hover { background: #333; color: #fff; }
   #ov-close:hover { color: #ff4455 !important; }
 
+  #proxy-toggle {
+    display: flex;
+    align-items: center;
+    background: #111;
+    border: 1px solid #333;
+    border-radius: 12px;
+    padding: 2px;
+    gap: 2px;
+    flex-shrink: 0;
+  }
+  #proxy-toggle button {
+    font-family: 'Rajdhani', sans-serif;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    padding: 2px 9px;
+    border-radius: 10px;
+    border: none;
+    background: none;
+    color: #666;
+    cursor: pointer;
+    transition: all 0.15s;
+  }
+  #proxy-toggle button.active {
+    background: #c9a84c;
+    color: #0a0805;
+  }
+  #proxy-toggle button:not(.active):hover { background: #2a2a2a; color: #aaa; }
+
   #overlay-url {
     flex: 1;
     height: 27px;
@@ -962,13 +991,24 @@ function toProxyUrl(url) {
   return url;
 }
 
+function setProxy(p) {
+  localStorage.setItem('prism_proxy', p);
+  const uv = document.getElementById('tog-uv');
+  const sj = document.getElementById('tog-sj');
+  if (uv) uv.classList.toggle('active', p === 'uv');
+  if (sj) sj.classList.toggle('active', p === 'scramjet');
+}
+
+function getLoader() {
+  return (localStorage.getItem('prism_proxy') || 'uv') === 'scramjet' ? 'scram-go.html' : 'go.html';
+}
+
 function openOverlay(raw) {
   const abs = toAbsolute(raw);
   if (!abs) return;
   document.getElementById('overlay-url').value = abs;
-  // Store destination so go.html can redirect after SW registers
   sessionStorage.setItem('prism_dest', abs);
-  document.getElementById('proxy-iframe').src = 'go.html';
+  document.getElementById('proxy-iframe').src = getLoader();
   document.getElementById('proxy-overlay').classList.add('open');
 }
 
@@ -994,7 +1034,7 @@ document.getElementById('overlay-url').addEventListener('keydown', e => {
   const abs = toAbsolute(document.getElementById('overlay-url').value);
   if (abs) {
     sessionStorage.setItem('prism_dest', abs);
-    document.getElementById('proxy-iframe').src = 'go.html';
+    document.getElementById('proxy-iframe').src = getLoader();
     document.getElementById('overlay-url').value = abs;
   }
 });
@@ -1043,6 +1083,12 @@ document.querySelectorAll('.quick-link').forEach(el => {
     </button>
     <!-- Address bar -->
     <input id="overlay-url" type="text" placeholder="Search or enter address…" autocomplete="off" spellcheck="false"/>
+    <!-- Proxy toggle -->
+    <div id="proxy-toggle">
+      <button id="tog-uv" onclick="setProxy('uv')">UV</button>
+      <button id="tog-sj" onclick="setProxy('scramjet')">SJ</button>
+    </div>
+    <div class="ov-sep"></div>
     <!-- Close X -->
     <button id="ov-close" onclick="closeOverlay()" title="Close (Esc)">
       <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round">
@@ -1063,5 +1109,6 @@ document.querySelectorAll('.quick-link').forEach(el => {
   </a>
 </div>
 <script src="https://images.dmca.com/Badges/DMCABadgeHelper.min.js"></script>
+<script>setProxy(localStorage.getItem('prism_proxy') || 'uv');</script>
 </body>
 </html>
