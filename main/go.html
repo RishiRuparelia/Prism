@@ -220,29 +220,16 @@
     </div>
   </div>
 
-  <!-- UV Proxy scripts -->
-  <script src="uv/uv.bundle.js"></script>
-  <script src="uv/uv.config.js"></script>
   <script>
-    function encodeUrl(str) {
-      if (!str) return str;
-      return encodeURIComponent(
-        str.toString().split('').map((char, ind) =>
-          ind % 2 ? String.fromCharCode(char.charCodeAt() ^ 2) : char
-        ).join('')
-      );
-    }
-
-    window.navigator.serviceWorker.register('./sw.js', {
-      scope: /*__uv$config.prefix*/'/service/'
-    }).then(() => {
-      console.log('[PRISM] Service worker registered.');
-      // If a destination was queued, navigate to it through the proxy
+    Promise.all([
+      navigator.serviceWorker.register('./sw.js', { scope: '/service/' }),
+      navigator.serviceWorker.register('./scram.sw.js', { scope: '/scramjet/' })
+    ]).then(() => {
+      console.log('[PRISM] Service workers registered.');
       const dest = sessionStorage.getItem('prism_dest');
       if (dest) {
         sessionStorage.removeItem('prism_dest');
-        const proxyUrl = __uv$config.prefix + __uv$config.encodeUrl(dest);
-        window.location.href = proxyUrl;
+        window.location.href = '/scramjet/?url=' + encodeURIComponent(dest);
       }
     }).catch(err => {
       console.warn('[PRISM] SW registration failed:', err);

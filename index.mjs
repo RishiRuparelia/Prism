@@ -27,19 +27,6 @@ server.on('upgrade', (req, socket, head) => {
   }
 });
 
-app.use(
-  "/scramjet/",
-  express.static(
-    fileURLToPath(
-      new URL(
-        "./node_modules/@mercuryworkshop/scramjet/dist",
-        import.meta.url
-      )
-    )
-  )
-);
-
-
 server.listen({
   port: port,
 });
