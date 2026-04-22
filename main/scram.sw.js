@@ -1,14 +1,18 @@
-importScripts("/scram/scramjet.all.js");
+importScripts("/scram/scramjet.bundle.js");
 
-const { ScramjetServiceWorker } = $scramjetLoadWorker();
+self.__scramjet$config = {
+  prefix: "/scramjet/",
+};
+
+importScripts("/scram/scramjet.worker.js");
+
 const scramjet = new ScramjetServiceWorker();
 
+self.addEventListener("install", () => self.skipWaiting());
+self.addEventListener("activate", (e) => e.waitUntil(self.clients.claim()));
+
 self.addEventListener("fetch", (event) => {
-  event.respondWith((async () => {
-    await scramjet.loadConfig();
-    if (scramjet.route(event)) {
-      return scramjet.fetch(event);
-    }
-    return fetch(event.request);
-  })());
+  if (scramjet.route(event)) {
+    event.respondWith(scramjet.fetch(event));
+  }
 });
