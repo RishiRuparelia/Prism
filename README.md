@@ -1,53 +1,97 @@
 # Prism
 
-**The complete updated site is in [cloudflare-worker/](cloudflare-worker/).** It includes Movies and TV, Learning (games), Educational Apps, chat, settings, catalogs, local artwork, browser assets, and the server code.
+The complete current PRISM application is at the repository root, including Movies and TV, Learning (games), Educational Apps, chat, settings, catalogs, local artwork, and the Worker backend.
 
-**Application/build directory: `cloudflare-worker`**
+**Application/build directory: the repository root (`.`).** Run the commands below from the directory containing `package.json`.
 
-[Browse every project file](cloudflare-worker/FILES.md) · [Deployment instructions](cloudflare-worker/CLOUDFLARE.md) · [Project README](cloudflare-worker/README.md)
+[Complete file index](FILES.md) · [Deployment instructions](CLOUDFLARE.md)
 
-## Current site files
+## Site files
 
 | Feature | Files |
 | --- | --- |
-| Homepage and clean root navigation | [Root page](cloudflare-worker/app/page.tsx), [home interface](cloudflare-worker/public/prism/index.html) |
-| Movies and TV | [Movies/TV page](cloudflare-worker/public/prism/movies.html), [catalog interface](cloudflare-worker/public/prism/movies.js), [movie API](cloudflare-worker/app/api/movies/route.ts) |
-| Movie player and TV episode state | [Player behavior](cloudflare-worker/public/prism/movie-playback.js), [series state](cloudflare-worker/public/prism/series-state.js) |
-| Movie, TV, and classics catalogs | [Movies](cloudflare-worker/public/data/movies.json), [TV series](cloudflare-worker/public/data/series.json), [classics](cloudflare-worker/public/data/classics.json) |
-| Learning / games | [Games page](cloudflare-worker/public/prism/games.html), [games interface](cloudflare-worker/public/prism/prism-games.js), [games catalog](cloudflare-worker/public/data/games.json) |
-| Educational Apps | [Apps page](cloudflare-worker/public/prism/apps.html) |
-| Chat | [Chat page](cloudflare-worker/public/prism/chat.html), [chat client](cloudflare-worker/public/prism/chat.js), [chat API](cloudflare-worker/app/api/chat/route.ts), [database](cloudflare-worker/db/) |
-| Settings | [Settings page](cloudflare-worker/public/prism/settings.html), [settings behavior](cloudflare-worker/public/prism/prism-settings.js), [preferences](cloudflare-worker/public/prism/preferences.js) |
-| Images, icons, and styles | [Local artwork](cloudflare-worker/public/media/), [public assets](cloudflare-worker/public/), [page styles](cloudflare-worker/public/prism/) |
-| Browser and Worker | [Browser page](cloudflare-worker/public/browser.html), [browser client](cloudflare-worker/public/browser.js), [Worker source](cloudflare-worker/worker/) |
-| Build, catalog updates, and tests | [Scripts](cloudflare-worker/scripts/), [tests](cloudflare-worker/tests/), [package manifest](cloudflare-worker/package.json) |
-| Credits and licenses | [Third-party notices](cloudflare-worker/THIRD_PARTY.md), [project license](cloudflare-worker/LICENSE), [credits page](cloudflare-worker/public/credits.html) |
+| Homepage and clean root navigation | [Root page](app/page.tsx), [home interface](public/prism/index.html) |
+| Movies and TV | [Movies/TV page](public/prism/movies.html), [catalog interface](public/prism/movies.js), [movie API](app/api/movies/route.ts) |
+| Movie player and TV episode state | [Player behavior](public/prism/movie-playback.js), [series state](public/prism/series-state.js) |
+| Movie, TV, and classics catalogs | [Movies](public/data/movies.json), [TV series](public/data/series.json), [classics](public/data/classics.json) |
+| Learning / games | [Games page](public/prism/games.html), [games interface](public/prism/prism-games.js), [games catalog](public/data/games.json) |
+| Educational Apps | [Apps page](public/prism/apps.html) |
+| Chat | [Chat page](public/prism/chat.html), [chat client](public/prism/chat.js), [chat API](app/api/chat/route.ts), [database](db/) |
+| Settings | [Settings page](public/prism/settings.html), [settings behavior](public/prism/prism-settings.js), [preferences](public/prism/preferences.js) |
+| Images, icons, and styles | [Local artwork](public/media/), [public assets](public/), [page styles](public/prism/) |
+| Browser and Worker | [Browser page](public/browser.html), [browser client](public/browser.js), [Worker source](worker/) |
+| Build, catalog updates, and tests | [Scripts](scripts/), [tests](tests/), [package manifest](package.json) |
+| Credits and licenses | [Third-party notices](THIRD_PARTY.md), [project license](LICENSE), [credits page](public/credits.html) |
 
-The movie and game catalogs reference external playback and game providers. This repository contains the application code, catalog records, and bundled assets; external videos and third-party game distributions remain at their providers.
+## Local hosting
 
-## Build the current application
+Open http://127.0.0.1:8080/ on this computer. The local version does not require ChatGPT sign-in and uses its own persistent chat database.
 
-From the repository root, use Node.js 22.13 or newer and run:
+The root page contains the PRISM interface in a full-window, same-origin frame. Starting at `/` keeps the outer browser address at the current domain when navigating the Learning, Educational Apps, Movies, Chat, and Settings sections. The existing internal page and API paths are unchanged. Refreshing the root returns to the homepage; opening an internal page URL directly still shows that path. Section names are presentation changes and do not change the site's functionality or filtering category.
 
-```sh
-cd cloudflare-worker
+Run `./Start-Prism.ps1` from PowerShell to build and launch in the background, and `./Stop-Prism.ps1` to stop it. For terminal output, use `npm run local`. Pass `-- --port 8081` to npm, or `-Port 8081` to the PowerShell launcher, to change ports. Local chat data stays in `.wrangler/state/`; logs and process details stay in `.local/`.
+
+Movies default to Proxy playback, with Direct available in the player and a saved preference in Settings. Retry Player reconnects the selected movie or episode without losing the selected connection. Obvious hosting failures in proxied players show recovery guidance. Movie playback remains inside Prism. Game, app, movie, chat, and settings pages use SVG and ICO favicons; Chat also has its own speech-bubble tab icon. The local server binds to loopback; this address is accessible only on the host computer.
+
+Publishing source to GitHub and deploying the Worker are separate steps. Use the deployment guide below to update your live Worker.
+
+For your own Cloudflare account, follow [the Windows deployment guide](CLOUDFLARE.md). It uses Workers, Static Assets, and D1, with a local configuration helper and a deployment dry run.
+
+TV Shows is available beside Movies, with a saved 50-show collection and live search. South Park is pinned first. Opening a show fetches its season/episode catalog; episode choices and Proxy/Direct mode are saved on this device. The TV provider URL is configurable in Settings with `{id}`, `{season}`, and `{episode}` placeholders. Use `npm run series:sync` to refresh the saved collection. Episode playback depends on the configured external provider.
+
+The original Prism frontend, connected to a browser proxy, 500-game arcade, movie library, settings, and shared lounge. The animated Egyptian scene, gold styling, Cinzel/Rajdhani typography, and original games/settings layouts come directly from RishiRuparelia/Prism at commit 534ba600d55f384626ecc2356f023d681c03b24b. Backend hosting uses Vinext on Cloudflare Workers and D1.
+
+## Run
+
+Requires Node 22.13+.
+
+```powershell
 npm ci
+node scripts/copy-proxy-assets.mjs
+npm run dev
+```
+
+Open the printed local URL (normally http://127.0.0.1:5173).
+
+## Features
+
+- Ultraviolet 2 browser rewriting with an included Bare v3 HTTP/WebSocket Worker transport; no external proxy server is required.
+- Complete 500-game 55gms catalog, search, categories, recent games, and saved favorites.
+- Cinemeta movie discovery and live search, external movie player, and three direct-play Internet Archive classics.
+- Shared persistent lounge, gaming, and movie-night chat rooms, refreshed every 3.5 seconds. No seeded messages or simulated users.
+- Native Prism settings and additional display name, search engine, movie player, and motion preferences.
+
+## Build and check
+
+```powershell
 npm test
+npx tsc --noEmit
 npm run build
 ```
 
-The build generates the corresponding source ZIP and produces `dist/server` and `dist/client`. Follow [CLOUDFLARE.md](cloudflare-worker/CLOUDFLARE.md) to deploy the complete application to a Worker with its D1 database. The `public/` files are part of the app; the API and proxy features also require the server.
+For the local D1 database after building:
 
-Start at the root of your connected domain. Ordinary section navigation stays inside the root page's full-window frame. Internal page URLs still work directly, and refreshing the root returns to the homepage. Section labels do not change proxy functionality or a domain's filtering category.
+```powershell
+node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1 execute DB --local --config dist/server/wrangler.json --persist-to .wrangler/state --file drizzle/0000_tiresome_skrulls.sql
+```
 
-Committing source to GitHub does not deploy the live Worker by itself. Moving this version to a different hosting platform requires adapting its Worker runtime and database bindings.
+For standalone Cloudflare hosting, the preparation helper connects the `DB` binding to your existing D1 database. `.openai/hosting.json` supplies the build's binding names and does not contain a hosted project identity or account credentials.
 
-## Original Node application
+## Data and original sources
 
-The older Node application remains at the repository root, with its frontend in [main/](main/). Its root `package.json` and hosting configuration belong to that older application. To work with the updated site and its Movies/TV feature, open [cloudflare-worker/](cloudflare-worker/).
+`npm run catalog:sync` refreshes catalogs and selected images. `node scripts/sync-catalog.mjs --source` also downloads the full pinned upstream application ZIP into outputs/source; that optional download is not included in this directory. The separate upstream binary assets remain linked; they are not bundled or claimed to be self-hosted. Individual game availability depends on those hosts.
 
-The updated application has its own package manifest, build scripts, and [AGPL-3.0 license and third-party notices](cloudflare-worker/THIRD_PARTY.md). See the [original license](LICENSE) for the original application.
+The imported catalog contains 501 original entries: 500 games and one game-request form. Original catalog and exact provenance are in public/data/games-source.json and catalog-info.json. All 500 normalized source paths were verified against the pinned source tree. Header checks passed for Slope, Subway Surfers, and 2048; the entire library was not individually played.
+
+55gms currently uses Scramjet/Epoxy/Wisp on a Node server. Rooster uses Ultraviolet 2 with a Bare v3 Worker so the proxy can run on the supplied hosting platform without a raw TCP Wisp server. It supports public HTTP(S) destinations and WebSockets on standard web ports. Advanced anti-bot checks, DRM, some browser APIs, and site-specific rewriting may not work. WebSocket relay needs broader runtime compatibility testing. DNS checks do not pin the upstream connection's resolved address.
+
+Movie metadata comes from Cinemeta, with TMDB IDs used for playback. Settings exposes the movie provider template; default is https://vidsrc.party/embed/movie/{id}, matching the current 55gms player source pattern. Video availability depends on that external provider. The three direct-play classics were checked with real HTTP 206 range responses.
+
+## Source license
+
+AGPL-3.0; see LICENSE and THIRD_PARTY.md. `/credits.html` identifies sources and provides the corresponding source ZIP. `npm run build` regenerates that archive automatically; `npm run source:package` can also create it separately. Original creators retain their rights to artwork and game/media content. No upstream API keys or credentials are embedded.
 
 ## Original credit notice
 
 Credit must be given if or else DMCA
+
