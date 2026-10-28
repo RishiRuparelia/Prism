@@ -1,0 +1,21 @@
+.prism-fields { display: grid; gap: 9px; margin-top: 22px; max-width: 580px; }
+.prism-fields > label { color: var(--gold-light); font-size: 12px; letter-spacing: 1px; margin-top: 8px; }
+.prism-fields input:not([type="checkbox"]), .prism-fields select { width: 100%; padding: 10px 12px; border: 1px solid rgba(201,168,76,.25); border-radius: 4px; background: rgba(0,0,0,.25); color: #e8dcc8; font: 14px Rajdhani, sans-serif; outline: none; }
+.prism-fields input:focus, .prism-fields select:focus { border-color: var(--gold); box-shadow: 0 0 0 2px rgba(201,168,76,.09); }
+.prism-fields small { font-size: 12px; color: var(--muted); line-height: 1.6; }
+.prism-fields .prism-check-row { display: flex; align-items: center; gap: 10px; }
+.prism-fields input[type="checkbox"] { display: block; width: 15px; height: 15px; accent-color: #c9a84c; }
+.prism-status { margin-top: 15px; color: #81c784; min-height: 17px; font-size: 12px; letter-spacing: 1px; }
+.prism-favorite { position: absolute; right: 9px; top: 9px; z-index: 5; border: 1px solid #c9a84c66; border-radius: 5px; background: #0a0805c9; color: #d1ba85; width: 28px; height: 28px; cursor: pointer; font-size: 17px; display: flex; align-items: center; justify-content: center; }
+.prism-favorite.saved { color: #f0d080; background: #5c471ecc; border-color: #c9a84c; }
+.prism-favorite:hover { color: #fffbe0; border-color: #f0d080; }
+.game-card { position: relative; cursor: pointer; }
+.game-card:focus-visible { outline: 2px solid var(--gold); outline-offset: 4px; }
+.game-card .card-thumb { position: relative; }
+.prism-filter-favorites { color: var(--gold); }
+.prism-error-action { margin-top: 16px; padding: 9px 15px; border: 1px solid var(--gold); color: var(--gold); background: transparent; border-radius: 4px; cursor: pointer; font: 13px Rajdhani, sans-serif; }
+.prism-settings-data { margin-top: 18px; display: flex; gap: 10px; }
+.prism-settings-data button { padding: 8px 12px; border: 1px solid #c9a84c55; color: var(--gold); background: #c9a84c0c; border-radius: 4px; cursor: pointer; font: 12px Rajdhani, sans-serif; letter-spacing: 1px; }
+.prism-settings-data input[type="file"] { display: none; }
+@media(max-width:600px){.nav-links{gap:12px!important}.nav-links a{font-size:10px!important;letter-spacing:1px!important}.nav-links a svg{display:inline-block;flex-shrink:0}.prism-fields{max-width:100%}.prism-personal{padding-right:22px!important}.prism-fields input:not([type="checkbox"]){font-size:13px}}
+

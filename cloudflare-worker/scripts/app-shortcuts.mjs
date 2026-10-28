@@ -1,0 +1,11 @@
+import { readFileSync, writeFileSync } from 'node:fs';
+import { prismNavigation } from './prism-navigation.mjs';
+let html=readFileSync('public/prism/index.html','utf8');
+html=html.replace('<title>PRISM</title>','<title>PRISM — Apps</title>').replace('<h1 class="hero-title">PRISM</h1>','<h1 class="hero-title">EDUCATIONAL APPS</h1>').replace('✦ The Light Bends Here ✦','✦ Your Everyday Favorites ✦');
+html=html.replace(/<p class="hero-sub">[\s\S]*?<\/p>/,'<p class="hero-sub">Open your favorite apps through Prism.</p>');
+const apps={Google:'https://google.com',YouTube:'https://youtube.com',Discord:'https://discord.com',Reddit:'https://reddit.com',GitHub:'https://github.com',Twitch:'https://twitch.tv',Wikipedia:'https://wikipedia.org',Spotify:'https://open.spotify.com',Pinterest:'https://pinterest.com'};
+html=html.replace(/<div class="quick-links">[\s\S]*?<\/div>/,'<div class="quick-links">'+Object.keys(apps).map(name=>`<button class="quick-link" type="button">${name}</button>`).join('')+'</div>');
+html=html.replace(/const quickMap = \{[^\n]*\};/,'const quickMap = '+JSON.stringify(apps)+';');
+html=html.replace('</head>','<style>#hero{padding-top:65px}.hero-title{font-size:clamp(28px,6vw,64px);letter-spacing:clamp(1px,.4vw,6px);max-width:calc(100% - 32px);line-height:1.15;white-space:normal;overflow-wrap:break-word}.hero-sub{margin-bottom:25px}.quick-links{display:grid;grid-template-columns:repeat(3,1fr);width:min(640px,90vw);gap:12px}.quick-link{padding:18px 12px;border-radius:7px;background:rgba(18,15,8,.85);font-family:Rajdhani,sans-serif;font-size:13px}@media(max-width:500px){.quick-links{grid-template-columns:repeat(2,1fr);gap:8px}.quick-link{padding:13px 8px}#hero{padding-top:35px}}</style></head>');
+writeFileSync('public/prism/apps.html',prismNavigation(html));
+console.log('Prism app shortcuts generated.');

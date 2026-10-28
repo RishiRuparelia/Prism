@@ -1,0 +1,15 @@
+{
+  "syncedAt": "2026-10-27T22:10:44.852Z",
+  "gameCount": 500,
+  "originalCatalogCount": 501,
+  "movieCount": 98,
+  "classicCount": 3,
+  "requestGameUrl": "https://docs.google.com/forms/d/e/1FAIpQLSfY7Eh5sWLn9DcNHilyp2Xi_I8YA0MxXbENQDsatkwD_F1qeA/viewform",
+  "repository": "https://github.com/55gms/55GMS",
+  "commit": "183754e50598d4dab26b9107404d983ca562833b",
+  "sourceBytes": 306263960,
+  "sourceFileCount": 1444,
+  "catalogSource": "https://raw.githubusercontent.com/55gms/55GMS/183754e50598d4dab26b9107404d983ca562833b/static/assets/json/load/g.json",
+  "assetRepository": "https://github.com/55gms/assets",
+  "movieCatalog": "https://v3-cinemeta.strem.io/catalog/movie/top.json"
+}

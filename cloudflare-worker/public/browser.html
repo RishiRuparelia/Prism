@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>PRISM · Browser</title>
+  <link rel="icon" type="image/svg+xml" href="/favicon.svg">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@700&family=Rajdhani:wght@400;600&display=swap" rel="stylesheet">
+  <style>
+    :root{--gold:#c9a84c;--gold-light:#f0d080;--dark:#0a0805;--dark2:#120f08;--ink:#e8dcc8}
+    *{box-sizing:border-box}
+    body{margin:0;background:var(--dark);color:var(--ink);font:15px 'Rajdhani',system-ui,sans-serif;height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+    header{display:flex;gap:9px;align-items:center;padding:11px 16px;border-bottom:1px solid #c9a84c38;background:linear-gradient(100deg,#0a0805,#1a1510);position:relative;box-shadow:0 2px 18px #0005}
+    button,.home{border:1px solid #c9a84c26;background:#c9a84c0a;border-radius:5px;padding:9px 12px;color:var(--gold-light);cursor:pointer;font:inherit;white-space:nowrap;text-decoration:none;transition:background .15s,border-color .15s}
+    button:hover,.home:hover{background:#c9a84c20;border-color:#c9a84c70}
+    button:disabled{opacity:.3;cursor:default}
+    button:focus-visible,.home:focus-visible,input:focus-visible{outline:2px solid var(--gold-light);outline-offset:2px}
+    .home{display:flex;align-items:center;gap:9px;border-color:transparent;background:none;font:700 15px 'Cinzel',Georgia,serif;letter-spacing:3px;padding:7px 13px 7px 0}
+    .home img{width:27px;height:27px}
+    .nav{display:flex;gap:4px}
+    form{display:flex;gap:8px;flex:1;min-width:0}
+    input{width:100%;flex:1;background:#080704;border:1px solid #c9a84c35;border-radius:5px;padding:10px 14px;color:var(--ink);min-width:0;font:inherit;letter-spacing:.35px}
+    input::placeholder{color:#b09d72}
+    #go{background:linear-gradient(120deg,#f0d080,#c9a84c);border-color:var(--gold);color:#1a1305;font-weight:600;letter-spacing:1px;padding-inline:19px}
+    #go:hover{background:#f0d080}
+    iframe{flex:1;min-height:0;border:0;width:100%;background:white}
+    #status{padding:12px 18px;color:#c8b890;line-height:1.5;letter-spacing:.3px}
+    #status:empty{display:none}
+    body[data-error="true"] #status{color:#ffc3a3;background:#28170c}
+    body[data-loading="true"] header:after{content:"";position:absolute;bottom:0;left:0;width:30%;height:2px;background:linear-gradient(90deg,transparent,var(--gold-light),var(--gold));animation:progress 1.6s ease-in-out infinite}
+    @keyframes progress{from{transform:translateX(-100%)}to{transform:translateX(430%)}}
+    @media(prefers-reduced-motion:reduce){body[data-loading="true"] header:after{animation:none;width:100%}}
+    @media(max-width:640px){header{padding:8px;gap:5px}.home{padding-right:4px}.home span{display:none}.home img{width:25px;height:25px}button{padding:9px}.nav{gap:2px}#go{font-size:0;padding-inline:12px}#go:after{content:"→";font-size:16px}}
+  </style>
+</head>
+<body>
+  <header aria-label="Browser toolbar">
+    <a class="home" href="/prism/index.html" aria-label="PRISM home" title="PRISM home"><img src="/favicon.svg" alt=""><span>PRISM</span></a>
+    <div class="nav">
+      <button id="back" type="button" aria-label="Back" title="Back" disabled>←</button>
+      <button id="forward" type="button" aria-label="Forward" title="Forward" disabled>→</button>
+      <button id="reload" type="button" aria-label="Reload" title="Reload">↻</button>
+    </div>
+    <form id="navigation" aria-label="Navigate to a website">
+      <input id="address" type="text" aria-label="Website address or search" placeholder="Search the web or enter an address" autocomplete="off" spellcheck="false">
+      <button id="go" type="submit">EXPLORE →</button>
+    </form>
+  </header>
+  <div id="status" role="status" aria-live="polite">Starting PRISM Browser…</div>
+  <iframe id="frame" title="Proxied website" sandbox="allow-scripts allow-same-origin allow-forms allow-downloads allow-pointer-lock allow-presentation allow-popups allow-popups-to-escape-sandbox" allow="fullscreen; autoplay; clipboard-write" allowfullscreen></iframe>
+  <script src="/uv/uv.bundle.js"></script>
+  <script src="/uv/uv.config.js"></script>
+  <script src="/browser.js"></script>
+</body>
+</html>

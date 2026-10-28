@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="en"><head><meta charset="UTF-8"><meta name="viewport" content="width=device-width, initial-scale=1.0"><title>PRISM — Chat</title><meta name="description" content="Join the Prism community in the lounge, gaming room, or movie night."><link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@400;700;900&family=Rajdhani:wght@300;400;500;600;700&display=swap" rel="stylesheet"><link rel="stylesheet" href="/prism/media-base.css"><link rel="stylesheet" href="/prism/media.css"><link rel="stylesheet" href="/prism/enhancements.css"><script src="/prism/media-scene.js" defer></script><script src="/prism/chat.js" defer></script><script src="/prism/preferences.js" defer></script><link rel="alternate icon" href="/chat-icon.ico?v=3" sizes="any"><link rel="icon" type="image/svg+xml" href="/chat-icon.svg?v=3"></head><body><div id="load-bar"></div>
+<div id="grain"></div>
+
+<!-- BACKGROUND SCENE -->
+<div id="scene">
+  <div id="sky"></div>
+  <div id="stars"></div>
+  <div id="moon"></div>
+
+  <!-- Desert floor -->
+  <div id="desert"></div>
+
+  <!-- Sand dunes -->
+  <div class="dune" style="width:340px;height:70px;left:-40px;bottom:17%;"></div>
+  <div class="dune" style="width:260px;height:55px;right:-20px;bottom:17%;"></div>
+  <div class="dune" style="width:180px;height:40px;left:30%;bottom:18.5%;"></div>
+
+  <!-- Nile -->
+  <div id="nile"></div>
+
+  <!-- Hieroglyphs decorative -->
+  <div class="hieroglyph" style="top:10%;left:5%;animation-delay:0s;">𓂀 𓆣 𓅃 𓋹</div>
+  <div class="hieroglyph" style="top:20%;right:6%;animation-delay:2s;">𓁿 𓀭 𓏏 𓈖</div>
+  <div class="hieroglyph" style="top:35%;left:3%;animation-delay:1s;">𓆄 𓇋 𓊪 𓃀</div>
+  <div class="hieroglyph" style="top:35%;right:4%;animation-delay:3s;">𓂋 𓄿 𓅱 𓇼</div>
+
+  <!-- Prism spectrum rays from top-centre -->
+  <div id="prism-spectrum">
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#ff0000);transform:rotate(-35deg);animation-delay:0s;"></div>
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#ff7700);transform:rotate(-25deg);animation-delay:0.2s;"></div>
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#ffff00);transform:rotate(-15deg);animation-delay:0.4s;"></div>
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#00ff00);transform:rotate(-5deg);animation-delay:0.6s;"></div>
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#00ccff);transform:rotate(5deg);animation-delay:0.8s;"></div>
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#4400ff);transform:rotate(15deg);animation-delay:1s;"></div>
+    <div class="spectrum-ray" style="background:linear-gradient(90deg,transparent,#cc00ff);transform:rotate(25deg);animation-delay:1.2s;"></div>
+  </div>
+
+  <!-- PYRAMID SCENE -->
+  <div id="pyramid-scene">
+    <div id="pyramid-wrapper">
+      <svg id="pyramid-svg" viewBox="0 0 440 300" xmlns="http://www.w3.org/2000/svg">
+        <defs>
+          <linearGradient id="blockFaceLight" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#c8a840" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#e8c870" stop-opacity="0.95"/>
+          </linearGradient>
+          <linearGradient id="blockFaceDark" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#7a6020" stop-opacity="0.95"/>
+            <stop offset="100%" stop-color="#a08030" stop-opacity="0.95"/>
+          </linearGradient>
+          <linearGradient id="shadowGrad" x1="0" y1="0" x2="1" y2="0">
+            <stop offset="0%" stop-color="#000" stop-opacity="0.6"/>
+            <stop offset="100%" stop-color="#000" stop-opacity="0"/>
+          </linearGradient>
+          <linearGradient id="tipGlow" x1="0.5" y1="0" x2="0.5" y2="1">
+            <stop offset="0%" stop-color="#fffbe0" stop-opacity="1"/>
+            <stop offset="100%" stop-color="#c9a84c" stop-opacity="0.4"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="3" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+
+        <!-- Row 9 (base) — widest -->
+        <g class="block-row" style="animation-delay: 0.2s;">
+          <rect x="44" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="83" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="122" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="161" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="200" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="239" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="278" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="317" y="256" width="39" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <!-- shadow side -->
+          <rect x="44" y="256" width="14" height="22" fill="url(#shadowGrad)"/>
+        </g>
+
+        <!-- Row 8 -->
+        <g class="block-row" style="animation-delay: 0.5s;">
+          <rect x="60" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="98" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="136" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="174" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="212" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="250" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="288" y="234" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="326" y="234" width="28" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 7 -->
+        <g class="block-row" style="animation-delay: 0.8s;">
+          <rect x="76" y="212" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="114" y="212" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="152" y="212" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="190" y="212" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="228" y="212" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="266" y="212" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="304" y="212" width="34" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 6 -->
+        <g class="block-row" style="animation-delay: 1.1s;">
+          <rect x="92" y="190" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="130" y="190" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="168" y="190" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="206" y="190" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="244" y="190" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="282" y="190" width="32" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 5 -->
+        <g class="block-row" style="animation-delay: 1.4s;">
+          <rect x="110" y="168" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="148" y="168" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="186" y="168" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="224" y="168" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="262" y="168" width="30" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 4 -->
+        <g class="block-row" style="animation-delay: 1.7s;">
+          <rect x="128" y="146" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="166" y="146" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="204" y="146" width="38" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="242" y="146" width="26" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 3 -->
+        <g class="block-row" style="animation-delay: 2.0s;">
+          <rect x="148" y="124" width="40" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="188" y="124" width="40" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="228" y="124" width="20" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 2 -->
+        <g class="block-row" style="animation-delay: 2.3s;">
+          <rect x="168" y="102" width="44" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+          <rect x="212" y="102" width="16" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Row 1 (top) + capstone -->
+        <g class="block-row" style="animation-delay: 2.6s;">
+          <rect x="188" y="80" width="40" height="22" fill="url(#blockFaceLight)" stroke="#9a7820" stroke-width="0.5"/>
+        </g>
+
+        <!-- Capstone / tip -->
+        <g class="block-row" style="animation-delay: 2.9s;">
+          <polygon points="220,30 188,80 228,80" fill="url(#tipGlow)" filter="url(#glow)" opacity="0.9"/>
+          <!-- Eye of prism -->
+          <circle cx="218" cy="62" r="5" fill="none" stroke="#fffbe0" stroke-width="1" opacity="0.6"/>
+          <circle cx="218" cy="62" r="2" fill="#fffbe0" opacity="0.8"/>
+        </g>
+
+        <!-- Pyramid shadow (right face) -->
+        <polygon points="228,80 356,278 220,278" fill="rgba(0,0,0,0.35)" style="animation: none;"/>
+
+        <!-- Base platform -->
+        <rect x="40" y="276" width="320" height="6" fill="#5a4015" opacity="0.8"/>
+        <rect x="40" y="282" width="320" height="3" fill="#3a2808" opacity="0.9"/>
+      </svg>
+    </div>
+
+    <!-- Workers on pyramid -->
+    <div id="workers"></div>
+
+    <!-- Torches flanking pyramid -->
+    <div class="torch" style="left:18px;bottom:0;">
+      <div class="flame"></div>
+    </div>
+    <div class="torch" style="right:18px;bottom:0;">
+      <div class="flame" style="animation-delay:0.07s;"></div>
+    </div>
+    <div class="torch" style="left:80px;bottom:0;">
+      <div class="flame" style="animation-delay:0.12s;"></div>
+    </div>
+    <div class="torch" style="right:80px;bottom:0;">
+      <div class="flame" style="animation-delay:0.05s;"></div>
+    </div>
+  </div>
+
+  <!-- Dust particles -->
+  <div id="dust-container"></div>
+</div>
+
+
+<nav>
+  <a class="nav-logo" href="/prism/index.html">
+    <!-- Mini prism SVG logo -->
+    <svg class="logo-icon" viewBox="0 0 28 28" fill="none" xmlns="http://www.w3.org/2000/svg">
+      <polygon points="14,2 2,24 26,24" fill="none" stroke="#c9a84c" stroke-width="1.5"/>
+      <line x1="14" y1="2" x2="14" y2="24" stroke="rgba(201,168,76,0.3)" stroke-width="0.8"/>
+      <circle cx="14" cy="10" r="2.5" fill="#fffbe0" opacity="0.8"/>
+      <line x1="14" y1="10" x2="4" y2="22" stroke="#ff7700" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="10" y2="22" stroke="#ffff00" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="16" y2="22" stroke="#00ff88" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="22" y2="22" stroke="#4fc3f7" stroke-width="0.7" opacity="0.5"/>
+      <line x1="14" y1="10" x2="26" y2="22" stroke="#cc88ff" stroke-width="0.7" opacity="0.5"/>
+    </svg>
+    PRISM
+  </a>
+  <ul class="nav-links">
+    <li><a href="/prism/games.html">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><path d="M2 2h3v3H2zm5 0h3v3H7zm-5 5h3v3H2zm5 0h3v3H7z"/></svg>
+      LEARNING
+    </a></li>
+    <li><a href="/prism/apps.html"><svg class="nav-item-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1" aria-hidden="true" focusable="false"><rect x="1" y="1" width="3.7" height="3.7" rx=".7"/><rect x="7.3" y="1" width="3.7" height="3.7" rx=".7"/><rect x="1" y="7.3" width="3.7" height="3.7" rx=".7"/><rect x="7.3" y="7.3" width="3.7" height="3.7" rx=".7"/></svg>
+      EDUCATIONAL APPS</a></li><li><a href="/prism/movies.html">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><rect x="2" y="1" width="8" height="10" rx="1" fill="none" stroke="currentColor" stroke-width="1.2"/><line x1="4" y1="4" x2="8" y2="4" stroke="currentColor" stroke-width="1"/><line x1="4" y1="6" x2="8" y2="6" stroke="currentColor" stroke-width="1"/><line x1="4" y1="8" x2="6" y2="8" stroke="currentColor" stroke-width="1"/></svg>
+      MOVIES
+    </a></li>
+    <li><a href="/prism/chat.html" class="active"><svg class="nav-item-icon" width="12" height="12" viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="1.1" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M10.8 5.4a4.7 4.7 0 0 1-4.9 4.3c-.7 0-1.4-.1-2-.4L1.3 11l.7-3A4 4 0 0 1 1 5.4a4.7 4.7 0 0 1 4.9-4.3 4.7 4.7 0 0 1 4.9 4.3Z"/><path d="M3.6 5.5h.1m2.2 0H6m2.2 0h.1" stroke-width="1.5"/></svg>
+      CHAT</a></li>
+    <li><a href="/prism/settings.html">
+      <svg width="12" height="12" viewBox="0 0 12 12" fill="currentColor"><circle cx="6" cy="6" r="2.5" fill="none" stroke="currentColor" stroke-width="1.2"/><path d="M6 1v1.5M6 9.5V11M1 6h1.5M9.5 6H11M2.5 2.5l1 1M8.5 8.5l1 1M9.5 2.5l-1 1M3.5 8.5l-1 1" stroke="currentColor" stroke-width="1"/></svg>
+      SETTINGS
+    </a></li>
+  </ul>
+</nav>
+<main class="page"><div class="page-header"><div class="page-title-group"><p class="page-eyebrow">✦ THE PRISM COMMUNITY</p><h1 class="page-title">CHAT</h1><p class="game-count">Meet beyond the veil.</p></div></div><div class="chat-layout"><aside class="chat-sidebar" aria-label="Chat rooms"><p class="section-label">The gathering</p><div class="chat-rooms"><button type="button" class="room-btn" data-room="lounge"># THE LOUNGE<span>Conversations without a destination</span></button><button type="button" class="room-btn" data-room="gaming"># GAMING<span>One more round</span></button><button type="button" class="room-btn" data-room="movie-night"># MOVIE NIGHT<span>Find your next great watch</span></button></div><div class="chat-profile"><label class="field-label" for="chat-name">Your display name</label><input type="text" id="chat-name" maxlength="24" autocomplete="nickname" placeholder="Explorer" required><p class="media-note">Choose the name you bring into the room.</p></div></aside><section class="chat-panel" aria-labelledby="room-title"><header class="room-header"><div><h2 id="room-title">THE LOUNGE</h2><p class="media-note" id="room-description">A place to meet between worlds.</p></div><span class="connection-status" id="connection-status" role="status">CONNECTING</span></header><div class="chat-messages" id="chat-messages" role="log" aria-live="polite" aria-relevant="additions" aria-label="Room messages"></div><form class="chat-compose" id="chat-compose"><div class="compose-row"><label class="hidden" for="message-input">Your message</label><textarea class="message-input" id="message-input" aria-label="Your message" rows="1" maxlength="1000" placeholder="Leave a little light here…" required></textarea><button type="submit" class="gold-btn" id="send-message">SEND <span aria-hidden="true">↗</span></button></div><div class="compose-bottom"><p class="media-note">Enter to send · Shift + Enter for a new line</p><p class="media-note" id="character-count">0 / 1000</p></div><p class="chat-status" id="chat-status" role="status"></p></form></section></div></main>
+</body></html>
