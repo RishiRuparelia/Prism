@@ -1,0 +1,287 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1,user-scalable=no" />
+  <title>Time Shooter 2</title>
+  <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/time-shooter2/favicon.ico" />
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Time Shooter 2\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["TimeShooter2_Yandex.data.unityweb", 5142704],
+      ["TimeShooter2_Yandex.framework.js.unityweb", 72105],
+      ["TimeShooter2_Yandex.wasm.unityweb", 3746226],
+    ]);
+  </script>
+  
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/time-shooter2/">
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+<body class="dark">
+  <div id="unity-container" class="unity-desktop">
+    <canvas id="unity-canvas"></canvas>
+  </div>
+  <div id="loading-cover" style="display: none">
+    <div id="unity-loading-bar">
+      <div id="unity-logo"><img src="logo.png" /></div>
+      <div id="unity-progress-bar-empty" style="display: none">
+        <div id="unity-progress-bar-full"></div>
+      </div>
+      <div class="spinner"></div>
+    </div>
+  </div>
+  <div id="unity-fullscreen-button" style="display: none"></div>
+  <script>
+    const hideFullScreenButton = "1";
+    const buildUrl = "Build";
+    const loaderUrl = "TimeShooter2_Yandex.loader.js";
+    const config = {
+      dataUrl: "TimeShooter2_Yandex.data.unityweb",
+      frameworkUrl: "TimeShooter2_Yandex.framework.js.unityweb",
+      codeUrl: "TimeShooter2_Yandex.wasm.unityweb",
+      streamingAssetsUrl: new URL("StreamingAssets", document.baseURI).href,
+      companyName: "GoGoMan",
+      productName: "Time Shooter 2",
+      productVersion: "0.1",
+    };
+
+    const container = document.querySelector("#unity-container");
+    const canvas = document.querySelector("#unity-canvas");
+    const loadingCover = document.querySelector("#loading-cover");
+    const progressBarEmpty = document.querySelector(
+      "#unity-progress-bar-empty"
+    );
+    const progressBarFull = document.querySelector(
+      "#unity-progress-bar-full"
+    );
+    const fullscreenButton = document.querySelector(
+      "#unity-fullscreen-button"
+    );
+    const spinner = document.querySelector(".spinner");
+
+    const canFullscreen = (function () {
+      for (const key of [
+        "exitFullscreen",
+        "webkitExitFullscreen",
+        "webkitCancelFullScreen",
+        "mozCancelFullScreen",
+        "msExitFullscreen",
+      ]) {
+        if (key in document) {
+          return true;
+        }
+      }
+      return false;
+    })();
+
+    if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+      container.className = "unity-mobile";
+      config.devicePixelRatio = 1;
+    }
+    canvas.style.background = "url('TimeShooter2_Yandex.jpg') center / cover";
+    loadingCover.style.display = "";
+
+    const loaderScript = document.createElement("script");
+    loaderScript.src = loaderUrl;
+    loaderScript.onload = () => {
+      createUnityInstance(canvas, config, (progress) => {
+        spinner.style.display = "none";
+        progressBarEmpty.style.display = "";
+        progressBarFull.style.width = `${100 * progress}%`;
+      })
+        .then((unityInstance) => {
+          window.unityInstance = unityInstance;
+          loadData();
+          loadingCover.style.display = "none";
+          if (canFullscreen) {
+            if (!hideFullScreenButton) {
+              fullscreenButton.style.display = "";
+            }
+            fullscreenButton.onclick = () => {
+              unityInstance.SetFullscreen(1);
+            };
+          }
+        })
+        .catch((message) => {
+          alert(message);
+        });
+    };
+    document.body.appendChild(loaderScript);
+  </script>
+  <script src="v2.js"></script>
+
+
+  <script type="text/javascript">
+    var player = null;
+    var sdk;
+    var payments = null;
+
+    YaGames.init({
+      adv: {
+        onAdvClose: (wasShown) => {
+          console.info("adv closed!");
+        },
+      },
+    }).then((ysdk) => {
+      sdk = ysdk;
+      ysdk
+        .getPlayer({ signed: true })
+        .then((_player) => {
+          player = _player;
+        })
+        .catch((err) => { });
+      sdk.adv.showFullscreenAdv({ callbacks: {} });
+    });
+
+    // Off Yandex the SDK reports its Russian defaults, so always start as
+    // the .com build in English (0 Russian, 1 English, 2 Turkish).
+    function checkCom() {
+      window.unityInstance.SendMessage("GameManager", "IsCom", 1);
+    }
+
+    function checkLanguage() {
+      window.unityInstance.SendMessage("GameManager", "SetLanguage", 1);
+    }
+
+    function loadData() {
+      checkCom();
+      if (player != null) {
+        player
+          .getData([
+            "levels",
+            "sounds",
+            "music",
+            "language",
+            "tutor",
+            "sensitivity",
+          ])
+          .then((data) => {
+            if (data.levels) {
+              var sounds;
+              var music;
+              var tutor;
+              if (data.sounds) {
+                sounds = 1;
+              } else {
+                sounds = 0;
+              }
+              if (data.music) {
+                music = 1;
+              } else {
+                music = 0;
+              }
+              if (data.tutor) {
+                tutor = 1;
+              } else {
+                tutor = 0;
+              }
+              var dataStr =
+                data.levels +
+                " " +
+                sounds +
+                " " +
+                music +
+                " " +
+                data.language +
+                " " +
+                tutor +
+                " " +
+                data.sensitivity;
+              console.log("Get Data ", dataStr);
+              window.unityInstance.SendMessage(
+                "GameManager",
+                "LoadData",
+                dataStr
+              );
+            }
+          })
+          .catch(() => {
+            console.log("No Data");
+          });
+      }
+    }
+  </script>
+
+  <script>
+    function saveData(level, isSound, isMusic, language, tutor, sensitivity) {
+      console.log("Saving....");
+      if (player != null) {
+        player
+          .getData([
+            "levels",
+            "sounds",
+            "music",
+            "language",
+            "tutor",
+            "sensitivity",
+          ])
+          .then((data) => {
+            if (data.levels) {
+              if (data.levels <= level) {
+                player
+                  .setData({
+                    levels: level,
+                    sounds: isSound,
+                    music: isMusic,
+                    language: language,
+                    tutor: tutor,
+                    sensitivity: sensitivity,
+                  })
+                  .then(() => {
+                    console.log("data is set -update");
+                  });
+              }
+            } else {
+              player
+                .setData({
+                  levels: level,
+                  sounds: isSound,
+                  music: isMusic,
+                  language: language,
+                  tutor: tutor,
+                  sensitivity: sensitivity,
+                })
+                .then(() => {
+                  console.log("data is set -first");
+                });
+            }
+          })
+          .catch(() => {
+            player
+              .setData({
+                levels: level,
+                sounds: isSound,
+                music: isMusic,
+                language: language,
+                tutor: tutor,
+                sensitivity: sensitivity,
+              })
+              .then(() => {
+                console.log("data is set -first");
+              });
+          });
+      }
+    }
+  </script>
+
+  <script>
+    function showFullscrenAd() { }
+  </script>
+
+  <script>
+    function rate() { }
+  </script>
+
+  <script>
+    function showRewardedAd(id) { }
+  </script>
+</body>
+
+</html>

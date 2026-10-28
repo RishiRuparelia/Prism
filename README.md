@@ -14,7 +14,7 @@ The complete current PRISM application is at the repository root, including Movi
 | Movies and TV | [Movies/TV page](public/prism/movies.html), [catalog interface](public/prism/movies.js), [movie API](app/api/movies/route.ts) |
 | Movie player and TV episode state | [Player behavior](public/prism/movie-playback.js), [series state](public/prism/series-state.js) |
 | Movie, TV, and classics catalogs | [Movies](public/data/movies.json), [TV series](public/data/series.json), [classics](public/data/classics.json) |
-| Learning / games | [Games page](public/prism/games.html), [games interface](public/prism/prism-games.js), [games catalog](public/data/games.json) |
+| Learning / games | [Games page](public/prism/games.html), [games interface](public/prism/prism-games.js), [games catalog](public/data/games.json), [local launch map](public/data/game-pages.json) |
 | Educational Apps | [Apps page](public/prism/apps.html) |
 | Chat | [Chat page](public/prism/chat.html), [chat client](public/prism/chat.js), [chat API](app/api/chat/route.ts), [database](db/) |
 | Settings | [Settings page](public/prism/settings.html), [settings behavior](public/prism/prism-settings.js), [preferences](public/prism/preferences.js) |
@@ -82,6 +82,16 @@ node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js d1
 ```
 
 For standalone Cloudflare hosting, the preparation helper connects the `DB` binding to your existing D1 database. `.openai/hosting.json` supplies the build's binding names and does not contain a hosted project identity or account credentials.
+
+## Prism game loading screens
+
+The shared loader used by 151 imported catalog games now runs through local entry pages and a Prism gold presentation adapter. The game's engine still reports download progress and decides when the loading screen disappears. Native game loaders and original author credits remain with their games; large binary assets still load from the original CDN addresses.
+
+Generated entry pages live in `public/game-pages/`, with the launch map in `public/data/game-pages.json`. Engine helpers and Prism's presentation live in `public/game-runtime/`. Normal builds use these saved files and do not download the game library again. To regenerate the imported pages from the pinned application archive in `outputs/source/`, run `npm.cmd run games:import`.
+
+For an already configured Cloudflare deployment, rebuild and deploy with the existing configuration, then purge the Bunny Pull Zone cache and reload the browser. See [the update instructions](CLOUDFLARE.md#update-the-existing-site-later).
+
+The importer expects the exact archive named `55GMS-183754e50598d4dab26b9107404d983ca562833b.zip` and verifies its SHA-256. To regenerate a fresh checkout, download [that pinned application archive](https://codeload.github.com/55gms/55GMS/zip/183754e50598d4dab26b9107404d983ca562833b) into `outputs/source/` with that filename. The generated pages are committed, so ordinary builds need no archive download.
 
 ## Data and original sources
 

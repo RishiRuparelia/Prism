@@ -1,0 +1,54 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Snow Rider 3D Unblocked</title>
+  
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Snow Rider 3D\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["Build/SnowRider3D-gd-1.data.unityweb", 5813599],
+      ["Build/SnowRider3D-gd-1.wasm.code.unityweb", 6650777],
+      ["Build/SnowRider3D-gd-1.wasm.framework.unityweb", 514240],
+    ]);
+  </script>
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@7e412f6101ae566968f32d97a48f44c09adae3e1/misc/SnowRider3D/">
+  </base>
+  <link rel="shortcut icon" href="TemplateData/favicon.ico" />
+  <link rel="stylesheet" href="TemplateData/style.css" />
+  <script src="TemplateData/UnityProgress.js"></script>
+  <script src="Build/UnityLoader.js"></script>
+  <script>
+    var gameInstance = UnityLoader.instantiate(
+      "gameContainer",
+      "Build/SnowRider3D-gd-1.json",
+      {
+        onProgress: UnityProgress,
+        Module: {
+          onRuntimeInitialized: function () {
+            UnityProgress(gameInstance, "complete");
+          },
+        },
+      }
+    );
+  </script>
+</head>
+
+<body style="overflow: hidden; padding: 0px; margin: 0px">
+  <div class="webgl-content">
+    <div id="gameContainer" style="width: 960px; height: 600px; margin: auto"></div>
+    <!--       <div class="footer">
+            <div class="webgl-logo"></div>
+            <div class="fullscreen" onclick="gameInstance.SetFullscreen(1)"></div>
+            <div class="title">Snow Rider 3D</div>
+        </div> -->
+  </div>
+</body>
+
+</html>

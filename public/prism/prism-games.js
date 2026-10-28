@@ -1,4 +1,7 @@
+import { gameLaunchUrl, loadGamePages } from "/prism/game-launch.js";
+
 (() => {
+  let gamePages = {};
   let allGames = [], activeCategory = "All", searchQuery = "", sortMode = "default";
   const favoriteKey = "prism.favorites";
   let favorites = [];
@@ -8,12 +11,14 @@
   const featuredNames = ["minecraft", "subway surfers", "slope", "retro bowl", "drive mad", "basketball stars"];
   function loadBar(value) { $("load-bar").style.width = `${value}%`; }
   async function init() {
+    const gamePagesPromise = loadGamePages();
     loadBar(35);
     try {
       const response = await fetch("/data/games.json");
       if (!response.ok) throw new Error(`Catalog unavailable (${response.status})`);
       const data = await response.json();
       if (!Array.isArray(data)) throw new Error("The game catalog is invalid.");
+      gamePages = await gamePagesPromise;
       allGames = data.map(g => ({ ...g, title: g.name || g.title, thumbnail: g.image, category: g.category || "Arcade", featured: featuredNames.includes((g.name || "").toLowerCase()) }));
       categories(); render(); loadBar(100);
       setTimeout(() => { $("load-bar").style.opacity = "0"; }, 500);
@@ -44,7 +49,7 @@
     $("featured-grid").replaceChildren(); $("main-grid").replaceChildren();
     list.forEach((game, i) => (showFeatured && game.featured ? $("featured-grid") : $("main-grid")).append(card(game, i)));
     $("game-count").textContent = `${list.length} of ${allGames.length} games`;
-    $("all-label").textContent = searchQuery ? `Results for “${$("search-input").value.trim()}”` : activeCategory === "All" ? "Learning collection" : activeCategory;
+    $("all-label").textContent = searchQuery ? `Results for “${$("search-input").value.trim()}”` : activeCategory === "All" ? "All Games" : activeCategory;
     $("empty-state").style.display = list.length ? "none" : "flex";
     $("empty-msg").textContent = activeCategory === "Favorites" ? "Tap the heart on a game to save it here." : "Try another title or category.";
   }
@@ -57,7 +62,7 @@
     const favorite = document.createElement("button"); favorite.className = `prism-favorite${favorites.includes(game.id) ? " saved" : ""}`; favorite.textContent = favorites.includes(game.id) ? "♥" : "♡"; favorite.setAttribute("aria-label", `${favorites.includes(game.id) ? "Unsave" : "Save"} ${game.title}`); favorite.onclick = event => { event.preventDefault(); event.stopPropagation(); favorites = favorites.includes(game.id) ? favorites.filter(id => id !== game.id) : [...favorites,game.id]; localStorage.setItem(favoriteKey, JSON.stringify(favorites)); render(); }; thumb.append(favorite);
     const info = document.createElement("div"); info.className = "card-info"; const title = document.createElement("div"); title.className = "card-title"; title.textContent = game.title; const category = document.createElement("div"); category.className = "card-category"; category.textContent = game.category; info.append(title, category); element.append(thumb, info); return element;
   }
-  function openGame(game) { $("modal-title").textContent = game.title.toUpperCase(); $("game-frame").src = game.usesProxy ? `/browser.html?url=${encodeURIComponent(game.url)}` : game.url; $("modal-backdrop").classList.add("open"); document.body.style.overflow = "hidden"; }
+  function openGame(game) { $("modal-title").textContent = game.title.toUpperCase(); $("game-frame").src = gameLaunchUrl(game, gamePages); $("modal-backdrop").classList.add("open"); document.body.style.overflow = "hidden"; }
   function close() { $("modal-backdrop").classList.remove("open"); $("game-frame").src = "about:blank"; document.body.style.overflow = ""; }
   $("modal-close-btn").onclick = close; $("modal-backdrop").onclick = event => { if (event.target === $("modal-backdrop")) close(); };
   document.addEventListener("keydown", event => { if (event.key === "Escape") close(); });

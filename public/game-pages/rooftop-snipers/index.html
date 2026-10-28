@@ -1,0 +1,65 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<html>
+
+<head>
+  
+  
+  <title>Rooftop Snipers</title>
+  <link rel="icon" sizes="192x192" href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/rooftop-snipers/img/thumb.png" />
+  <link rel="shortcut icon" href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/rooftop-snipers/img/thumb.png" type="image/x-icon" />
+  <link rel="apple-touch-icon" href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/rooftop-snipers/img/thumb.png" type="image/x-icon" />
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Rooftop Snipers\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["Build/rooftop-snipers.data.unityweb", 2883506],
+      ["Build/rooftop-snipers.asm.code.unityweb", 5013861],
+      ["Build/rooftop-snipers.asm.memory.unityweb", 349865],
+      ["Build/rooftop-snipers.asm.framework.unityweb", 89396],
+    ]);
+  </script>
+  
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/rooftop-snipers/">
+  <meta content="https://3kh0.github.io/rooftop-snipers" property="og:url" />
+  <meta content="https://3kh0.github.io/rooftop-snipers/img/thumb.png" property="og:image" />
+  <meta content="#000000" data-react-helmet="true" name="theme-color" />
+  <meta name="title" content="Rooftop Snipers" />
+  <meta name="description"
+    content="Rooftop Snipers is a pixel-style shooting game where you have to shoot famous characters off of the roof. You can play in single or two-player mode, against the Joker, Mr. T, and John Wayne. During each duel, you have to jump forwards and backwards to dodge bullets. Look out for the tomahawks and beach balls in Rooftop Snipers." />
+  <meta name="keywords" content="games, ad blocker, trolls, unblocked games, web games, online games, fun, tags" />
+  <meta name="robots" content="index, follow" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <meta name="language" content="English" />
+  <meta name="revisit-after" content="1 days" />
+  <meta name="author" content="3kh0" />
+
+  <link rel="stylesheet" href="TemplateData/style.css" />
+  <script src="TemplateData/UnityProgress.js"></script>
+
+  <script src="TemplateData/UnityLoader.js"></script>
+  <script>
+    var gameInstance = UnityLoader.instantiate(
+      "gameContainer",
+      "Build/rooftop-snipers.json",
+      {
+        onProgress: UnityProgress,
+        Module: {
+          onRuntimeInitialized: function () {
+            UnityProgress(gameInstance, "complete");
+          },
+        },
+      }
+    );
+  </script>
+</head>
+
+<body style="margin: 0; overflow: hidden">
+  <div class="webgl-content">
+    <div id="gameContainer" style="width: 100%; height: 100%; margin: 0"></div>
+  </div>
+</body>
+
+</html>

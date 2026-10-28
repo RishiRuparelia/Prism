@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "node scripts/copy-proxy-assets.mjs && node scripts/page-icons.mjs && node scripts/package-source.mjs",
     "local": "node scripts/local-server.mjs",
-    "test": "node --test tests/chat.test.mjs tests/chat-client.test.mjs tests/proxy.test.mjs tests/browser-runtime.test.mjs tests/movie-playback.test.mjs tests/movies-api.test.mjs tests/series-state.test.mjs tests/static-pages.test.mjs tests/cloudflare-config.test.mjs tests/source-package.test.mjs",
+    "test": "node --test tests/chat.test.mjs tests/chat-client.test.mjs tests/proxy.test.mjs tests/browser-runtime.test.mjs tests/movie-playback.test.mjs tests/movies-api.test.mjs tests/series-state.test.mjs tests/static-pages.test.mjs tests/cloudflare-config.test.mjs tests/source-package.test.mjs tests/game-launch.test.mjs tests/loader-ui.test.mjs tests/game-page-transform.test.mjs",
     "series:sync": "node scripts/sync-series.mjs",
     "catalog:sync": "node scripts/sync-catalog.mjs",
     "source:package": "node scripts/package-source.mjs",
@@ -17,7 +17,8 @@
     "build": "node scripts/run-framework.mjs build",
     "start": "node --import ./scripts/sites-env.mjs ./node_modules/wrangler/bin/wrangler.js dev --config dist/server/wrangler.json --local --persist-to .wrangler/state --ip 127.0.0.1 --inspector-port 0",
     "lint": "eslint . --ignore-pattern dist --ignore-pattern .next",
-    "db:generate": "drizzle-kit generate"
+    "db:generate": "drizzle-kit generate",
+    "games:import": "node scripts/import-game-pages.mjs"
   },
   "dependencies": {
     "@titaniumnetwork-dev/ultraviolet": "2.0.0",

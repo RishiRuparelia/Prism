@@ -1,0 +1,55 @@
+/* 55GMS 183754e50598d4dab26b9107404d983ca562833b; AGPL-3.0. Source and license: /credits.html. */
+@font-face {
+  font-family: Inter;
+  src: url("./inter-regular.ttf") format("truetype");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+html,
+body {
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  overflow: hidden;
+  background: #231f20;
+}
+
+#unity-container,
+#unityContainer,
+.webgl-content {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+}
+
+canvas {
+  display: block;
+  width: 100% !important;
+  height: 100% !important;
+}
+
+#game-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  box-sizing: border-box;
+  padding: 24px;
+  background: #231f20;
+  color: #ddd;
+  font:
+    400 clamp(18px, 3vw, 48px)/1.4 Inter,
+    sans-serif;
+  text-align: center;
+  text-shadow: 2px 2px 4px rgb(0 0 0 / 80%);
+  font-variant-numeric: tabular-nums;
+}
+
+#game-loading[hidden] {
+  display: none;
+}

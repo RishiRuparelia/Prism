@@ -1,0 +1,46 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+  <link rel="icon" type="image/x-icon" href="/media/favicon/favicon.png" />
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Getaway Shootout</title>
+  <script src="https://cdn.jsdelivr.net/gh/55gms/assets@86dba3822eb145dd1780438a918249e111dc9cae/misc/getaway-shootout/Build/UnityLoader.js"></script>
+  
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Getaway Shootout\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["unity/GetawayShootout.data.unityweb", 8370536],
+      ["unity/GetawayShootout.asm.code.unityweb", 4693200],
+      ["unity/GetawayShootout.asm.memory.unityweb", 381177],
+      ["unity/GetawayShootout.asm.framework.unityweb", 90564],
+    ]);
+  </script>
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@86dba3822eb145dd1780438a918249e111dc9cae/misc/getaway-shootout/">
+  <style>
+    body {
+      background-color: #000000;
+    }
+  </style>
+  <script>
+    var gameInstance = UnityLoader.instantiate(
+      "gameContainer",
+      "GetawayShootout.json",
+      { width: 800, height: 600 }
+    );
+  </script>
+</head>
+
+<body>
+  <div id="gameContainer"
+    style="position:fixed; top:0; left:0; bottom:0; right:0; width:100%; height:100%; border:none; margin:0; padding:0; overflow:hidden; z-index:999999;">
+  </div>
+</body>
+
+</html>

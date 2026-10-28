@@ -1,0 +1,160 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+    <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+    <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Getting Over It\">\u003c/script>");</script>
+    <!-- jsDelivr blocks this repo; GitHub serves it, but only as plain text,
+         so the Unity scripts are fetched and run from blobs. -->
+    <base href="https://raw.githubusercontent.com/genizy/web-port/main/getting-over-it/">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Getting Over It</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: #231F20;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .webgl-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #unityContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .fullscreen {
+            cursor: pointer;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url('TemplateData/fullscreen.png') no-repeat center;
+        }
+
+    </style>
+</head>
+
+<body>
+    <div class="webgl-content">
+        <div id="unity-container" class="unity-desktop">
+            <canvas id="unity-canvas" tabindex="-1"></canvas>
+            <div id="unity-loading-bar">
+                <div id="unity-logo"></div>
+                <div id="unity-progress-bar-empty">
+                    <div id="unity-progress-bar-full"></div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <script>
+        function getParts(file, count) {
+            let parts = [];
+            for (let i = 1; i <= count; i++) {
+                parts.push(file + ".part" + i);
+            }
+            return parts;
+        }
+        (async () => {
+            const dataParts = getParts("Build/GettingOverIt.data", 32);
+            const wasmParts = getParts("Build/GettingOverIt.wasm", 2);
+            const allParts = [...dataParts, ...wasmParts];
+            GameLoader.expect(691732588);
+            const [dataUrl, wasmUrl, frameworkUrl, loaderUrl] = await Promise.all([
+                GameLoader.merge(dataParts),
+                GameLoader.merge(wasmParts),
+                GameLoader.merge(["Build/GettingOverIt.framework.js"], "application/javascript"),
+                GameLoader.merge(["Build/GettingOverIt.loader.js"], "application/javascript"),
+            ]);
+            var container = document.querySelector("#unity-container");
+            var canvas = document.querySelector("#unity-canvas");
+            var loadingBar = document.querySelector("#unity-loading-bar");
+            var progressBarFull = document.querySelector("#unity-progress-bar-full");
+            var warningBanner = document.querySelector("#unity-warning");
+
+            function unityShowBanner(msg, type) {
+
+            }
+
+            var config = {
+                dataUrl: dataUrl,
+                frameworkUrl: frameworkUrl,
+                codeUrl: wasmUrl,
+                streamingAssetsUrl: new URL("StreamingAssets", document.baseURI).href,
+                companyName: "Bennett Foddy",
+                productName: "Getting Over It",
+                productVersion: "1.7",
+                showBanner: unityShowBanner,
+            };
+
+            if (/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)) {
+
+                var meta = document.createElement('meta');
+                meta.name = 'viewport';
+                meta.content = 'width=device-width, height=device-height, initial-scale=1.0, user-scalable=no, shrink-to-fit=yes';
+                document.getElementsByTagName('head')[0].appendChild(meta);
+                container.className = "unity-mobile";
+                canvas.className = "unity-mobile";
+
+            } else {
+                const canvas = document.querySelector("canvas");
+
+                function resizeCanvas() {
+                    canvas.width = window.innerWidth;
+                    canvas.height = window.innerHeight;
+                    canvas.style.width = window.innerWidth + "px";
+                    canvas.style.height = window.innerHeight + "px";
+                }
+
+                window.addEventListener("resize", resizeCanvas);
+                resizeCanvas();
+            }
+
+            loadingBar.style.display = "block";
+
+            var script = document.createElement("script");
+            script.src = loaderUrl;
+            script.onerror = () => GameLoader.fail(new Error("Failed to load the Unity loader"));
+            script.onload = () => {
+                createUnityInstance(canvas, config, (progress) => {
+                    progressBarFull.style.width = 100 * progress + "%";
+                }).then((unityInstance) => {
+                    loadingBar.style.display = "none";
+                    GameLoader.finish();
+                }).catch(GameLoader.fail);
+            };
+
+            document.body.appendChild(script);
+        })().catch(GameLoader.fail);
+    </script>
+</body>
+
+</html>

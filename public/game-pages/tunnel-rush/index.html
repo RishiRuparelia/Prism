@@ -1,0 +1,64 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<html>
+
+<head>
+  
+  
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <title>Tunnel Rush</title>
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Tunnel Rush\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["tunnel_rush_v9data.unityweb", 8252143],
+      ["tunnel_rush_v9wasmcode.unityweb", 3937078],
+      ["tunnel_rush_v9wasmframework.unityweb", 711364],
+    ]);
+  </script>
+  
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@86dba3822eb145dd1780438a918249e111dc9cae/misc/tunnel-rush/">
+  <link rel="stylesheet" href="style/style.css" />
+  <style>
+    html,
+    body,
+    .webgl-content,
+    #gameContainer {
+      width: 100%;
+      height: 100%;
+      margin: 0;
+      overflow: hidden;
+    }
+
+    /* The site loading screen replaces Unity's own splash logo and bar. */
+    .webgl-content .logo,
+    .webgl-content .progress {
+      display: none;
+    }
+  </style>
+  <script src="UnityLoader.js"></script>
+  <script src="UnityProgress.js"></script>
+  <link rel="icon" href="img/tunnel.jpg" />
+  <script>
+    var gameInstance = UnityLoader.instantiate(
+      "gameContainer",
+      "build.json",
+      {
+        onProgress: UnityProgress,
+        Module: {
+          onRuntimeInitialized: function () {
+            UnityProgress(gameInstance, "complete");
+          },
+        },
+      }
+    );
+  </script>
+</head>
+
+<div class="webgl-content">
+  <div id="gameContainer"></div>
+</div>
+
+</body>
+
+</html>

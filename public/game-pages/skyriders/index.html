@@ -1,0 +1,69 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+  
+    <script data-prism-runtime="unity-cdn-loader.css">document.write("\u003clink rel=\"stylesheet\" href=\"" + location.origin + "/game-runtime/unity-cdn-loader.css?v=prism-1\">");</script>
+    <script data-prism-runtime="unity-cdn-loader.js">document.write("\u003cscript type=\"module\" src=\"" + location.origin + "/game-runtime/unity-cdn-loader.js?v=prism-1\">\u003c/script>");</script>
+    <base href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/skyriders/">
+  <title>Sky Rider</title>
+  <link rel="stylesheet" href="./styles/gameloader.css" />
+
+
+
+  <meta charset="UTF-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+</head>
+
+<body>
+    <div id="unity-cdn-loading" data-title="Skyriders" role="status" aria-live="polite">LOADING...</div>
+
+
+    <template id="unity-game-scripts">
+<script src="./js/gameloader.js"></script>
+<script src="./js/gameloaderhelper.js"></script>
+<script type="text/javascript">
+    var options = {
+      logo: "logo.png",
+      gameName: "Sky Riders",
+      gameNameEu: "Sky Riders",
+      gameUrl: "41246",
+      moreLink: ("#"),
+      allowFullscreen: true,
+      locale: "en_US",
+      loader: "unity2020",
+      loaderOptions: {
+        unityLoaderUrl: "Build/SkyRiders-Save.loader.js",
+        unityConfigOptions: {
+          dataUrl: "Build/99606e9dae7504bbb37c9e9eab12dc88.data.br",
+          frameworkUrl: "Build/360a95477d1db22789707b3fb22b15d0.js.br?v=3",
+          codeUrl: "Build/bb237ea77de62208b03beff88d1b3703.wasm.br",
+          streamingAssetsUrl: new URL("StreamingAssets", document.baseURI).href
+        }
+      },
+    };
+    GameInit.load(options);   
+  </script>
+    </template>
+</body>
+
+</html>
+
+
+<style>
+  body::-webkit-scrollbar {
+    display: none;
+  }
+
+  body {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+    overflow: hidden;
+  }
+
+  html {
+    overflow: hidden;
+  }
+</style>

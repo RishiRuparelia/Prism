@@ -1,0 +1,32 @@
+/* 55GMS 183754e50598d4dab26b9107404d983ca562833b; AGPL-3.0. Source and license: /credits.html. */
+html,
+body {
+  background: #000 !important;
+}
+
+#unity-cdn-loading {
+  position: fixed;
+  inset: 0;
+  z-index: 2147483647;
+  display: grid;
+  place-items: center;
+  margin: 0;
+  padding: 24px;
+  box-sizing: border-box;
+  background: #0a0a0a;
+  color: #fff;
+  font-family: "Comic Sans MS", "Comic Sans", cursive;
+  font-size: clamp(18px, 4vw, 48px);
+  line-height: 1.4;
+  text-align: center;
+}
+
+/* The placeholder text is only for the fallback: keep it out of sight while
+   the loading screen script is on its way, so the old screen never flashes. */
+#unity-cdn-loading:not(.loader-ui):not(.loader-fallback) {
+  color: transparent;
+}
+
+#unity-cdn-loading[hidden] {
+  display: none;
+}

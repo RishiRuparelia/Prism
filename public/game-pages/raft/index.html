@@ -1,0 +1,146 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+    <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+    <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Raft\">\u003c/script>");</script>
+    <base href="https://cdn.jsdelivr.net/gh/kfm5/55gms-web-port-archive@main/raft/">
+    <meta charset="utf-8" />
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+    <title>Unity WebGL Player | Raft</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: #231F20;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .webgl-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #unityContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .fullscreen {
+            cursor: pointer;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url('TemplateData/fullscreen.png') no-repeat center;
+        }
+
+    </style>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+        UnityLoader.downloadJob = function (e, t) {
+            var r = new XMLHttpRequest;
+            if (t.parameters.url.startsWith("Build/blob")) {
+                r.open("GET", t.parameters.url.replace("Build/", ""));
+            } else {
+                r.open("GET", t.parameters.url);
+            }
+            r.responseType = "arraybuffer",
+                r.onload = function () {
+                    UnityLoader.Compression.decompress(new Uint8Array(r.response), function (e) {
+                        t.complete(e)
+                    })
+                }
+                ,
+                t.parameters.onprogress && r.addEventListener("progress", t.parameters.onprogress),
+                t.parameters.onload && r.addEventListener("load", t.parameters.onload),
+                r.send()
+        };
+
+        function getParts(file, start, end) {
+            let parts = [];
+            for (let i = start; i <= end; i++) {
+                parts.push(file + ".part" + i);
+            }
+            return parts;
+        }
+
+        function resizeUnityContainer() {
+            var container = document.getElementById("unityContainer");
+            container.style.width = window.innerWidth + "px";
+            container.style.height = window.innerHeight + "px";
+        }
+
+        (async () => {
+            const dataPartsFiles = getParts("Build/Raft-WEBGL.data.unityweb", 1, 3);
+            const asmPartsFiles = getParts("Build/Raft-WEBGL.asm.code.unityweb", 1, 2);
+            const allParts = [...dataPartsFiles, ...asmPartsFiles];
+
+            await GameLoader.measure(allParts);
+
+            // Start merging files with progress
+            const [dataUrl, asmCode] = await Promise.all([
+                GameLoader.merge(dataPartsFiles),
+                GameLoader.merge(asmPartsFiles)
+            ]);
+
+            window.dataUrll = dataUrl;
+            window.asmUrll = asmCode;
+            var json = {
+                "TOTAL_MEMORY": 268435456,
+                "dataUrl": dataUrl,
+                "asmCodeUrl": asmCode,
+                "asmMemoryUrl": "Raft-WEBGL.asm.memory.unityweb",
+                "asmFrameworkUrl": "Raft-WEBGL.asm.framework.unityweb",
+                "splashScreenStyle": "Dark",
+                "backgroundColor": "#231F20"
+            };
+            let blob = new Blob([JSON.stringify(json)], {
+                type: "application/json",
+            });
+            let blobUrl = URL.createObjectURL(blob);
+            window.addEventListener("resize", resizeUnityContainer);
+            UnityLoader.instantiate("unityContainer", json, {
+                url: blobUrl,
+                Module: {
+                    onRuntimeInitialized: function () {
+                        resizeUnityContainer();
+                        GameLoader.finish();
+                    },
+                },
+            });
+        })().catch(GameLoader.fail);
+    </script>
+</head>
+
+<body>
+    <div class="webgl-content">
+        <div id="unityContainer"></div>
+    </div>
+</body>
+
+</html>

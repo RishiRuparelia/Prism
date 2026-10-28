@@ -1,0 +1,41 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html>
+
+<head>
+  
+  
+    <script data-prism-runtime="unity-cdn-loader.css">document.write("\u003clink rel=\"stylesheet\" href=\"" + location.origin + "/game-runtime/unity-cdn-loader.css?v=prism-1\">");</script>
+    <script data-prism-runtime="unity-cdn-loader.js">document.write("\u003cscript type=\"module\" src=\"" + location.origin + "/game-runtime/unity-cdn-loader.js?v=prism-1\">\u003c/script>");</script>
+    <base href="https://cdn.jsdelivr.net/gh/55gms/assets@86dba3822eb145dd1780438a918249e111dc9cae/misc/madstunt-cars/">
+  <title>Madalin Stunt Cars 3</title>
+</head>
+<link rel="icon" type="image/x-icon" href="img/index.jpg" />
+<link rel="stylesheet" href="TemplateData/style.css" />
+
+
+
+<body style="margin: 0">
+    <div id="unity-cdn-loading" data-title="Madalin Stunt Cars 3" role="status" aria-live="polite">LOADING...</div>
+
+  <div class="webgl-content">
+    <div id="gameContainer" style="width: 100vw; height: 100vh;"></div>
+  </div>
+
+    <template id="unity-game-scripts">
+<script src="TemplateData/UnityProgress.js"></script>
+<script src="js/unityloader35.js"></script>
+<script>
+    var gameInstance = UnityLoader.instantiate("gameContainer", "game.json", {
+      onProgress: UnityProgress,
+      Module: {
+        onRuntimeInitialized: function () {
+          UnityProgress(gameInstance, "complete");
+        },
+      },
+    });
+  </script>
+    </template>
+</body>
+
+</html>

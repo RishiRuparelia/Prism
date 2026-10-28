@@ -1,0 +1,46 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+  <title>Flippy Fish</title>
+  
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Flippy Fish\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["Build/FlippyFishHTML.data.unityweb", 18551153],
+      ["Build/FlippyFishHTML.wasm.code.unityweb", 3631255],
+      ["Build/FlippyFishHTML.wasm.framework.unityweb", 80501],
+    ]);
+  </script>
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@86dba3822eb145dd1780438a918249e111dc9cae/misc/flippyfish/">
+
+  <meta charset="utf-8" />
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+  <link rel="stylesheet" href="TemplateData/style.css" />
+  <script src="TemplateData/UnityProgress.js"></script>
+  <script src="Build/UnityLoader.js"></script>
+  <script>
+    var unityInstance = UnityLoader.instantiate(
+      "unityContainer",
+      "Build/FlippyFishHTML.json",
+      { onProgress: UnityProgress }
+    );
+  </script>
+</head>
+
+<body style="margin: 0; overflow: hidden; background: #000">
+  <div id="unityContainer" style="
+        width: min(100vw, 160vh);
+        height: min(100vh, 62.5vw);
+        position: absolute;
+        left: 50%;
+        top: 50%;
+        transform: translate(-50%, -50%);
+      "></div>
+</body>
+
+</html>

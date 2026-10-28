@@ -1,0 +1,62 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<html lang="en-us">
+
+<head>
+  
+  
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <title>Cluster Rush</title>
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Cluster Rush\">\u003c/script>");</script>
+  <script>
+    GameLoader.unity([
+      ["Release/NG.data", 11049161],
+      ["Release/NG.js", 410670],
+      ["Release/NG.asm.js", 19505602],
+      ["Release/NG.mem", 1161572],
+    ]);
+  </script>
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@86dba3822eb145dd1780438a918249e111dc9cae/misc/cluster-rush/">
+  <link href="TemplateData/style.css" rel="stylesheet">
+  <script src="TemplateData/UnityProgress.js" type="text/javascript"></script>
+  <style>
+    html,
+    body {
+      overflow: hidden;
+      margin: 0;
+      padding: 0;
+    }
+
+    #canvas {
+      height: 100vh;
+      width: 100vw;
+      margin: 0;
+      padding: 0;
+      overflow: hidden;
+    }
+  </style>
+</head>
+
+<body class="template">
+  <div class="template-wrap clear">
+    <canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()"></canvas>
+    <!--<canvas class="emscripten" id="canvas" oncontextmenu="event.preventDefault()" height="600" width="900"></canvas>-->
+  </div>
+  <script type="text/javascript">
+    var Module = {
+      TOTAL_MEMORY: 268435456,
+      errorhandler: null,			// arguments: err, url, line. This function must return 'true' if the error is handled, otherwise 'false'
+      compatibilitycheck: null,
+      backgroundColor: "#222C36",
+      splashStyle: "Dark",
+      dataUrl: "Release/NG.data",
+      codeUrl: "Release/NG.js",
+      asmUrl: "Release/NG.asm.js",
+      memUrl: "Release/NG.mem",
+    };
+  </script>
+  <script src="Release/UnityLoader.js?v=1"></script>
+</body>
+
+</html>

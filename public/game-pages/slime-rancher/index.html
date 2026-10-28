@@ -1,0 +1,115 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!--
+full credit snubby.top
+i just edited it a bit to make it better for gn-math
+-->
+
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+    <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+    <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Slime Rancher\">\u003c/script>");</script>
+    
+    <base href="https://cdn.jsdelivr.net/gh/web-ports/slime-ranchers@f0c5856ac43cf0cfbab4c58139282fc75f9b1861/">
+    <meta charset="utf-8">
+    <title>Slime Rancher Decompiled v0.2.1</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <link rel="stylesheet" href="TemplateData/style.css">
+    <script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.0/jquery.min.js"></script>
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script src="mobile-controls.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Open+Sans:wght@400;600&display=swap" rel="stylesheet">
+</head>
+
+<body>
+    <div class="webgl-content">
+        <div class="bg">
+            <img class="bg" src="TemplateData/loading_bg.png"
+                style="width: 100%; height: 100%; padding: 0px; margin: 0px; border: 0px; position: absolute;">
+        </div>
+        <div id="gameContainer" style="width: 960px; height: 600px"></div>
+    </div>
+    <script src="TemplateData/responsive.js"></script>
+</body>
+<script>
+    const ogxhr = window.XMLHttpRequest;
+
+    function xhrfunc() {
+        const xhr = new ogxhr();
+        const open = xhr.open;
+        xhr.open = function (method, url, ...rest) {
+            if (url.includes("version.txt")) {
+                return open.call(this, method, "updates/version.txt", ...rest);
+            } else if (url.includes("slime.txt")) {
+                return open.call(this, method, "updates/slime.txt", ...rest);
+            }
+            return open.call(this, method, url, ...rest);
+        };
+        return xhr;
+    }
+    window.XMLHttpRequest = xhrfunc;
+
+    function getParts(file, start, end) {
+        let parts = [];
+        for (let i = start; i <= end; i++) {
+            parts.push(file + ".part" + i);
+        }
+        return parts;
+    }
+
+    function resizeUnityContainer() {
+        var container = document.getElementById("gameContainer");
+        var canvas = container.querySelector("canvas");
+
+        container.style.width = window.innerWidth + "px";
+        container.style.height = window.innerHeight + "px";
+
+        if (canvas) {
+            canvas.style.width = window.innerWidth + "px";
+            canvas.style.height = window.innerHeight + "px";
+        }
+    }
+
+
+    (async () => {
+        GameLoader.expect(57149075);
+
+        const dataUrl = await GameLoader.merge(getParts("Build/slimeBUILDS.data.unityweb", 1, 3));
+
+        const json = {
+            "companyName": "Snubs",
+            "productName": "Slime Rancher Prototype",
+            "dataUrl": dataUrl,
+            "wasmCodeUrl": "slimeBUILDS.wasm.code.unityweb",
+            "wasmFrameworkUrl": "slimeBUILDS.framework.unityweb",
+            "TOTAL_MEMORY": 536870912,
+            "graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+            "webglContextAttributes": {
+                "preserveDrawingBuffer": false
+            },
+            "splashScreenStyle": "Dark"
+        };
+
+        let blob = new Blob([JSON.stringify(json)], {
+            type: "application/json"
+        });
+        let blobUrl = URL.createObjectURL(blob);
+        window.addEventListener("resize", resizeUnityContainer);
+
+        UnityLoader.instantiate("gameContainer", json, {
+            url: blobUrl,
+            Module: {
+                onRuntimeInitialized: function () {
+                    resizeUnityContainer();
+                    GameLoader.finish();
+                },
+            },
+        });
+    })().catch(GameLoader.fail);
+</script>
+
+</html>

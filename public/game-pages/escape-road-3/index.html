@@ -1,0 +1,199 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  
+  
+    <meta charset="UTF-8">
+<script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+<script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Escape Road 3\">\u003c/script>");</script>
+<script>
+  GameLoader.unity([
+    ["Build/escape-road-3.framework.js",501799],
+    ["Build/escape-road-3.loader.js",20642],
+  ]);
+  GameLoader.expect(81817268);
+</script>
+<script data-prism-runtime="game-parts.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-parts.js?v=prism-1\">\u003c/script>");</script>
+<base href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/escape-road-3/">
+<script>
+  GameParts.serve({
+    "Build/escape-road-3.data.br": ["Build/escape-road-3.data.br.part1","Build/escape-road-3.data.br.part2","Build/escape-road-3.data.br.part3","Build/escape-road-3.data.br.part4"],
+    "Build/escape-road-3.wasm.br": ["Build/escape-road-3.wasm.br.part1","Build/escape-road-3.wasm.br.part2","Build/escape-road-3.wasm.br.part3","Build/escape-road-3.wasm.br.part4","Build/escape-road-3.wasm.br.part5"],
+  });
+</script>
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title id="page-title">Escape Road 3</title>
+    <script>
+        // The build waits for the CrazyGames SDK before it leaves its splash
+        // screen: it adds a <script> for ../../scripts/crazy/sdk.js, then calls
+        // CrazyGames.SDK.init() once that has loaded. There is no such file
+        // here, so the request is pointed at an empty script and the SDK below
+        // answers instead. It has no ads, accounts or analytics; saves go to
+        // localStorage.
+        (function () {
+            var empty = URL.createObjectURL(new Blob([""], { type: "text/javascript" }));
+            var src = Object.getOwnPropertyDescriptor(HTMLScriptElement.prototype, "src");
+            Object.defineProperty(HTMLScriptElement.prototype, "src", {
+                configurable: true,
+                enumerable: src.enumerable,
+                get: src.get,
+                set: function (value) {
+                    var sdk = /(^|\/)scripts\/crazy\/sdk\.js/.test(String(value));
+                    return src.set.call(this, sdk ? empty : value);
+                }
+            });
+
+            var PREFIX = "escape-road-3:";
+            var unavailable = function () {
+                return Promise.reject({ code: "userNotAuthenticated", message: "No account" });
+            };
+            window.CrazyGames = {
+                SDK: {
+                    environment: "crazygames",
+                    isQaTool: false,
+                    init: function () { return Promise.resolve(); },
+                    ad: {
+                        hasAdblock: function () { return Promise.resolve(false); },
+                        // A rewarded ad without 55GMS Ads' SDK (sdk.min.js, which
+                        // replaces this) fails, so no reward comes without an ad.
+                        requestAd: function (type, callbacks) {
+                            return Promise.resolve().then(function () {
+                                if (type === "rewarded") {
+                                    if (callbacks && callbacks.adError) callbacks.adError({ code: "unfilled", message: "unavailable" });
+                                    return;
+                                }
+                                if (callbacks && callbacks.adStarted) callbacks.adStarted();
+                                if (callbacks && callbacks.adFinished) callbacks.adFinished();
+                            });
+                        }
+                    },
+                    banner: { requestOverlayBanners: function () {} },
+                    analytics: { trackOrder: function () {} },
+                    game: {
+                        settings: { disableChat: false, muteAudio: false },
+                        gameplayStart: function () {},
+                        gameplayStop: function () {},
+                        happytime: function () {},
+                        inviteLink: function () { return ""; },
+                        showInviteButton: function () { return ""; },
+                        hideInviteButton: function () {}
+                    },
+                    user: {
+                        isUserAccountAvailable: false,
+                        systemInfo: {
+                            countryCode: "US",
+                            locale: "en-US",
+                            browser: { name: "", version: "" },
+                            os: { name: "", version: "" },
+                            device: { type: "desktop" }
+                        },
+                        getUser: function () { return Promise.resolve(null); },
+                        getUserToken: unavailable,
+                        getXsollaUserToken: unavailable,
+                        showAuthPrompt: unavailable,
+                        showAccountLinkPrompt: unavailable,
+                        addAuthListener: function () {},
+                        addScore: function () {}
+                    },
+                    data: {
+                        getItem: function (key) { return localStorage.getItem(PREFIX + key); },
+                        setItem: function (key, value) { localStorage.setItem(PREFIX + key, value); },
+                        removeItem: function (key) { localStorage.removeItem(PREFIX + key); },
+                        clear: function () {
+                            Object.keys(localStorage).forEach(function (key) {
+                                if (key.indexOf(PREFIX) === 0) localStorage.removeItem(key);
+                            });
+                        },
+                        syncUnityGameData: function () {}
+                    }
+                }
+            };
+        })();
+    </script>
+   </head>
+<body>
+    <!-- Loader -->
+    <div id="loader">
+        <div id="preloader">
+            <div id="preloader-top">
+                <img id="thumbnail" alt="Game Logo" src="icon.png">
+                <div id="preloader-top-container">
+                    <div id="game-title">Loading...</div>
+                    <div id="progress-container">
+                        <div id="progress-bar">
+                            <div id="progress-fill"></div>
+                        </div>
+                        <div id="progress-amount">0%</div>
+                    </div>
+                    <div id="progress-comment">Initializing...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Game Container -->
+    <div id="game-container" class="hidden">
+        <div id="game" style="width: 100%; height: 100%; position: relative; background: rgb(35, 31, 32);">
+            <canvas id="canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+        </div>
+    </div>
+
+    <script src="unityloader.js"></script>
+    
+    <script>
+        const GAME_CONFIG = {
+            productName: "Escape Road 3",
+            dataUrl: "Build/escape-road-3.data.br",
+            frameworkUrl: "Build/escape-road-3.framework.js",
+            codeUrl: "Build/escape-road-3.wasm.br",
+            loaderUrl: "Build/escape-road-3.loader.js",
+            
+            productVersion: "1.0",
+            companyName: "Arcadrome",
+            streamingAssetsUrl: new URL("StreamingAssets", document.baseURI).href,
+            icon: "icon.png"
+        };
+
+        (function loadGame() {
+            document.getElementById("page-title").textContent = GAME_CONFIG.productName;
+            GameLoader.init(GAME_CONFIG);
+            const loaderScript = document.createElement("script");
+            loaderScript.src = GAME_CONFIG.loaderUrl;
+            
+            loaderScript.onload = function() {
+                createUnityInstance(
+                    document.getElementById("canvas"),
+                    GAME_CONFIG,
+                    GameLoader.updateProgress
+                )
+                .then(function(unityInstance) {
+                    window.unityInstance = unityInstance;
+                    window.gameInstance = unityInstance;
+                    // The shared loading screen hides at this moment. Hide this
+                    // page's own loader with it, or it shows for the half second
+                    // the progress callback waits before hiding it.
+                    GameLoader._hideLoader();
+                    console.log("Game loaded successfully");
+                })
+                .catch(function(error) {
+                    console.error("Failed to load game:", error);
+                    if (GameLoader.ui.comment) {
+                        GameLoader.ui.comment.textContent = "Failed to load game";
+                    }
+                });
+            };
+            
+            loaderScript.onerror = function() {
+                console.error("Failed to load loader script");
+                if (GameLoader.ui.comment) {
+                    GameLoader.ui.comment.textContent = "Failed to load game";
+                }
+            };
+            
+            document.body.appendChild(loaderScript);
+        })();
+    </script>
+</body>
+</html>

@@ -1,0 +1,172 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+    <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+    <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Bendy\">\u003c/script>");</script>
+    <base href="https://cdn.jsdelivr.net/gh/kfm5/55gms-web-port-archive@main/bendy/">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <meta name="viewport"
+        content="width=device-width, height=device-height, initial-scale=1.0, minimum-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Unity WebGL Player | OldCh2RippedTwo</title>
+    <link rel="shortcut icon" href="TemplateData/favicon.ico">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: #231F20;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+            font-family: 'Arial', sans-serif;
+        }
+
+        .webgl-content {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        #unityContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+
+        .footer {
+            position: absolute;
+            bottom: 0;
+            width: 100%;
+            text-align: center;
+            padding: 10px 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 100;
+        }
+
+        .fullscreen {
+            cursor: pointer;
+            display: inline-block;
+            width: 24px;
+            height: 24px;
+            background: url('TemplateData/fullscreen.png') no-repeat center;
+        }
+
+    </style>
+    <script src="TemplateData/UnityProgress.js"></script>
+    <script src="Build/UnityLoader.js"></script>
+    <script>
+        function getParts(file, start, end) {
+            let parts = [];
+            for (let i = start; i <= end; i++) {
+                parts.push(file + ".part" + i);
+            }
+            return parts;
+        }
+
+        async function findParts(file, maxParts = 16) {
+            const parts = [];
+            for (let i = 1; i <= maxParts; i++) {
+                const part = `${file}.part${i}`;
+                try {
+                    const response = await fetch(part, { method: "HEAD" });
+                    if (!response.ok) break;
+                    parts.push(part);
+                } catch {
+                    break;
+                }
+            }
+            return parts;
+        }
+
+        async function resolveBuildFile(file, maxParts, type) {
+            const parts = await findParts(file, maxParts);
+            if (parts.length > 0) {
+                return GameLoader.merge(parts, type);
+            }
+
+            const response = await fetch(file, { method: "HEAD" });
+            if (!response.ok) {
+                throw new Error(`Failed to load ${file}: ${response.status}`);
+            }
+            return new URL(file, document.baseURI).href;
+        }
+
+        function resizeUnityContainer() {
+            var container = document.getElementById("unityContainer");
+            container.style.width = window.innerWidth + "px";
+            container.style.height = window.innerHeight + "px";
+        }
+
+        (async () => {
+            const dataParts = getParts("Build/BATIM.data.unityweb", 1, 7);
+            const wasmCodeParts = await findParts("Build/BATIM.wasm.code.unityweb");
+            const wasmFrameworkParts = await findParts("Build/BATIM.wasm.framework.unityweb");
+            const allParts = [...dataParts, ...wasmCodeParts, ...wasmFrameworkParts];
+
+            await GameLoader.measure(allParts);
+
+            const [dataUrl, wasmCodeUrl, wasmFrameworkUrl] = await Promise.all([
+                GameLoader.merge(dataParts),
+                wasmCodeParts.length > 0
+                    ? GameLoader.merge(wasmCodeParts, "application/wasm")
+                    : resolveBuildFile("Build/BATIM.wasm.code.unityweb", 16, "application/wasm"),
+                wasmFrameworkParts.length > 0
+                    ? GameLoader.merge(wasmFrameworkParts, "application/javascript")
+                    : resolveBuildFile("Build/BATIM.wasm.framework.unityweb", 16, "application/javascript")
+            ]);
+
+            window.dataUrll = dataUrl;
+            var json = {
+                "companyName": "DefaultCompany",
+                "productName": "OldCh2RippedTwo",
+                "productVersion": "1.0",
+                "dataUrl": dataUrl,
+                "wasmCodeUrl": wasmCodeUrl,
+                "wasmFrameworkUrl": wasmFrameworkUrl,
+                "graphicsAPI": ["WebGL 2.0", "WebGL 1.0"],
+                "webglContextAttributes": {
+                    "preserveDrawingBuffer": false
+                },
+                "splashScreenStyle": "Dark",
+                "backgroundColor": "#231F20",
+                "developmentBuild": false,
+                "multithreading": false,
+                "unityVersion": "2019.4.17f1"
+            };
+
+            let blob = new Blob([JSON.stringify(json)], {
+                type: 'application/json'
+            });
+            let blobUrl = URL.createObjectURL(blob);
+
+            window.addEventListener('resize', resizeUnityContainer);
+            UnityLoader.instantiate("unityContainer", blobUrl, {
+                onProgress: UnityProgress,
+                url: blobUrl,
+                Module: {
+                    onRuntimeInitialized: function () {
+                        resizeUnityContainer();
+                        GameLoader.finish();
+                    }
+                }
+            });
+        })().catch(GameLoader.fail);
+    </script>
+</head>
+
+<body>
+    <div class="webgl-content">
+        <div id="unityContainer"></div>
+    </div>
+</body>
+
+</html>

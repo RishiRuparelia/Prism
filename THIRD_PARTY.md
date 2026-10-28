@@ -12,6 +12,8 @@ To refresh all catalog metadata and selected thumbnails, run `node scripts/sync-
 
 Source code is available through this project checkout, including the imported catalog, normalization script, and retained upstream license. If distributing a modified network-served AGPL application, retain the corresponding source and license information.
 
+The 151 local game entry documents and engine helpers in `public/game-pages/` and `public/game-runtime/` derive from upstream commit `183754e50598d4dab26b9107404d983ca562833b`. The importer preserves game initialization and CDN asset bases, adapts shared helper paths, and replaces the portal loading-screen presentation with Prism code. Known 55GMS account/site scripts and its shared advertising SDK are omitted from these entries. Individual game SDKs, native loading screens, and author credits remain. The importer, generated launch map, and adapted runtime are included in the corresponding source archive.
+
 ## Movie metadata and playback
 
 Movie discovery metadata is obtained from the public [Cinemeta catalog](https://v3-cinemeta.strem.io/catalog/movie/top.json), part of the Stremio ecosystem. Its [addon protocol](https://github.com/Stremio/stremio-addon-sdk/tree/master/docs) documents catalog and metadata responses. Movie titles, descriptions, artwork, and ratings retain their original rights. Cinemeta is a metadata service, not a video host. The cached catalog requires no third-party API credential. No API keys from the reference website have been copied.

@@ -1,0 +1,117 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+  <meta charset="utf-8">
+  <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+  <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Boom Slingers Reboom\">\u003c/script>");</script>
+  <base href="https://cdn.jsdelivr.net/gh/55gms/assets@e6dafba78d77deea9bf03d88e4d94efec394ef58/misc/boomslingersreboom/">
+</head>
+
+<body style="margin:0;padding:0" class="noselect">
+  <canvas id="unity-canvas" style="position:fixed;top:0;left:0;width:100%;height:100%;outline:none"></canvas>
+
+  <script>
+    const SPLIT_MAP = { "2cbda98ae67d1b28f920398806093415.wasm": null, "3b03bb7182763a41817b795e550d8412.data": null };
+  </script>
+
+  <script>
+    async function findParts(baseUrl) {
+      const parts = [];
+      for (let i = 1; i <= 99; i++) {
+        const testUrl = baseUrl + ".part" + i;
+        try {
+          const head = await fetch(testUrl, { method: "HEAD" });
+          if (!head.ok) break;
+          parts.push(testUrl);
+        } catch { break; }
+      }
+      return parts;
+    }
+
+    async function preMergeAll() {
+      const map = {};
+      const files = Object.keys(SPLIT_MAP);
+      const found = await Promise.all(files.map((file) => findParts("Build/" + file)));
+      await GameLoader.measure(found.flat());
+      await Promise.all(files.map(async (file, index) => {
+        // Files that were never split are fetched by Unity from their own URL.
+        map[file] = found[index].length ? await GameLoader.merge(found[index]) : "Build/" + file;
+      }));
+      return map;
+    }
+
+    (async () => {
+      const mergedMap = await preMergeAll();
+      window.SPLIT_MAP = mergedMap;
+      const origFetch = window.fetch;
+      window.fetch = async function (resource, options) {
+        if (typeof resource === "string") {
+          const key = resource.split("/").pop();
+          if (mergedMap[key]) {
+            console.log("Redirect fetch:", key);
+            return origFetch(mergedMap[key], options);
+          }
+        }
+        return origFetch(resource, options);
+      };
+
+      const OrigXHR = window.XMLHttpRequest;
+      window.XMLHttpRequest = function () {
+        const xhr = new OrigXHR();
+        const origOpen = xhr.open;
+        xhr.open = function (method, url, ...rest) {
+          const key = url.split("/").pop();
+          if (mergedMap[key]) {
+            console.log("Redirect XHR:", key);
+            origOpen.call(xhr, method, mergedMap[key], ...rest);
+          } else {
+            origOpen.call(xhr, method, url, ...rest);
+          }
+        };
+        return xhr;
+      };
+
+      const canvas = document.querySelector("#unity-canvas");
+      const loaderUrl = "Build/d37667e316197a45bf53aa3fdcc6dee6.loader.js";
+      const config = {
+        dataUrl: "Build/3b03bb7182763a41817b795e550d8412.data",
+        frameworkUrl: "Build/8ff9826371bd14e0e81ec413c9e15bb1.framework.js",
+        codeUrl: "Build/2cbda98ae67d1b28f920398806093415.wasm",
+        streamingAssetsUrl: new URL("StreamingAssets", document.baseURI).href,
+        companyName: "Boom Slingers ReBoom",
+        productName: "Boom Slingers ReBoom",
+        productVersion: "1.0.0"
+      };
+
+      const script = document.createElement("script");
+      script.src = loaderUrl;
+      script.onload = () => {
+        createUnityInstance(canvas, config, (progress) => { }).then((unityInstance) => {
+          window.gameInstance = unityInstance;
+          GameLoader.finish();
+        }).catch(GameLoader.fail);
+      };
+      document.body.appendChild(script);
+    })().catch(GameLoader.fail);
+  </script>
+
+  <script>
+    function resizeCanvas() {
+      const canvas = document.getElementById("unity-canvas");
+      canvas.width = window.innerWidth;
+      canvas.height = window.innerHeight;
+      canvas.style.width = window.innerWidth + "px";
+      canvas.style.height = window.innerHeight + "px";
+    }
+    window.addEventListener("load", resizeCanvas);
+    window.addEventListener("resize", resizeCanvas);
+  </script>
+</body>
+
+</html>

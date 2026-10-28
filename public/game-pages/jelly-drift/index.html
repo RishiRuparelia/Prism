@@ -1,0 +1,104 @@
+<!-- Imported from 55GMS 183754e50598d4dab26b9107404d983ca562833b; shared runtime adapted for PRISM. AGPL-3.0; see /credits.html. -->
+<!DOCTYPE html>
+<html lang="en-us">
+
+<head>
+  
+  
+    <script data-prism-runtime="loader-ui.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/loader-ui.js?v=prism-1\">\u003c/script>");</script>
+    <script data-prism-runtime="game-loader.js">document.write("\u003cscript src=\"" + location.origin + "/game-runtime/game-loader.js?v=prism-1\" data-title=\"Jelly Drift\">\u003c/script>");</script>
+    <!-- jsDelivr blocks this repo; GitHub serves it, but only as plain text,
+         so the Unity scripts are fetched and run from blobs. -->
+    <base href="https://raw.githubusercontent.com/genizy/web-port/main/jelly-drift/">
+    <meta charset="utf-8">
+    <meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+    <title>Unity WebGL Player | Jelly Drift</title>
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            border: 0;
+            overflow: hidden;
+        }
+
+        body {
+            background: #000;
+            position: fixed;
+            width: 100%;
+            height: 100%;
+        }
+
+        #unityContainer {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+        }
+    </style>
+    <script>
+        function getParts(file, start, end) {
+            let parts = [];
+            for (let i = start; i <= end; i++) {
+                parts.push(file + ".part" + i);
+            }
+            return parts;
+        }
+
+        function resizeUnityContainer() {
+            var container = document.getElementById("unityContainer");
+            container.style.width = window.innerWidth + "px";
+            container.style.height = window.innerHeight + "px";
+        }
+        const loaderParts = [
+            getParts("Build/jellydrift.data.unityweb", 1, 3),
+            getParts("Build/jellydrift.wasm.code.unityweb", 1, 2),
+            ["Build/jellydrift.wasm.framework.js"],
+            ["Build/UnityLoader.js"],
+        ];
+        GameLoader.measure(loaderParts.flat())
+            .then(() => Promise.all(loaderParts.map((parts, index) =>
+                GameLoader.merge(parts, index > 1 ? "application/javascript" : undefined))))
+            .then(async ([dataUrl, wasmurl, frameworkUrl, unityLoaderUrl]) => {
+            await GameLoader.script(unityLoaderUrl);
+            window.dataUrll = dataUrl;
+            window.wasmurll = wasmurl;
+            var json = {
+                "companyName": "Dani",
+                "productName": "Jelly Drift",
+                "productVersion": "0.4",
+                "dataUrl": dataUrl,
+                "wasmCodeUrl": wasmurl,
+                "wasmFrameworkUrl": frameworkUrl,
+                "graphicsAPI": ["WebGL 2.0"],
+                "webglContextAttributes": { "preserveDrawingBuffer": false },
+                "splashScreenStyle": "Dark",
+                "backgroundColor": "#231F20",
+                "developmentBuild": false,
+                "multithreading": false,
+                "unityVersion": "2019.4.19f1"
+            };
+            let blob = new Blob([JSON.stringify(json)], {
+                type: "application/json",
+            });
+            let blobUrl = URL.createObjectURL(blob);
+            window.addEventListener("resize", resizeUnityContainer);
+            UnityLoader.instantiate("unityContainer", json, {
+                url: blobUrl,
+                Module: {
+                    onRuntimeInitialized: function () {
+                        resizeUnityContainer();
+                        GameLoader.finish();
+                    },
+                },
+            });
+        }).catch(GameLoader.fail);
+    </script>
+</head>
+
+<body>
+    <div class="webgl-content">
+        <div id="unityContainer" style="width: 960px; height: 600px"></div>
+    </div>
+</body>
+
+</html>
