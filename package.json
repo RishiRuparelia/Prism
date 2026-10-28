@@ -8,7 +8,7 @@
   "scripts": {
     "prebuild": "node scripts/copy-proxy-assets.mjs && node scripts/page-icons.mjs && node scripts/package-source.mjs",
     "local": "node scripts/local-server.mjs",
-    "test": "node --test tests/chat.test.mjs tests/chat-client.test.mjs tests/proxy.test.mjs tests/movie-playback.test.mjs tests/movies-api.test.mjs tests/series-state.test.mjs tests/static-pages.test.mjs tests/cloudflare-config.test.mjs tests/source-package.test.mjs",
+    "test": "node --test tests/chat.test.mjs tests/chat-client.test.mjs tests/proxy.test.mjs tests/browser-runtime.test.mjs tests/movie-playback.test.mjs tests/movies-api.test.mjs tests/series-state.test.mjs tests/static-pages.test.mjs tests/cloudflare-config.test.mjs tests/source-package.test.mjs",
     "series:sync": "node scripts/sync-series.mjs",
     "catalog:sync": "node scripts/sync-catalog.mjs",
     "source:package": "node scripts/package-source.mjs",

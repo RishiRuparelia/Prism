@@ -89,9 +89,9 @@ Wrangler prints the actual HTTPS address when deployment succeeds. Open its root
 
 After changing source files, build again, regenerate the config with the same names and database ID, apply any pending migrations, then deploy again. Keep using the same D1 database to retain chat messages. If you delete `.cloudflare`, rerun the helper to recreate it.
 
-Do not upload only the `public/` directory through a static upload form: this project also needs the built Worker for `/bare/` and `/api/` requests. The `workers.dev` deployment is publicly reachable by default; the owner-only Sites access setting is not copied to a direct Cloudflare deployment.
+Do not upload only the `public/` directory through a static upload form: this project also needs the built Worker for `/api/transport/`, the compatible `/bare/` alias, and other `/api/` requests. The `workers.dev` deployment is publicly reachable by default; the owner-only Sites access setting is not copied to a direct Cloudflare deployment.
 
-If chat returns a database error, confirm that `DB` points to the correct D1 UUID and step 5 completed. If proxy pages fail, check `/bare/` on your deployed address; it should return JSON advertising `v3`. Third-party media availability still depends on the provider, and some providers can reject Worker connections.
+If chat returns a database error, confirm that `DB` points to the correct D1 UUID and step 5 completed. If browser pages fail, check `/api/transport/` on your deployed address; it should return JSON advertising `v3`. The previous `/bare/` endpoint remains compatible. Deploy the server and static assets together so `/assets/runtime/config.js` and the Worker support the same transport path. Third-party media availability still depends on the provider, and some providers can reject Worker connections.
 
 The build regenerates `/rooster-source.zip` before copying static assets, so the credits page serves the corresponding source for that build. Generated assets, deployment configuration, local databases, and dependency directories are excluded from Git. Run the dry-run command against your current build to check its packaging and size before deployment.
 

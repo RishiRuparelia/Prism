@@ -1,10 +1,13 @@
-import test from "node:test";
+import test, { describe } from "node:test";
 import assert from "node:assert/strict";
-import { handleBareRequest, isPublicAddress, validateTarget } from "../worker/proxy.ts";
+import { existsSync, readFileSync } from "node:fs";
+import { runInNewContext } from "node:vm";
+import { handleBareRequest, isPublicAddress, isTransportPath, validateTarget } from "../worker/proxy.ts";
 
 const site = "https://rooster.example.org";
-function request(target = "https://example.com/page", { method = "GET", headers = {}, body, bareHeaders = {} } = {}) {
-  return new Request(`${site}/bare/v3/`, {
+const transportBases = ["/api/transport", "/bare"];
+function transportRequest(base, target = "https://example.com/page", { method = "GET", headers = {}, body, bareHeaders = {} } = {}) {
+  return new Request(`${site}${base}/v3/`, {
     method,
     headers: { "x-bare-url": target, "x-bare-headers": JSON.stringify(bareHeaders), ...headers },
     ...(body === undefined ? {} : { body }),
@@ -30,10 +33,103 @@ function metadata(headers) {
   return JSON.parse(value);
 }
 
+test("transport namespace matching excludes lookalike paths", () => {
+  for (const base of transportBases) {
+    for (const suffix of ["", "/", "/v3/", "/unknown"]) assert.equal(isTransportPath(base + suffix), true);
+  }
+  for (const pathname of ["/", "/api", "/api/transportation", "/api/transport-v2/", "/api/transport%2fv3/", "/barely/", "/bare-v3/", "/bare%2fv3/", "/BARE/", "/other/bare/", "/other/api/transport/"]) {
+    assert.equal(isTransportPath(pathname), false, pathname);
+  }
+});
+
+test("unknown endpoints reject GET and preflight without contacting an upstream", async () => {
+  let fetched = false;
+  const fetcher = async () => { fetched = true; throw new Error("must not fetch"); };
+  const paths = ["/barely/v3/", "/api/transportation/v3/", "/other/bare/"];
+  for (const base of transportBases) paths.push(`${base}/v3`, `${base}/v3/extra`, `${base}//v3/`, `${base}/v2/`, `${base}/unknown`);
+  for (const pathname of paths) {
+    for (const method of ["GET", "OPTIONS"]) {
+      const response = await handleBareRequest(new Request(site + pathname, { method }), fetcher);
+      assert.equal(response.status, 404, `${method} ${pathname}`);
+      assert.equal((await response.json()).code, "NOT_FOUND");
+    }
+  }
+  assert.equal(fetched, false);
+});
+
+test("active and cached-page configs point to shipped assets and compatible transport endpoints", () => {
+  const encode = value => value;
+  const decode = value => value;
+  for (const [configPath, endpoint] of [["/assets/runtime/config.js", "/api/transport/"], ["/uv/uv.config.js", "/bare/"]]) {
+    const context = { self: {}, Ultraviolet: { codec: { xor: { encode, decode } } } };
+    runInNewContext(readFileSync(new URL(`../public${configPath}`, import.meta.url), "utf8"), context);
+    const config = context.self.__uv$config;
+    assert.equal(config.prefix, "/service/");
+    assert.equal(config.bare, endpoint);
+    assert.equal(config.encodeUrl, encode);
+    assert.equal(config.decodeUrl, decode);
+    for (const field of ["handler", "client", "bundle", "config", "sw"]) {
+      assert.equal(typeof config[field], "string", `${configPath}: ${field} must be explicit`);
+      assert.equal(existsSync(new URL(`../public${config[field]}`, import.meta.url)), true, config[field]);
+    }
+  }
+  const runtimeLicense = readFileSync(new URL("../public/assets/runtime/LICENSE.txt", import.meta.url), "utf8");
+  assert.equal(readFileSync(new URL("../public/assets/runtime/uv.bundle.js.LICENSE.txt", import.meta.url), "utf8"), runtimeLicense);
+  assert.equal(readFileSync(new URL("../public/uv/uv.bundle.js.LICENSE.txt", import.meta.url), "utf8"), runtimeLicense);
+});
+
+test("the root service worker retains credentials only for same-origin transport namespaces", async () => {
+  const calls = [];
+  const listeners = new Map();
+  const imports = [];
+  const location = new URL(site);
+  const context = {
+    URL, location,
+    self: {
+      location,
+      fetch: async (input, options) => { calls.push({ input, options }); return new Response("ok"); },
+      addEventListener: (name, listener) => listeners.set(name, listener),
+    },
+    importScripts: (...paths) => imports.push(...paths),
+    UVServiceWorker: class { fetch() { return Promise.resolve(new Response("proxied")); } },
+    __uv$config: { prefix: "/service/" },
+  };
+  runInNewContext(readFileSync(new URL("../public/sw.js", import.meta.url), "utf8"), context);
+  assert.deepEqual(imports, ["/assets/runtime/engine.js", "/assets/runtime/config.js", "/assets/runtime/worker.js"]);
+  for (const base of transportBases) {
+    const request = new Request(`${site}${base}/v3/`, { credentials: "omit" });
+    await context.self.fetch(request, { cache: "no-store" });
+    const call = calls.at(-1);
+    assert.equal(call.input, request);
+    assert.equal(call.options.credentials, "same-origin");
+    assert.equal(call.options.cache, "no-store");
+    let response;
+    listeners.get("fetch")({ request, respondWith: value => { response = value; } });
+    assert.equal(await (await response).text(), "ok");
+  }
+  for (const url of [`${site}/barely/v3/`, `${site}/api/transportation/v3/`, "https://destination.example.org/api/transport/v3/", "https://destination.example.org/bare/v3/"]) {
+    const request = new Request(url);
+    const options = { credentials: "omit" };
+    await context.self.fetch(request, options);
+    assert.equal(calls.at(-1).options, options, url);
+    let intercepted = false;
+    listeners.get("fetch")({ request, respondWith: () => { intercepted = true; } });
+    assert.equal(intercepted, false, url);
+  }
+});
+
+for (const base of transportBases) {
+describe(`${base} compatibility`, () => {
+const request = (...args) => transportRequest(base, ...args);
+
 test("publishes a Bare v3 manifest and handles preflight", async () => {
-  const info = await handleBareRequest(new Request(`${site}/bare/`));
-  assert.deepEqual((await info.json()).versions, ["v3"]);
-  const preflight = await handleBareRequest(new Request(`${site}/bare/v3/`, { method: "OPTIONS", headers: { "access-control-request-headers": "x-bare-url,x-bare-headers" } }));
+  for (const suffix of ["", "/"]) {
+    const info = await handleBareRequest(new Request(`${site}${base}${suffix}`));
+    assert.equal(info.status, 200);
+    assert.deepEqual(await info.json(), { versions: ["v3"], language: "ServiceWorker", project: { name: "PRISM", version: "1.0.0" } });
+    assert.equal(info.headers.get("location"), null);
+  }
+  const preflight = await handleBareRequest(new Request(`${site}${base}/v3/`, { method: "OPTIONS", headers: { "access-control-request-headers": "x-bare-url,x-bare-headers" } }));
   assert.equal(preflight.status, 204);
   assert.equal(preflight.headers.get("access-control-allow-origin"), "*");
   assert.match(preflight.headers.get("access-control-allow-headers"), /x-bare-url/);
@@ -163,3 +259,5 @@ test("cancelling a media response cancels its upstream stream and fetch signal",
   assert.equal(cancelled, true);
   assert.equal(calls[0].init.signal.aborted, true);
 });
+});
+}

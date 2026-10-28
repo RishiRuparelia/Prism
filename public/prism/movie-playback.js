@@ -1,3 +1,5 @@
+import { prepareProxy } from './browser-runtime.js';
+
 function checkedUrl(value) {
   const url = new URL(value);
   if (!['http:', 'https:'].includes(url.protocol)) throw new Error('Choose an HTTP or HTTPS movie player in Settings.');
@@ -26,6 +28,7 @@ export async function prepareMovieProxy({
   navigator = globalThis.navigator,
   secureContext = globalThis.isSecureContext,
   config = globalThis.__uv$config,
+  fetch = globalThis.fetch,
   timeoutMs = 15000,
 } = {}) {
   if (!secureContext || !navigator?.serviceWorker) {
@@ -34,39 +37,10 @@ export async function prepareMovieProxy({
   if (!config?.prefix || typeof config.encodeUrl !== 'function') {
     throw new Error('The movie proxy could not load. Refresh Prism, or choose Direct.');
   }
-  let timeout;
-  let listener;
-  let finished = false;
-  const activate = async () => {
-    await navigator.serviceWorker.register('/sw.js', { scope: '/' });
-    if (finished) return config;
-    await navigator.serviceWorker.ready;
-    if (finished) return config;
-    if (!navigator.serviceWorker.controller) {
-      await new Promise(resolve => {
-        listener = () => {
-          if (navigator.serviceWorker.controller) resolve();
-        };
-        navigator.serviceWorker.addEventListener('controllerchange', listener);
-        listener();
-      });
-    }
-    return config;
-  };
   try {
-    return await Promise.race([
-      activate(),
-      new Promise((_, reject) => {
-        timeout = setTimeout(() => reject(new Error('Proxy playback did not connect. Try again, or choose Direct.')), timeoutMs);
-      }),
-    ]);
+    return await prepareProxy({ navigator, secureContext, config, fetch, timeoutMs, requireController: true });
   } catch (error) {
-    if (/Proxy playback/.test(error?.message || '')) throw error;
-    throw new Error('Proxy playback could not start. Refresh Prism, or choose Direct.');
-  } finally {
-    finished = true;
-    clearTimeout(timeout);
-    if (listener) navigator.serviceWorker.removeEventListener('controllerchange', listener);
+    throw new Error('Proxy playback could not start. Refresh Prism, or choose Direct.', { cause: error });
   }
 }
 

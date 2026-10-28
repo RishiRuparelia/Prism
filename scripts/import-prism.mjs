@@ -8,6 +8,7 @@ cpSync('app/page.tsx','outputs/previous-design/page.tsx');
 cpSync('app/globals.css','outputs/previous-design/globals.css');
 let html=readFileSync(path.join(source,'main/index.html'),'utf8');
 html=html.replaceAll('src="uv/', 'src="/uv/');
+html=html.replaceAll('/uv/uv.bundle.js', '/assets/runtime/engine.js').replaceAll('/uv/uv.config.js', '/assets/runtime/config.js');
 html=html.replace(/<script\b[^>]*src=["'][^"']*(?:ezo|gatekeeper|dmca)[^"']*["'][^>]*><\/script>/gi,'');
 html=html.replace(/<script>\s*window\.ezstandalone[\s\S]*?<\/script>/,'');
 html=html.replace(/<!-- DMCA Badge -->[\s\S]*?(?=<\/body>)/,'');
@@ -15,6 +16,8 @@ const controller=html.match(/<script>\s*\/\/ ===== STARS =====[\s\S]*?<\/script>
 if(!controller)throw Error('Prism scene script not found');
 html=html.replace(controller,'');
 let script=controller.replace("'go.html'","'/prism/go.html'").replaceAll("'go.html'","'/prism/go.html'");
+script=script.replaceAll("sessionStorage.setItem('prism_dest', abs);", "try { sessionStorage.setItem('prism_dest', abs); } catch { /* The destination is also passed in the frame URL. */ }")
+  .replaceAll(".src = '/prism/go.html';", ".src = '/prism/go.html?url=' + encodeURIComponent(abs);");
 script=script.replace("return 'https://duckduckgo.com/?q=' + encodeURIComponent(val);","let engine='duckduckgo'; try{engine=JSON.parse(localStorage.getItem('prism.settings')||'{}').engine||engine;}catch{} return (engine==='google'?'https://www.google.com/search?q=':'https://duckduckgo.com/?q=') + encodeURIComponent(val);");
 html=html.replace('href="games.html"','href="/prism/games.html"').replace('href="apps.html"','href="/prism/movies.html"').replace('      APPS','      MOVIES').replace('href="settings.html"','href="/prism/settings.html"');
 html=html.replace('<li><a href="/prism/settings.html">','<li><a href="/prism/chat.html">CHAT</a></li>\n    <li><a href="/prism/settings.html">');

@@ -35,6 +35,12 @@ Movies default to Proxy playback, with Direct available in the player and a save
 
 Publishing source to GitHub and deploying the Worker are separate steps. Use the deployment guide below to update your live Worker.
 
+### Browser runtime
+
+The active browser assets use `/assets/runtime/`, and the configured transport is `/api/transport/`. The previous `/uv/` files and `/bare/` transport remain available for cached pages and existing tabs. Both transport URLs use the same Bare v3 protocol, target validation, and cookie handling. The service worker remains at `/sw.js` with root scope because direct movie playback needs the page to be controlled.
+
+Browser startup checks worker activation and transport compatibility with bounded waits and retry support. Home and app launches include the destination in the inner frame URL, so blocking session storage does not lose the address. These implementation changes do not establish or guarantee a different category in a school or network filter.
+
 For your own Cloudflare account, follow [the Windows deployment guide](CLOUDFLARE.md). It uses Workers, Static Assets, and D1, with a local configuration helper and a deployment dry run.
 
 TV Shows is available beside Movies, with a saved 50-show collection and live search. South Park is pinned first. Opening a show fetches its season/episode catalog; episode choices and Proxy/Direct mode are saved on this device. The TV provider URL is configurable in Settings with `{id}`, `{season}`, and `{episode}` placeholders. Use `npm run series:sync` to refresh the saved collection. Episode playback depends on the configured external provider.

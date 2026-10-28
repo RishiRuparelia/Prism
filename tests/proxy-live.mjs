@@ -2,7 +2,17 @@
 import assert from 'node:assert/strict';
 
 const origin = process.argv[2] || 'http://127.0.0.1:8080';
-const media = await fetch(new URL('/bare/v3/', origin), {
+let firstManifest;
+for (const base of ['/api/transport/', '/bare/']) {
+const info = await fetch(new URL(base, origin), { redirect: 'manual', signal: AbortSignal.timeout(20_000) });
+assert.equal(info.status, 200);
+assert.equal(info.headers.get('location'), null);
+const manifest = await info.json();
+assert.deepEqual(manifest.versions, ['v3']);
+assert.equal(manifest.project.name, 'PRISM');
+if (firstManifest) assert.deepEqual(manifest, firstManifest);
+else firstManifest = manifest;
+const media = await fetch(new URL(`${base}v3/`, origin), {
   headers: {
     'x-bare-url': 'https://interactive-examples.mdn.mozilla.net/media/cc0-videos/flower.mp4',
     'x-bare-headers': JSON.stringify({ Range: 'bytes=0-31' }),
@@ -15,9 +25,9 @@ const metadata = JSON.parse(media.headers.get('x-bare-headers'));
 assert.match(metadata['content-range'], /^bytes 0-31\/\d+$/);
 assert.match(metadata['content-type'], /video/);
 assert.equal((await media.arrayBuffer()).byteLength, 32);
-console.log('Live media range: 206, correct Content-Range, 32 video bytes.');
+console.log(`${base} live media range: 206, correct Content-Range, 32 video bytes.`);
 
-const endpoint = new URL('/bare/v3/', origin);
+const endpoint = new URL(`${base}v3/`, origin);
 endpoint.protocol = endpoint.protocol === 'https:' ? 'wss:' : 'ws:';
 await new Promise((resolve, reject) => {
   const socket = new WebSocket(endpoint);
@@ -67,4 +77,5 @@ await new Promise((resolve, reject) => {
     } catch (error) { finish(error); }
   });
 });
-console.log('Live WebSocket: text and binary echoes preserved; tunnel stayed open.');
+console.log(`${base} live WebSocket: text and binary echoes preserved; tunnel stayed open.`);
+}

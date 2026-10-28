@@ -1,6 +1,6 @@
 # Complete project file index
 
-This index lists the 229 committed project files in this directory at this revision, including this index. Paths below are relative to the repository root.
+This index lists the 238 committed project files in this directory at this revision, including this index. Paths below are relative to the repository root.
 
 For the feature overview, open the [repository README](README.md). Build and deployment instructions are in [CLOUDFLARE.md](CLOUDFLARE.md).
 
@@ -47,10 +47,11 @@ The full feature includes the [Movies/TV page](public/prism/movies.html), [inter
 - [app/layout.tsx](app/layout.tsx)
 - [app/page.tsx](app/page.tsx)
 
-## Prism pages and interface scripts (21)
+## Prism pages and interface scripts (22)
 
 - [public/prism/LICENSE.txt](public/prism/LICENSE.txt)
 - [public/prism/apps.html](public/prism/apps.html)
+- [public/prism/browser-runtime.js](public/prism/browser-runtime.js)
 - [public/prism/chat.html](public/prism/chat.html)
 - [public/prism/chat.js](public/prism/chat.js)
 - [public/prism/controls.css](public/prism/controls.css)
@@ -137,8 +138,15 @@ The full feature includes the [Movies/TV page](public/prism/movies.html), [inter
 - [public/license.txt](public/license.txt)
 - [public/sw.js](public/sw.js)
 
-## Browser runtime assets (6)
+## Browser runtime assets (13)
 
+- [public/assets/runtime/LICENSE.txt](public/assets/runtime/LICENSE.txt)
+- [public/assets/runtime/client.js](public/assets/runtime/client.js)
+- [public/assets/runtime/config.js](public/assets/runtime/config.js)
+- [public/assets/runtime/engine.js](public/assets/runtime/engine.js)
+- [public/assets/runtime/handler.js](public/assets/runtime/handler.js)
+- [public/assets/runtime/uv.bundle.js.LICENSE.txt](public/assets/runtime/uv.bundle.js.LICENSE.txt)
+- [public/assets/runtime/worker.js](public/assets/runtime/worker.js)
 - [public/uv/uv.bundle.js](public/uv/uv.bundle.js)
 - [public/uv/uv.bundle.js.LICENSE.txt](public/uv/uv.bundle.js.LICENSE.txt)
 - [public/uv/uv.client.js](public/uv/uv.client.js)
@@ -272,8 +280,9 @@ The full feature includes the [Movies/TV page](public/prism/movies.html), [inter
 - [scripts/vite/sites-vite-plugin.LICENSE](scripts/vite/sites-vite-plugin.LICENSE)
 - [scripts/vite/sites-vite-plugin.ts](scripts/vite/sites-vite-plugin.ts)
 
-## Tests (10)
+## Tests (11)
 
+- [tests/browser-runtime.test.mjs](tests/browser-runtime.test.mjs)
 - [tests/chat-client.test.mjs](tests/chat-client.test.mjs)
 - [tests/chat.test.mjs](tests/chat.test.mjs)
 - [tests/cloudflare-config.test.mjs](tests/cloudflare-config.test.mjs)

@@ -2,6 +2,7 @@ import assert from 'node:assert/strict';
 import { existsSync, readFileSync, readdirSync, statSync } from 'node:fs';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+import { runInNewContext } from 'node:vm';
 import { parse as parseHtml } from 'parse5';
 import { parse as parseJavaScript } from 'acorn';
 import test from 'node:test';
@@ -12,6 +13,43 @@ const prismRoot = path.join(publicRoot, 'prism');
 const pages = readdirSync(prismRoot).filter(name => name.endsWith('.html'));
 const origin = 'http://127.0.0.1:8080';
 const checkedScripts = new Set();
+
+test('home and app launches preserve destinations when session storage is blocked', () => {
+  for (const pageName of ['index.html', 'apps.html']) {
+    const source = readFileSync(path.join(prismRoot, pageName), 'utf8');
+    const start = source.indexOf('// ===== UV PROXY');
+    const end = source.indexOf('// Quick links', start);
+    assert.ok(start >= 0 && end > start, `${pageName}: browser controls are present`);
+    for (const blocked of [false, true]) {
+      const elements = new Map();
+      const getElementById = id => {
+        if (!elements.has(id)) {
+          const classes = new Set();
+          elements.set(id, {
+            value: '', src: '', events: {},
+            classList: { add: value => classes.add(value), remove: value => classes.delete(value), contains: value => classes.has(value) },
+            addEventListener(type, callback) { this.events[type] = callback; },
+          });
+        }
+        return elements.get(id);
+      };
+      const context = {
+        document: { getElementById },
+        localStorage: { getItem: () => null },
+        sessionStorage: { setItem() { if (blocked) throw new Error('Storage is unavailable'); } },
+      };
+      runInNewContext(source.slice(start, end), context);
+      const destination = 'https://example.com/path?q=a%20b&other=two#section';
+      context.openOverlay(destination);
+      assert.equal(new URL(getElementById('proxy-iframe').src, origin).searchParams.get('url'), destination, `${pageName}: initial launch with blocked=${blocked}`);
+      assert.equal(getElementById('proxy-overlay').classList.contains('open'), true);
+      getElementById('overlay-url').value = 'https://example.org/next?a=1&b=2';
+      getElementById('overlay-url').events.keydown({ key: 'Enter' });
+      assert.equal(new URL(getElementById('proxy-iframe').src, origin).searchParams.get('url'), 'https://example.org/next?a=1&b=2', `${pageName}: overlay navigation with blocked=${blocked}`);
+    }
+  }
+});
+
 function descendants(node) {
   return [node, ...(node.childNodes || []).flatMap(descendants), ...(node.content ? descendants(node.content) : [])];
 }

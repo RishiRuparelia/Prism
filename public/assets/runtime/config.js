@@ -1,0 +1,1 @@
+self.__uv$config = { prefix: '/service/', bare: '/api/transport/', encodeUrl: Ultraviolet.codec.xor.encode, decodeUrl: Ultraviolet.codec.xor.decode, handler: '/assets/runtime/handler.js', client: '/assets/runtime/client.js', bundle: '/assets/runtime/engine.js', config: '/assets/runtime/config.js', sw: '/assets/runtime/worker.js' };

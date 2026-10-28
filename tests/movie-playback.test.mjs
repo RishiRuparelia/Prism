@@ -2,6 +2,10 @@ import test from 'node:test';
 import assert from 'node:assert/strict';
 import { proxyLandingUrl, proxyPreference, prepareMovieProxy, proxiedVideoUrl, embeddedFailureMessage } from '../public/prism/movie-playback.js';
 
+const config = { prefix: '/service/', bare: '/api/transport/', encodeUrl: encodeURIComponent };
+const fetch = async () => Response.json({ versions: ['v3'] });
+const registrationResult = () => ({ active: { state: 'activated' } });
+
 test('movie playback defaults to proxy and respects an explicit Direct preference', () => {
   assert.equal(proxyPreference({}), true);
   assert.equal(proxyPreference({ name: 'Explorer', proxyMovies: false }), false);
@@ -18,13 +22,12 @@ test('movie embeds stay on the Prism origin', () => {
 
 test('direct video uses the controlled service path after proxy activation', async () => {
   let registration;
-  const config = { prefix: '/service/', encodeUrl: encodeURIComponent };
   const serviceWorker = {
-    controller: {}, ready: Promise.resolve({ active: {} }),
-    async register(...args) { registration = args; },
+    controller: {},
+    async register(...args) { registration = args; return registrationResult(); },
   };
-  const active = await prepareMovieProxy({ navigator: { serviceWorker }, secureContext: true, config });
-  assert.deepEqual(registration, ['/sw.js', { scope: '/' }]);
+  const active = await prepareMovieProxy({ navigator: { serviceWorker }, secureContext: true, config, fetch });
+  assert.deepEqual(registration, ['/sw.js', { scope: '/', updateViaCache: 'none' }]);
   const video = 'https://archive.org/download/HisGirlFriday/film.mp4';
   assert.equal(proxiedVideoUrl(video, active), '/service/' + encodeURIComponent(video));
 });
@@ -32,12 +35,12 @@ test('direct video uses the controlled service path after proxy activation', asy
 test('movie playback waits for first-page control before starting video', async () => {
   const events = new EventTarget();
   const serviceWorker = {
-    controller: null, ready: Promise.resolve({ active: {} }), async register() {},
+    controller: null, async register() { return registrationResult(); },
     addEventListener: events.addEventListener.bind(events),
     removeEventListener: events.removeEventListener.bind(events),
   };
   let resolved = false;
-  const ready = prepareMovieProxy({ navigator: { serviceWorker }, secureContext: true, config: { prefix: '/service/', encodeUrl: encodeURIComponent }, timeoutMs: 200 }).then(() => { resolved = true; });
+  const ready = prepareMovieProxy({ navigator: { serviceWorker }, secureContext: true, config, fetch, timeoutMs: 200 }).then(() => { resolved = true; });
   await new Promise(resolve => setTimeout(resolve, 5));
   assert.equal(resolved, false);
   serviceWorker.controller = {};
@@ -48,8 +51,8 @@ test('movie playback waits for first-page control before starting video', async 
 
 test('unsupported contexts and activation failures offer a direct playback recovery', async () => {
   await assert.rejects(prepareMovieProxy({ navigator: {}, secureContext: false }), /Choose Direct/);
-  await assert.rejects(prepareMovieProxy({ navigator: { serviceWorker: { async register() { throw new Error('Registration failed'); } } }, secureContext: true, config: { prefix: '/service/', encodeUrl: encodeURIComponent } }), /choose Direct/);
-  await assert.rejects(prepareMovieProxy({ navigator: { serviceWorker: { register: () => new Promise(() => {}) } }, secureContext: true, config: { prefix: '/service/', encodeUrl: encodeURIComponent }, timeoutMs: 5 }), /choose Direct/);
+  await assert.rejects(prepareMovieProxy({ navigator: { serviceWorker: { async register() { throw new Error('Registration failed'); } } }, secureContext: true, config, fetch }), /choose Direct/);
+  await assert.rejects(prepareMovieProxy({ navigator: { serviceWorker: { register: () => new Promise(() => {}) } }, secureContext: true, config, fetch, timeoutMs: 5 }), /choose Direct/);
 });
 
 test('embedded hosting errors show recovery without mistaking normal movie content for failure', () => {

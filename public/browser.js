@@ -29,43 +29,11 @@ function normalize(value) {
   return (engine === 'google' ? 'https://www.google.com/search?q=' : 'https://duckduckgo.com/?q=') + encodeURIComponent(input);
 }
 
-function withTimeout(promise, milliseconds, message) {
-  let timer;
-  return Promise.race([
-    promise,
-    new Promise((_, reject) => { timer = setTimeout(() => reject(new Error(message)), milliseconds); }),
-  ]).finally(() => clearTimeout(timer));
-}
-
-function waitForActivation(registration) {
-  if (registration.active?.state === 'activated') return Promise.resolve();
-  const worker = registration.installing || registration.waiting || registration.active;
-  if (!worker) return Promise.reject(new Error('The proxy worker could not be installed. Reload this page to try again.'));
-  return new Promise((resolve, reject) => {
-    const inspect = () => {
-      if (worker.state === 'activated') { worker.removeEventListener('statechange', inspect); resolve(); }
-      else if (worker.state === 'redundant') { worker.removeEventListener('statechange', inspect); reject(new Error('The proxy worker could not start. Reload this page to try again.')); }
-    };
-    worker.addEventListener('statechange', inspect);
-    inspect();
-  });
-}
-
 function prepareProxy() {
   if (!readyPromise) {
-    readyPromise = (async () => {
-      if (!window.isSecureContext || !('serviceWorker' in navigator)) throw new Error('The proxy needs HTTPS or a localhost address.');
-      if (typeof __uv$config !== 'object' || typeof __uv$config.encodeUrl !== 'function') throw new Error('Browser components did not load. Reload this page and try again.');
-      const registration = await withTimeout(
-        navigator.serviceWorker.register('/sw.js', { scope: '/', updateViaCache: 'none' }),
-        20_000, 'The proxy worker took too long to install. Reload this page to retry.',
-      );
-      await withTimeout(waitForActivation(registration), 20_000, 'The proxy worker took too long to start. Reload this page to retry.');
-      const response = await fetch('/bare/', { credentials: 'same-origin', cache: 'no-store', redirect: 'error', signal: AbortSignal.timeout(10_000) });
-      if (!response.ok || !response.headers.get('content-type')?.includes('application/json')) throw new Error('The proxy transport is unavailable or your sign-in has expired. Reload PRISM and try again.');
-      const manifest = await response.json();
-      if (!manifest.versions?.includes('v3')) throw new Error('The proxy transport returned an incompatible response.');
-    })().catch(error => { readyPromise = undefined; throw error; });
+    readyPromise = import('/prism/browser-runtime.js')
+      .then(({ prepareProxy: startRuntime }) => startRuntime())
+      .catch(error => { readyPromise = undefined; throw error; });
   }
   return readyPromise;
 }

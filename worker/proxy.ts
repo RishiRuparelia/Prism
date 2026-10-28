@@ -12,6 +12,12 @@ const HOP_HEADERS = new Set([
   "proxy-authenticate", "proxy-authorization", "te", "trailer", "upgrade", "host",
 ]);
 const NO_BODY_STATUS = new Set([101, 204, 205, 304]);
+const TRANSPORT_BASES = ["/api/transport", "/bare"];
+
+/** Match only transport namespaces, never lookalikes such as /barely. */
+export function isTransportPath(pathname: string): boolean {
+  return TRANSPORT_BASES.some((base) => pathname === base || pathname.startsWith(`${base}/`));
+}
 
 class ProxyError extends Error {
   status: number;
@@ -325,13 +331,17 @@ async function proxySocket(request: Request, fetcher: Fetcher): Promise<Response
 export async function handleBareRequest(request: Request, fetcher: Fetcher = globalThis.fetch): Promise<Response> {
   const url = new URL(request.url);
   try {
+    const base = TRANSPORT_BASES.find((candidate) => url.pathname === candidate || url.pathname.startsWith(`${candidate}/`));
+    const endpoint = base === undefined ? undefined : url.pathname.slice(base.length);
+    if (endpoint !== "" && endpoint !== "/" && endpoint !== "/v3/") {
+      throw new ProxyError(404, "NOT_FOUND", "Unknown Bare transport endpoint.");
+    }
     if (request.method === "OPTIONS") return new Response(null, { status: 204, headers: corsHeaders(request) });
-    if (url.pathname === "/bare" || url.pathname === "/bare/") {
+    if (endpoint === "" || endpoint === "/") {
       const headers = corsHeaders(request);
       headers.set("content-type", "application/json; charset=utf-8");
-      return new Response(JSON.stringify({ versions: ["v3"], language: "ServiceWorker", project: { name: "PRISM Bare Transport", version: "1.0.0" } }), { headers });
+      return new Response(JSON.stringify({ versions: ["v3"], language: "ServiceWorker", project: { name: "PRISM", version: "1.0.0" } }), { headers });
     }
-    if (url.pathname !== "/bare/v3/") throw new ProxyError(404, "NOT_FOUND", "Unknown Bare transport endpoint.");
     if (request.headers.get("upgrade")?.toLowerCase() === "websocket") return await proxySocket(request, fetcher);
     return await proxyHttp(request, fetcher);
   } catch (error) { return failure(request, error); }

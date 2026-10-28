@@ -652,8 +652,8 @@
 <body>
 
 <!-- UV Proxy — must be first scripts in body, exactly like Utopia -->
-<script src="/uv/uv.bundle.js"></script>
-<script src="/uv/uv.config.js"></script>
+<script src="/assets/runtime/engine.js"></script>
+<script src="/assets/runtime/config.js"></script>
 
 <div id="grain"></div>
 
@@ -1007,8 +1007,8 @@ function openOverlay(raw) {
   if (!abs) return;
   document.getElementById('overlay-url').value = abs;
   // Store destination so go.html can redirect after SW registers
-  sessionStorage.setItem('prism_dest', abs);
-  document.getElementById('proxy-iframe').src = '/prism/go.html';
+  try { sessionStorage.setItem('prism_dest', abs); } catch { /* The destination is also passed in the frame URL. */ }
+  document.getElementById('proxy-iframe').src = '/prism/go.html?url=' + encodeURIComponent(abs);
   document.getElementById('proxy-overlay').classList.add('open');
 }
 
@@ -1033,8 +1033,8 @@ document.getElementById('overlay-url').addEventListener('keydown', e => {
   if (e.key !== 'Enter') return;
   const abs = toAbsolute(document.getElementById('overlay-url').value);
   if (abs) {
-    sessionStorage.setItem('prism_dest', abs);
-    document.getElementById('proxy-iframe').src = '/prism/go.html';
+    try { sessionStorage.setItem('prism_dest', abs); } catch { /* The destination is also passed in the frame URL. */ }
+    document.getElementById('proxy-iframe').src = '/prism/go.html?url=' + encodeURIComponent(abs);
     document.getElementById('overlay-url').value = abs;
   }
 });
