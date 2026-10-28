@@ -23,6 +23,14 @@ The complete current PRISM application is at the repository root, including Movi
 | Build, catalog updates, and tests | [Scripts](scripts/), [tests](tests/), [package manifest](package.json) |
 | Credits and licenses | [Third-party notices](THIRD_PARTY.md), [project license](LICENSE), [credits page](public/credits.html) |
 
+## StaticDelivr entry
+
+The public entry URL is [PRISM on StaticDelivr](https://cdn.staticdelivr.com/gh/RishiRuparelia/Prism/main/index.svg).
+
+The root [index.svg](index.svg) uses an SVG `foreignObject` containing an iframe pointed at the [existing Cloudflare Worker](https://prism.s2004826.workers.dev/). The PRISM interface, API requests, and service worker run on that Worker's origin. The SVG contains no backend implementation or credentials, and the Worker must remain reachable.
+
+Deploy normal application changes to the same Worker using [CLOUDFLARE.md](CLOUDFLARE.md). Changes to the SVG entry itself require committing and pushing `index.svg` to GitHub; the CDN's cached copy may need to refresh before the `main` URL reflects them. Publishing the entry file does not deploy or replace the Worker or its chat database.
+
 ## Local hosting
 
 Open http://127.0.0.1:8080/ on this computer. The local version does not require ChatGPT sign-in and uses its own persistent chat database.

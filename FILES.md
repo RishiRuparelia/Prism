@@ -1,6 +1,6 @@
 # Complete project file index
 
-This index lists the 406 committed project files in this directory at this revision, including this index. Paths below are relative to the repository root.
+This index lists the 407 committed project files in this directory at this revision, including this index. Paths below are relative to the repository root.
 
 For the feature overview, open the [repository README](README.md). Build and deployment instructions are in [CLOUDFLARE.md](CLOUDFLARE.md).
 
@@ -33,6 +33,12 @@ The full feature includes the [Movies/TV page](public/prism/movies.html), [inter
 - [postcss.config.mjs](postcss.config.mjs)
 - [tsconfig.json](tsconfig.json)
 - [vite.config.ts](vite.config.ts)
+
+## StaticDelivr entry (1)
+
+The SVG entry frames the existing Cloudflare Worker. The application runtime, APIs, and service worker remain on the Worker origin.
+
+- [index.svg](index.svg)
 
 ## Hosting bindings (1)
 
