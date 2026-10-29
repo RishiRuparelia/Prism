@@ -1,8 +1,8 @@
 # Complete project file index
 
-This index lists the 407 committed project files in this directory at this revision, including this index. Paths below are relative to the repository root.
+This index lists the 411 committed project files in this directory at this revision, including this index. Paths below are relative to the repository root.
 
-For the feature overview, open the [repository README](README.md). Build and deployment instructions are in [CLOUDFLARE.md](CLOUDFLARE.md).
+For the feature overview, open the [repository README](README.md). Deployment instructions are in [CLOUDFLARE.md](CLOUDFLARE.md) and [EDGEONE.md](EDGEONE.md).
 
 ## Movies and TV
 
@@ -12,11 +12,12 @@ The full feature includes the [Movies/TV page](public/prism/movies.html), [inter
 
 `npm ci` installs the dependencies recorded in `package-lock.json`. `npm run build` generates `dist/server`, `dist/client`, and `public/rooster-source.zip`. Those generated outputs, installed dependencies, local database state, and private environment files are excluded from the committed source. The package scripts recreate the deployment output from these files.
 
-## Project configuration, documentation, and launchers (19)
+## Project configuration, documentation, and launchers (20)
 
 - [.gitignore](.gitignore)
 - [.npmrc](.npmrc)
 - [CLOUDFLARE.md](CLOUDFLARE.md)
+- [EDGEONE.md](EDGEONE.md)
 - [FILES.md](FILES.md)
 - [LICENSE](LICENSE)
 - [README.md](README.md)
@@ -39,6 +40,14 @@ The full feature includes the [Movies/TV page](public/prism/movies.html), [inter
 The SVG entry frames the existing Cloudflare Worker. The application runtime, APIs, and service worker remain on the Worker origin.
 
 - [index.svg](index.svg)
+
+## EdgeOne entry (3)
+
+These static files frame the existing Cloudflare Worker and require no installation, application build, or backend credentials.
+
+- [edgeone/edgeone.json](edgeone/edgeone.json)
+- [edgeone/favicon.svg](edgeone/favicon.svg)
+- [edgeone/index.html](edgeone/index.html)
 
 ## Hosting bindings (1)
 

@@ -4,7 +4,7 @@ The complete current PRISM application is at the repository root, including Movi
 
 **Application/build directory: the repository root (`.`).** Run the commands below from the directory containing `package.json`.
 
-[Complete file index](FILES.md) · [Deployment instructions](CLOUDFLARE.md)
+[Complete file index](FILES.md) · [Cloudflare deployment](CLOUDFLARE.md) · [EdgeOne entry setup](EDGEONE.md)
 
 ## Site files
 
@@ -30,6 +30,17 @@ The public entry URL is [PRISM on StaticDelivr](https://cdn.staticdelivr.com/gh/
 The root [index.svg](index.svg) uses an SVG `foreignObject` containing an iframe pointed at the [existing Cloudflare Worker](https://prism.s2004826.workers.dev/). The PRISM interface, API requests, and service worker run on that Worker's origin. The SVG contains no backend implementation or credentials, and the Worker must remain reachable.
 
 Deploy normal application changes to the same Worker using [CLOUDFLARE.md](CLOUDFLARE.md). Changes to the SVG entry itself require committing and pushing `index.svg` to GitHub; the CDN's cached copy may need to refresh before the `main` URL reflects them. Publishing the entry file does not deploy or replace the Worker or its chat database.
+
+## EdgeOne entry
+
+The live entry is [PRISM on EdgeOne](https://prism-9ce5bpee.edgeone.dev/), published through **Direct Upload**.
+
+| Address | Role |
+| --- | --- |
+| [EdgeOne entry](https://prism-9ce5bpee.edgeone.dev/) | Full-window HTML frame |
+| [Cloudflare Worker](https://prism.s2004826.workers.dev/) | PRISM application, proxy, chat, APIs, and service worker |
+
+Deploy normal application updates to the existing Worker; they appear inside the entry after refresh. Changes to the three `edgeone/` files require a new ZIP deployment in EdgeOne. See [EDGEONE.md](EDGEONE.md) for the current update flow and optional Git import.
 
 ## Local hosting
 
